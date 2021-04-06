@@ -36,7 +36,8 @@ const Users = () => {
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
   const [page, setPage] = useState(currentPage)
   const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
-  const parentsData = [""];
+  const parentsData = ["", "A1", "A2", "A2", "A2", "", "A1", "B1", "B1"];
+  // const parentsData = [""];
   const labelsData = [];
   const valuesData = [];
   const unique = [];
@@ -108,11 +109,11 @@ const Users = () => {
           <Plot
             data={[{
               type: "treemap",
-              labels:parentsData.slice(1, 11),
-              // labels: ["A1", "A2", "A3", "A4", "A5", "B1", "B2","B3","B4"],
+              // labels: parentsData.slice(1, 11),
+              labels: ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4"],
               // values: valuesData,
-              // parents: ["", "AGAR.(0,5mts)C/PLET.316.S/PULI"]
-              parents: parentsData.slice(0, 10)
+              parents: ["", "A1", "A2", "A2", "A2", "", "A1", "B1", "B1"]
+              // parents: parentsData.slice(0, 10)
               // parents: ["", "A1"]
             }]}
           // layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}
