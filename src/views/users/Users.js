@@ -36,11 +36,11 @@ const Users = () => {
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
   const [page, setPage] = useState(currentPage)
   const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
-  const parentsData = ["", "A1", "A2", "A2", "A2", "", "A1", "B1", "B1"];
+  const parentsData = [""];
   // const parentsData = [""];
-  const labelsData = [];
-  const valuesData = [];
-  const unique = [];
+  // const labelsData = [];
+  // const valuesData = [];
+  // const unique = [];
   // let history = useHistory()
   if (successforgotmsg) {
     // toast.success("API Called Successfully")
@@ -61,13 +61,13 @@ const Users = () => {
     successforgotmsg.rows.map(row => {
       row.doc.values.map(values => {
 
-        console.log(values)
+        // console.log(values)
         // parentsData.push(value.Data);
         // let unique = values.filter((item, i, ar) => ar.indexOf(item) === i);
 
-        labelsData.push(values.VHTXT1);
+        // labelsData.push(values.VHTXT1);
         parentsData.push(values.VHPRNO);
-        valuesData.push(values.row_num);
+        // valuesData.push(values.row_num);
       });
     });
     // let unique = [dataSearch.map(item => item.VHMFNO)];
@@ -89,10 +89,11 @@ const Users = () => {
   // const pageChange = newPage => {
   //   currentPage !== newPage && history.push(`/users?page=${newPage}`)
   // }
-  // parentsData.slice(0, 10);
+  // parentsData.slice(11, 21);
   // console.log(labelsData.slice(0, 10), "labelsData");
   // parentsData.slice(0, 10);
-  // console.log(parentsData.slice(0, 10));
+  console.log(parentsData.slice(1, 11));
+  console.log(parentsData.slice(0, 10));
   useEffect(() => {
     dispatch(intial_excel_sheet());
 
@@ -109,11 +110,11 @@ const Users = () => {
           <Plot
             data={[{
               type: "treemap",
-              // labels: parentsData.slice(1, 11),
-              labels: ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4"],
+              labels: parentsData.slice(1, 11),
+              // labels: ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4"],
               // values: valuesData,
-              parents: ["", "A1", "A2", "A2", "A2", "", "A1", "B1", "B1"]
-              // parents: parentsData.slice(0, 10)
+              // parents: ["", "A1", "A2", "A2", "A2", "", "A1", "B1", "B1"]
+              parents: parentsData.slice(0, 10)
               // parents: ["", "A1"]
             }]}
           // layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}

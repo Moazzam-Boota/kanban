@@ -19,7 +19,7 @@ app.use(fileUpload());
 
 app.post('/api/excel-upload', (req, res) => {
 
-    var excel = new PouchDB('excel2');
+    var excel = new PouchDB('excel3');
     // var remoteDB;
     // excel.allDocs({
     //     include_docs: true,
@@ -30,7 +30,7 @@ app.post('/api/excel-upload', (req, res) => {
     //     .catch(function (err) {
     //         console.log(err)
     //     })
-    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/excel2');
+    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/excel3');
     // excel.sync(remoteDB);
     // excel.setMaxListeners(5000);
     // function update(){
@@ -87,11 +87,9 @@ app.post('/api/excel-upload', (req, res) => {
                 // }
 
                 // matchs = [];
-                const today = new Date()
-                const tomorrow = new Date(today)
                 // tomorrow.setDate(tomorrow.getDate() + 1)
                 var data = {
-                    _id: tomorrow.setDate(tomorrow.getDate() + 1) + Math.random().toString(36),
+                    _id:new Date().toISOString().slice(0, 10) + Math.random().toString(36),
                     values: rowsData
                 };
                 // console.log('Row ' + rowNumber + ' = ' + JSON.stringify(row.values));
@@ -163,14 +161,19 @@ app.post('/api/excel-upload', (req, res) => {
 });
 
 app.get('/api/intial-excel-upload', (req, res) => {
-    var excel = new PouchDB('excel2');
+    var excel = new PouchDB('excel3');
+    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/excel3');
+
     excel.allDocs({
         include_docs: true,
         attachments: true,
         startkey: new Date().toISOString().slice(0, 10),
+        // endkey: new Date().toISOString().slice(0, 10),
     }, function (err, response) {
         console.log(response);
         res.send(response)
+        excel.sync(remoteDB);
+
         if (err) { return console.log(err); }
         // handle result
     });
