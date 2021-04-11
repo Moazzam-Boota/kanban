@@ -14,18 +14,18 @@ app.use(cors());
 app.use(express.json({ limit: '200mb' }));
 
 const dbDetails = {
+    url: '192.168.1.53:5984',
+    // url: 'localhost:5984',
     user: 'admin',
     pass: 'admin',
-    url: '192.168.1.53:5984',
-    db: 'excel4'
-    // url: 'localhost:5984',
+    db: 'excelFile',
 };
 
 app.use(fileUpload());
 
 app.post('/api/excel-upload', (req, res) => {
 
-    var excel = new PouchDB('excel4');
+    var excel = new PouchDB(dbDetails.db);
     // var remoteDB;
     // excel.allDocs({
     //     include_docs: true,
@@ -36,7 +36,7 @@ app.post('/api/excel-upload', (req, res) => {
     //     .catch(function (err) {
     //         console.log(err)
     //     })
-    var remoteDB = new PouchDB(`http://${dbDetails.user}:${dbDetails.pass}@${dbDetails.url}/${db.db}`);
+    var remoteDB = new PouchDB('http://' + dbDetails.user + ':' + dbDetails.pass + '@' + dbDetails.url + '/' + dbDetails.db);
     // excel.sync(remoteDB);
     // excel.setMaxListeners(5000);
     // function update(){
@@ -179,8 +179,8 @@ app.post('/api/excel-upload', (req, res) => {
 });
 
 app.get('/api/intial-excel-upload', (req, res) => {
-    var excel = new PouchDB('excel4');
-    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/excel4');
+    var excel = new PouchDB(dbDetails.db);
+    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/' + dbDetails.db);
 
     excel.allDocs({
         include_docs: true,
