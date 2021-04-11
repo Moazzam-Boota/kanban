@@ -25,7 +25,7 @@ app.use(fileUpload());
 
 app.post('/api/excel-upload', (req, res) => {
 
-    var excel = new PouchDB('excel2');
+    var excel = new PouchDB('excel5');
     // var remoteDB;
     // excel.allDocs({
     //     include_docs: true,
@@ -36,7 +36,8 @@ app.post('/api/excel-upload', (req, res) => {
     //     .catch(function (err) {
     //         console.log(err)
     //     })
-    var remoteDB = new PouchDB('http://admin:admin@192.168.1.53:5984/excel2');
+
+    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/excel5');
     // excel.sync(remoteDB);
     // excel.setMaxListeners(5000);
     // function update(){
@@ -169,7 +170,9 @@ app.post('/api/excel-upload', (req, res) => {
 });
 
 app.get('/api/intial-excel-upload', (req, res) => {
-    var excel = new PouchDB('excel2');
+
+    var excel = new PouchDB('excel5');
+    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/excel5');
     excel.allDocs({
         include_docs: true,
         attachments: true,
