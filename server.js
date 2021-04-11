@@ -19,7 +19,7 @@ app.use(fileUpload());
 
 app.post('/api/excel-upload', (req, res) => {
 
-    var excel = new PouchDB('excel3');
+    var excel = new PouchDB('excel4');
     // var remoteDB;
     // excel.allDocs({
     //     include_docs: true,
@@ -30,7 +30,7 @@ app.post('/api/excel-upload', (req, res) => {
     //     .catch(function (err) {
     //         console.log(err)
     //     })
-    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/excel3');
+    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/excel4');
     // excel.sync(remoteDB);
     // excel.setMaxListeners(5000);
     // function update(){
@@ -61,15 +61,27 @@ app.post('/api/excel-upload', (req, res) => {
             // for (var i = 0; i < row6.names.length; i++) {
             //     console.log(row6.names)
             // }
-            if (rowNumber >= 7) {
+            if (row.getCell('EF').value === "PERS044") {
                 // console.log(row.value)
                 // matchs.push(row.values);
                 //    row.eachRow(function (row, colNumber) {
                 //         // console.log('Cell ' + cell.name + ' = ' + cell.value);
                 rowsData.push({
-                    row_num: rowNumber, 'PPSHFT': row.getCell('IS').value,
-                    'VHMFNO': row.getCell('D').value, 'VHPRNO': row.getCell('C').value,
-                    'VHTXT1': row.getCell('W').value, "Data": new Date().toISOString().slice(0, 10)
+                    row_num: rowNumber,
+                    'shift_PPSHFT_IS': row.getCell('IS').value,
+                    'order_num_VHMFNO_D': row.getCell('D').value,
+                    'part_num_VHPRNO_C': row.getCell('C').value,
+                    'description_VHTXT1_W': row.getCell('W').value,
+                    'quantity_VHROQ_?': '10000',
+                    'line_VOPLGR_EF': row.getCell('EF').value,
+                    'start_time_VHMSTI_CG': row.getCell('CG').value,
+                    'end_time_VHMFTI_CH': row.getCell('CH').value,
+                    'start_date_VHFSTD_Y': row.getCell('Y').value,
+                    'end_date_VHFFID_Z': row.getCell('Z').value,
+                    'per_box_qty_UNITCAIXA_IT': row.getCell('IT').value,
+                    'per_pallet_qty_UNITAPALET_IU': row.getCell('IU').value,
+                    'per_pack_sec_VOIPITI_FM': row.getCell('FM').value,
+                    "Date": new Date().toISOString().slice(0, 10)
                 });
                 // console.log(row.getCell('IS').value);
                 //         // matchs.push(row.value);
@@ -89,7 +101,7 @@ app.post('/api/excel-upload', (req, res) => {
                 // matchs = [];
                 // tomorrow.setDate(tomorrow.getDate() + 1)
                 var data = {
-                    _id:new Date().toISOString().slice(0, 10) + Math.random().toString(36),
+                    _id: new Date().toISOString().slice(0, 10) + Math.random().toString(36),
                     values: rowsData
                 };
                 // console.log('Row ' + rowNumber + ' = ' + JSON.stringify(row.values));
@@ -161,8 +173,8 @@ app.post('/api/excel-upload', (req, res) => {
 });
 
 app.get('/api/intial-excel-upload', (req, res) => {
-    var excel = new PouchDB('excel3');
-    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/excel3');
+    var excel = new PouchDB('excel4');
+    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/excel4');
 
     excel.allDocs({
         include_docs: true,

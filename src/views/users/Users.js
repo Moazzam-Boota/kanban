@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { intial_excel_sheet } from "../../redux/actions/actions";
-
-
+import CIcon from '@coreui/icons-react';
+import CWidgetBrand from './CWidgetBrand';
 import Plot from 'react-plotly.js';
 import {
   CBadge,
+
   CCard,
   CCardBody,
   CCardHeader,
@@ -16,7 +17,6 @@ import {
   CPagination
 } from '@coreui/react'
 
-import usersData from './UsersData'
 
 const getBadge = status => {
   switch (status) {
@@ -36,9 +36,53 @@ const Users = () => {
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
   const [page, setPage] = useState(currentPage)
   const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
-  const parentsData = [""];
-  // const parentsData = [""];
-  // const labelsData = [];
+  const parentsData = [];
+  const parents = ["", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1",
+    "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1"
+    , "PITCH16", "PITCH16", "PITCH16", "PITCH16", "PITCH16", "PITCH16",
+    "PITCH15", "PITCH15", "PITCH15", "PITCH15", "PITCH15", "PITCH15",
+    "PITCH14", "PITCH14", "PITCH14", "PITCH14", "PITCH14"
+    , "PITCH13", "PITCH13", "PITCH13", "PITCH13"
+    , "PITCH12", "PITCH12", "PITCH12", "PITCH12"
+    , "PITCH11", "PITCH11", "PITCH11", "PITCH11"
+    , "PITCH10", "PITCH10", "PITCH10", "PITCH10"
+    , "PITCH09", "PITCH09", "PITCH09", "PITCH09"
+    , "PITCH08", "PITCH08", "PITCH08", "PITCH08"
+    , "PITCH07", "PITCH07", "PITCH07", "PITCH07"
+    , "PITCH06", "PITCH06", "PITCH06", "PITCH06"
+    , "PITCH05", "PITCH05", "PITCH05", "PITCH05"
+    , "PITCH04", "PITCH04", "PITCH04", "PITCH04"
+    , "PITCH03", "PITCH03", "PITCH03", "PITCH03"
+    , "PITCH02", "PITCH02", "PITCH02", "PITCH02"
+    , "PITCH01", "PITCH01", "PITCH01", "PITCH01"
+
+  ];
+  const markers = {
+    colors: ["SILVER", "BLACK", "BLACK", "BLACK", "BLACK",
+      "BLACK", "RED", "RED", "RED", "ORANGE", "ORANGE", "ORANGE", "GREEN",
+      "GREEN", "GREEN", "ROYALBLUE", "ROYALBLUE"]
+  };
+  const labelsData = ["SHIFT1", "PITCH16", "PITCH15", "PITCH14",
+    "PITCH13", "PITCH12", "PITCH11", "PITCH10", "PITCH09", "PITCH08",
+    "PITCH07", "PITCH06", "PITCH05", "PITCH04", "PITCH03", "PITCH02",
+    "PITCH01", "CARD 1", "CARD 2", "CARD 3", "CARD 4", "CARD 5", "CARD 6",
+    "CARD1", "CARD2", "CARD3", "CARD4", "CARD5", "CARD6", "CARD_1", "CARD_2",
+    "CARD_3", "CARD_4", "CARD_5", "CARD.1", "CARD.2", "CARD.3", "CARD.4",
+    "CAR1", "CAR2", "CAR3", "CAR4",
+    "CRD1", "CRD2", "CRD3", "CRD4",
+    "CAR1.", "CAR2.", "CAR3.", "CAR4.",
+    "CAD.1", "CAD.2", "CAD.3", "CAD.4",
+    "CRD.1", "CRD.2", "CRD.3", "CRD.4",
+    ".CARD1", ".CARD2", ".CARD3", ".CARD4",
+    "C.ARD1", "C.ARD2", "C.ARD3", "C.ARD4",
+    "CA.RD1", "CA.RD2", "CA.RD3", "CA.RD4",
+    "CAR.D1", "CAR.D2", "CAR.D3", "CAR.D4",
+    "CARD.1.", "CARD.2.", "CARD.3.", "CARD.4.",
+    "C.AR1", "C.AR2", "C.AR3", "C.AR4",
+    "CR.D1", "CR.D2", "CR.D3", "CR.D4",
+
+
+  ];
   // const valuesData = [];
   // const unique = [];
   // let history = useHistory()
@@ -58,6 +102,8 @@ const Users = () => {
     //     labelsData.push(value.Data);
     //   });
     // });
+    const colors = ['royalBlue', 'royalBlue', 'green', 'green', 'green', 'orange', 'orange', 'orange', 'red', 'red', 'red', 'black', 'black', 'black', 'black', 'black'];
+
     successforgotmsg.rows.map(row => {
       row.doc.values.map(values => {
 
@@ -66,10 +112,23 @@ const Users = () => {
         // let unique = values.filter((item, i, ar) => ar.indexOf(item) === i);
 
         // labelsData.push(values.VHTXT1);
-        parentsData.push(values.VHPRNO);
+
+        // values.colors = colors;
+        parentsData.push(values);
         // valuesData.push(values.row_num);
       });
     });
+
+    for (var i = 0; i <= parentsData.length; i++) {
+      console.log(colors[i]);
+      if (parentsData[i] !== undefined) {
+        parentsData[i].color = colors[i];
+
+      }
+      // console.log(parentsData[i]);
+
+      // parentsData[i].color = colors[i];
+    }
     // let unique = [dataSearch.map(item => item.VHMFNO)];
 
     // for (var i = 0; i < dataSearch.length; i++) {
@@ -92,13 +151,39 @@ const Users = () => {
   // parentsData.slice(11, 21);
   // console.log(labelsData.slice(0, 10), "labelsData");
   // parentsData.slice(0, 10);
-  console.log(parentsData.slice(1, 11));
-  console.log(parentsData.slice(0, 10));
+  console.log(parentsData);
+  // console.log(parentsData.slice(0, 10));
   useEffect(() => {
     dispatch(intial_excel_sheet());
 
     currentPage !== page && setPage(currentPage)
   }, [currentPage, page])
+  const cards = ['red', 'lightgreen', 'purple', 'black', 'brown'];
+  const cardsData = parentsData.slice(0).reverse().map(k => {
+    return (<CCol sm="2" lg="2">
+      <CWidgetBrand
+        color={k.color}
+        shift={k.shift_PPSHFT_IS}
+
+        cardName={cards.map( i  => {
+          console.log(i)
+          return (<CIcon
+            name="cil-credit-card"
+            height="50"
+            style={{ color: i }}
+            width="50"
+            className="my-4"
+          />)
+        })}
+
+        leftHeader="459"
+        leftFooter="feeds"
+      >
+      </CWidgetBrand>
+    </CCol>);
+  });
+  console.log(cardsData);
+
 
   return (
     <CRow>
@@ -107,14 +192,19 @@ const Users = () => {
           <CCardHeader>
             Visualization
           </CCardHeader>
+          <CRow>
+            {cardsData}
+          </CRow>
           <Plot
             data={[{
               type: "treemap",
-              labels: parentsData.slice(1, 11),
+              labels: labelsData,
               // labels: ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4"],
               // values: valuesData,
               // parents: ["", "A1", "A2", "A2", "A2", "", "A1", "B1", "B1"]
-              parents: parentsData.slice(0, 10)
+              parents: parents,
+              marker: markers,
+              // domain: {"row": [1]},
               // parents: ["", "A1"]
             }]}
           // layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}
