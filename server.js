@@ -13,7 +13,13 @@ app.use(cors());
 
 app.use(express.json({ limit: '200mb' }));
 
-
+const dbDetails = {
+    user: 'admin',
+    pass: 'admin',
+    url: '192.168.1.53:5984',
+    db: 'excel4'
+    // url: 'localhost:5984',
+};
 
 app.use(fileUpload());
 
@@ -30,7 +36,7 @@ app.post('/api/excel-upload', (req, res) => {
     //     .catch(function (err) {
     //         console.log(err)
     //     })
-    var remoteDB = new PouchDB('http://admin:admin@localhost:5984/excel4');
+    var remoteDB = new PouchDB(`http://${dbDetails.user}:${dbDetails.pass}@${dbDetails.url}/${db.db}`);
     // excel.sync(remoteDB);
     // excel.setMaxListeners(5000);
     // function update(){
