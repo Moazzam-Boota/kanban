@@ -1,7 +1,8 @@
 import React, { lazy, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { toast } from "react-toastify";
 import { excel_sheet, intial_excel_sheet } from "../../redux/actions/actions";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {
   CInput,
   CContainer,
@@ -19,21 +20,14 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 
-// import MainChartExample from '../charts/MainChartExample.js'
-// const WidgetsDropdown = lazy(() => import('../widgets/WidgetsDropdown.js'))
-// const WidgetsBrand = lazy(() => import('../widgets/WidgetsBrand.js'))
-
-
-
 const Dashboard = () => {
   const dispatch = useDispatch()
-  const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
-  // let history = useHistory()
-  if (successforgotmsg) {
-    // toast.success("API Called Successfully")
-    console.log(successforgotmsg)
-    // FORGOT_PASSWORD(false)
-    // history.push("/login");
+  const success = useSelector((state) => state.excelReducer.response);
+  console.log(success);
+  
+  if (success) {
+    toast.success("File Uploaded Successfully");
+
   }
   const [selectedFile, setSelectedFile] = useState();
 
@@ -46,13 +40,9 @@ const Dashboard = () => {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    // console.log(formData.get('file'));
     dispatch(excel_sheet(formData))
   };
-  // useEffect(() => {
-  //   dispatch(intial_excel_sheet());
 
-  // }, [])
 
   return (
     <>
@@ -75,7 +65,9 @@ const Dashboard = () => {
             </CForm>
           </CCardBody>
           <CCardFooter>
-            <CButton onClick={handleSubmit} type="submit" size="sm" color="primary"><CIcon name="cil-scrubber" /> Upload</CButton> </CCardFooter>
+            <CButton onClick={handleSubmit} type="submit" size="sm" color="primary"><CIcon name="cil-scrubber" /> Upload</CButton>
+            <ToastContainer />
+          </CCardFooter>
         </CCard>
       </CCol>
       {/* <WidgetsDropdown />

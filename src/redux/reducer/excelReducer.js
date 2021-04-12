@@ -1,4 +1,4 @@
-const init={
+const init = {
   // loginStatus: true
 }
 export const excelReducer = (state = init, action) => {
@@ -7,6 +7,7 @@ export const excelReducer = (state = init, action) => {
       return {
         ...state,
         apiCalled: action.data,
+        response: action.response
       };
     default:
       return state;

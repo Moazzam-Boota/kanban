@@ -17,7 +17,6 @@ import {
   CPagination
 } from '@coreui/react'
 
-
 const getBadge = status => {
   switch (status) {
     case 'Active': return 'success'
@@ -31,7 +30,6 @@ const getBadge = status => {
 const Users = () => {
   const dispatch = useDispatch()
 
-  // const history = useHistory()
   const queryPage = useLocation().search.match(/page=([0-9]+)/, '')
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
   const [page, setPage] = useState(currentPage)
@@ -79,44 +77,21 @@ const Users = () => {
     "CAR.D1", "CAR.D2", "CAR.D3", "CAR.D4",
     "CARD.1.", "CARD.2.", "CARD.3.", "CARD.4.",
     "C.AR1", "C.AR2", "C.AR3", "C.AR4",
-    "CR.D1", "CR.D2", "CR.D3", "CR.D4",
-
-
+    "CR.D1", "CR.D2", "CR.D3", "CR.D4"
   ];
-  // const valuesData = [];
-  // const unique = [];
-  // let history = useHistory()
+
   if (successforgotmsg) {
-    // toast.success("API Called Successfully")
-    // console.log(successforgotmsg)
-    // successforgotmsg.prototype.unique = function() {
-    //   var arr = [];
 
-    //   console.log(arr);
-    // }
-    // successforgotmsg.rows.map(row => {
-    //   row.doc.values.map(value => {
-
-    //     console.log(value.Data)
-    //     parentsData.push(value.Data);
-    //     labelsData.push(value.Data);
-    //   });
-    // });
     const colors = ['royalBlue', 'royalBlue', 'green', 'green', 'green', 'orange', 'orange', 'orange', 'red', 'red', 'red', 'black', 'black', 'black', 'black', 'black'];
 
     successforgotmsg.rows.map(row => {
+
       row.doc.values.map(values => {
 
-        // console.log(values)
-        // parentsData.push(value.Data);
-        // let unique = values.filter((item, i, ar) => ar.indexOf(item) === i);
-
-        // labelsData.push(values.VHTXT1);
-
-        // values.colors = colors;
         parentsData.push(values);
-        // valuesData.push(values.row_num);
+
       });
+
     });
 
     for (var i = 0; i <= parentsData.length; i++) {
@@ -125,47 +100,28 @@ const Users = () => {
         parentsData[i].color = colors[i];
 
       }
-      // console.log(parentsData[i]);
 
-      // parentsData[i].color = colors[i];
     }
-    // let unique = [dataSearch.map(item => item.VHMFNO)];
 
-    // for (var i = 0; i < dataSearch.length; i++) {
-    //   if (!dataSearch.contains(this[i])) {
-    //     unique.push(this[i]);
-    //   }
-    // }
-    // let unique = Array.from(new Set(dataSearch));
-
-    // FORGOT_PASSWORD(false)
-    // console.log(dataSearch);
-    // console.log(unique);
-    // console.log(labelsData);
-
-    // history.push("/login");
   }
-  // const pageChange = newPage => {
-  //   currentPage !== newPage && history.push(`/users?page=${newPage}`)
-  // }
-  // parentsData.slice(11, 21);
-  // console.log(labelsData.slice(0, 10), "labelsData");
-  // parentsData.slice(0, 10);
+
   console.log(parentsData);
-  // console.log(parentsData.slice(0, 10));
   useEffect(() => {
     dispatch(intial_excel_sheet());
 
     currentPage !== page && setPage(currentPage)
   }, [currentPage, page])
+
   const cards = ['red', 'lightgreen', 'purple', 'black', 'brown'];
+
   const cardsData = parentsData.slice(0).reverse().map(k => {
+
     return (<CCol sm="2" lg="2">
       <CWidgetBrand
         color={k.color}
         shift={k.shift_PPSHFT_IS}
 
-        cardName={cards.map( i  => {
+        cardName={cards.map(i => {
           console.log(i)
           return (<CIcon
             name="cil-credit-card"

@@ -13,6 +13,7 @@ export function excel_sheet(data) {
         dispatch({
           type: types.Excel,
           data: data,
+          response: true
 
         });
 
