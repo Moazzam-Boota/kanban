@@ -95,7 +95,6 @@ const Users = () => {
     });
 
     for (var i = 0; i <= parentsData.length; i++) {
-      console.log(colors[i]);
       if (parentsData[i] !== undefined) {
         parentsData[i].color = colors[i];
 
@@ -105,7 +104,6 @@ const Users = () => {
 
   }
 
-  console.log(parentsData);
   useEffect(() => {
     dispatch(intial_excel_sheet());
 
@@ -122,7 +120,6 @@ const Users = () => {
         shift={k.shift_PPSHFT_IS}
 
         cardName={cards.map(i => {
-          console.log(i)
           return (<CIcon
             name="cil-credit-card"
             height="50"
@@ -138,7 +135,6 @@ const Users = () => {
       </CWidgetBrand>
     </CCol>);
   });
-  console.log(cardsData);
 
 
   return (
