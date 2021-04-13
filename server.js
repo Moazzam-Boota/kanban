@@ -17,7 +17,7 @@ const dbDetails = {
     url: 'localhost:5984',
     user: 'admin',
     pass: 'admin',
-    db: 'excel2',
+    db: 'excel9',
 };
 
 var excel = new PouchDB(dbDetails.db);
@@ -25,6 +25,22 @@ var excel = new PouchDB(dbDetails.db);
 var remoteURL = 'http://' + dbDetails.user + ':' + dbDetails.pass + '@' + dbDetails.url + '/' + dbDetails.db;
 
 var remoteDB = new PouchDB(`${remoteURL}`);
+
+function getDocs(res) {
+    excel.allDocs({
+        include_docs: true,
+        attachments: true,
+        startkey: new Date().toISOString().slice(0, 10),
+        // endkey: new Date().toISOString().slice(0, 10),
+    }, function (err, response) {
+        console.log(response);
+        res.send(response)
+        excel.sync(remoteDB);
+
+        if (err) { return console.log(err); }
+        // handle result
+    });
+}
 
 app.post('/api/excel-upload', (req, res) => {
 
@@ -79,18 +95,9 @@ app.post('/api/excel-upload', (req, res) => {
 
         excel.sync(remoteDB);
 
-        Promise.all(promises).then((result) => {
+        Promise.all(promises).then(() => {
             excel.sync(remoteDB);
-            excel.allDocs({
-                include_docs: true,
-                attachments: true,
-                startkey: new Date().toISOString().slice(0, 10),
-            }, function (err, response) {
-                res.send(response)
-
-                if (err) { return console.log(err); }
-                // handle result
-            });
+            getDocs(res);
             console.log("Done")
         }).catch((err) => {
             console.log("An error occurred while inserting data", err);
@@ -100,20 +107,8 @@ app.post('/api/excel-upload', (req, res) => {
 
 app.get('/api/intial-excel-upload', (req, res) => {
 
-    var remoteDB = new PouchDB(`${remoteURL}`);
-    excel.allDocs({
-        include_docs: true,
-        attachments: true,
-        startkey: new Date().toISOString().slice(0, 10),
-        // endkey: new Date().toISOString().slice(0, 10),
-    }, function (err, response) {
-        console.log(response);
-        res.send(response)
-        excel.sync(remoteDB);
-
-        if (err) { return console.log(err); }
-        // handle result
-    });
+    getDocs(res);
+    
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

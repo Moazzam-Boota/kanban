@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { intial_excel_sheet } from "../../redux/actions/actions";
 import CIcon from '@coreui/icons-react';
+import { freeSet } from '@coreui/icons'
 import CWidgetBrand from './CWidgetBrand';
 import Plot from 'react-plotly.js';
 import {
@@ -120,13 +121,30 @@ const Users = () => {
         shift={k.shift_PPSHFT_IS}
 
         cardName={cards.map(i => {
-          return (<CIcon
-            name="cil-credit-card"
-            height="50"
-            style={{ color: i }}
-            width="50"
-            className="my-4"
-          />)
+          return (
+
+            // <CIcon
+            //   title="5"
+            //   content={freeSet.cilSquare}
+            //   height="50"
+            //   // style
+            //   // style={{ color: i, backgroundColor: i, marginLeft:'5px' }}
+            //   width="50"
+            //   className="my-4"
+            // ></CIcon>  
+            <CRow className="row">
+              <div
+                className="col-sm"
+                // title="5"
+                // content={freeSet.cilSquare}
+                // height="50"
+                // style
+                style={{ color: i, backgroundColor: i, width: '50px', height: '50px', marginTop: '5px' }}
+              // width="50"
+              // className="my-4"
+              ><p style={{ color: 'Yellow' }}>5</p></div></CRow>
+
+          )
         })}
 
         leftHeader="459"
