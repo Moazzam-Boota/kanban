@@ -30,7 +30,7 @@ const CWidgetBrand = props => {
 
     return (
         <div className={`card ${className}`} {...attributes}>
-            <div className={headerClasses} style={{ height: '50px', backgroundColor: color }}>
+            <div className={headerClasses} style={{  height: '50px', backgroundColor: color }}>
                 {'Shift : ' + shift}
             </div>
             { bodySlot ||

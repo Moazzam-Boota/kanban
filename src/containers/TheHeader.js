@@ -64,7 +64,7 @@ const TheHeader = () => {
 
       <CHeaderNav className="d-md-down-none mr-auto">
         <CHeaderNavItem className="px-3" >
-          <CHeaderNavLink to="/dashboard">Excel Upload</CHeaderNavLink>
+          <CHeaderNavLink to="/dashboard">Parameters</CHeaderNavLink>
         </CHeaderNavItem>
         <CHeaderNavItem  className="px-3">
           <CHeaderNavLink to="/users">Chart</CHeaderNavLink>

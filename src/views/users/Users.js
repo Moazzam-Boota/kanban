@@ -6,9 +6,12 @@ import CIcon from '@coreui/icons-react';
 import { freeSet } from '@coreui/icons'
 import CWidgetBrand from './CWidgetBrand';
 import Plot from 'react-plotly.js';
+
 import {
   CBadge,
+  CWidgetSimple,
 
+  CFormGroup,
   CCard,
   CCardBody,
   CCardHeader,
@@ -36,51 +39,6 @@ const Users = () => {
   const [page, setPage] = useState(currentPage)
   const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
   const parentsData = [];
-  const parents = ["", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1",
-    "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1", "SHIFT1"
-    , "PITCH16", "PITCH16", "PITCH16", "PITCH16", "PITCH16", "PITCH16",
-    "PITCH15", "PITCH15", "PITCH15", "PITCH15", "PITCH15", "PITCH15",
-    "PITCH14", "PITCH14", "PITCH14", "PITCH14", "PITCH14"
-    , "PITCH13", "PITCH13", "PITCH13", "PITCH13"
-    , "PITCH12", "PITCH12", "PITCH12", "PITCH12"
-    , "PITCH11", "PITCH11", "PITCH11", "PITCH11"
-    , "PITCH10", "PITCH10", "PITCH10", "PITCH10"
-    , "PITCH09", "PITCH09", "PITCH09", "PITCH09"
-    , "PITCH08", "PITCH08", "PITCH08", "PITCH08"
-    , "PITCH07", "PITCH07", "PITCH07", "PITCH07"
-    , "PITCH06", "PITCH06", "PITCH06", "PITCH06"
-    , "PITCH05", "PITCH05", "PITCH05", "PITCH05"
-    , "PITCH04", "PITCH04", "PITCH04", "PITCH04"
-    , "PITCH03", "PITCH03", "PITCH03", "PITCH03"
-    , "PITCH02", "PITCH02", "PITCH02", "PITCH02"
-    , "PITCH01", "PITCH01", "PITCH01", "PITCH01"
-
-  ];
-  const markers = {
-    colors: ["SILVER", "BLACK", "BLACK", "BLACK", "BLACK",
-      "BLACK", "RED", "RED", "RED", "ORANGE", "ORANGE", "ORANGE", "GREEN",
-      "GREEN", "GREEN", "ROYALBLUE", "ROYALBLUE"]
-  };
-  const labelsData = ["SHIFT1", "PITCH16", "PITCH15", "PITCH14",
-    "PITCH13", "PITCH12", "PITCH11", "PITCH10", "PITCH09", "PITCH08",
-    "PITCH07", "PITCH06", "PITCH05", "PITCH04", "PITCH03", "PITCH02",
-    "PITCH01", "CARD 1", "CARD 2", "CARD 3", "CARD 4", "CARD 5", "CARD 6",
-    "CARD1", "CARD2", "CARD3", "CARD4", "CARD5", "CARD6", "CARD_1", "CARD_2",
-    "CARD_3", "CARD_4", "CARD_5", "CARD.1", "CARD.2", "CARD.3", "CARD.4",
-    "CAR1", "CAR2", "CAR3", "CAR4",
-    "CRD1", "CRD2", "CRD3", "CRD4",
-    "CAR1.", "CAR2.", "CAR3.", "CAR4.",
-    "CAD.1", "CAD.2", "CAD.3", "CAD.4",
-    "CRD.1", "CRD.2", "CRD.3", "CRD.4",
-    ".CARD1", ".CARD2", ".CARD3", ".CARD4",
-    "C.ARD1", "C.ARD2", "C.ARD3", "C.ARD4",
-    "CA.RD1", "CA.RD2", "CA.RD3", "CA.RD4",
-    "CAR.D1", "CAR.D2", "CAR.D3", "CAR.D4",
-    "CARD.1.", "CARD.2.", "CARD.3.", "CARD.4.",
-    "C.AR1", "C.AR2", "C.AR3", "C.AR4",
-    "CR.D1", "CR.D2", "CR.D3", "CR.D4"
-  ];
-
   if (successforgotmsg) {
 
     const colors = ['royalBlue', 'royalBlue', 'green', 'green', 'green', 'orange', 'orange', 'orange', 'red', 'red', 'red', 'black', 'black', 'black', 'black', 'black'];
@@ -111,12 +69,14 @@ const Users = () => {
     currentPage !== page && setPage(currentPage)
   }, [currentPage, page])
 
-  const cards = ['red', 'lightgreen', 'purple', 'black', 'brown'];
+  const cards = ['red', 'lightgreen'];
 
   const cardsData = parentsData.slice(0).reverse().map(k => {
 
-    return (<CCol sm="2" lg="2">
+    return (
+
       <CWidgetBrand
+        style={{ marginLeft:'5px'}}
         color={k.color}
         shift={k.shift_PPSHFT_IS}
 
@@ -128,21 +88,30 @@ const Users = () => {
             //   content={freeSet.cilSquare}
             //   height="50"
             //   // style
-            //   // style={{ color: i, backgroundColor: i, marginLeft:'5px' }}
+            //   style={{ color: i, backgroundColor: i, marginLeft:'5px' }}
             //   width="50"
             //   className="my-4"
             // ></CIcon>  
-            <CRow className="row">
-              <div
-                className="col-sm"
-                // title="5"
-                // content={freeSet.cilSquare}
-                // height="50"
-                // style
-                style={{ color: i, backgroundColor: i, width: '50px', height: '50px', marginTop: '5px' }}
-              // width="50"
-              // className="my-4"
-              ><p style={{ color: 'Yellow' }}>5</p></div></CRow>
+            <span style={{
+              backgroundColor: i,
+              padding: '5px',
+              width: '10px',
+              marginLeft: '5px',
+              textAlign: 'center',
+              textWeight: 'bold',
+              fontSize: '24px'
+            }}>5</span>
+            // <CFormGroup row>
+            //   <div
+            //     className="col-sm"
+            //     // title="5"
+            //     // content={freeSet.cilSquare}
+            //     // height="50"
+            //     // style
+            //     style={{ color: i, backgroundColor: i, width: '5px', height: '50px', marginTop: '5px' }}
+            //   // width="50"
+            //   // className="my-4"
+            //   ><p style={{ color: 'Yellow' }}>5</p></div></CFormGroup>
 
           )
         })}
@@ -151,38 +120,41 @@ const Users = () => {
         leftFooter="feeds"
       >
       </CWidgetBrand>
-    </CCol>);
+
+
+    );
   });
 
 
   return (
-    <CRow>
-      <CCol xl={12}>
-        <CCard>
-          <CCardHeader>
-            Visualization
-          </CCardHeader>
-          <CRow>
-            {cardsData}
-          </CRow>
-          <Plot
-            data={[{
-              type: "treemap",
-              labels: labelsData,
-              // labels: ["A1", "A2", "A3", "A4", "A5", "B1", "B2", "B3", "B4"],
-              // values: valuesData,
-              // parents: ["", "A1", "A2", "A2", "A2", "", "A1", "B1", "B1"]
-              parents: parents,
-              marker: markers,
-              // domain: {"row": [1]},
-              // parents: ["", "A1"]
-            }]}
-          // layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}
-          />
-
-        </CCard>
-      </CCol>
-    </CRow>
+    <CFormGroup>
+      <CRow>
+        <CCol xs="2">
+          <CWidgetSimple header="Total Peices" text="1400" />
+        </CCol>
+        <CCol xs="2">
+          <CWidgetSimple header="Done Peices" text="250" />
+        </CCol>
+        <CCol xs="2">
+          <CWidgetSimple header="Pending Peices" text="1150" />
+        </CCol>
+        <CCol xs="2">
+          <CWidgetSimple header="Peices/Hour (on time)" text="50" />
+        </CCol>
+        <CCol xs="2">
+          <CWidgetSimple header="Peices/Hour (Day)" text="80" />
+        </CCol>
+        <CCol xs="2">
+          <CWidgetSimple header="Target" text="700" />
+        </CCol>
+      </CRow>
+      <hr></hr>
+      <CRow>
+        {/* <CCol xl={12}> */}
+        {cardsData}
+        {/* </CCol> */}
+      </CRow>
+    </CFormGroup>
   )
 }
 

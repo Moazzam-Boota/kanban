@@ -17,7 +17,7 @@ const dbDetails = {
     url: 'localhost:5984',
     user: 'admin',
     pass: 'admin',
-    db: 'excel9',
+    db: 'excel5',
 };
 
 var excel = new PouchDB(dbDetails.db);
@@ -30,7 +30,7 @@ function getDocs(res) {
     excel.allDocs({
         include_docs: true,
         attachments: true,
-        startkey: new Date().toISOString().slice(0, 10),
+        // startkey: new Date().toISOString().slice(0, 10),
         // endkey: new Date().toISOString().slice(0, 10),
     }, function (err, response) {
         console.log(response);
@@ -48,7 +48,7 @@ app.post('/api/excel-upload', (req, res) => {
     workbook.xlsx.load(req.files.file.data).then(function () {
 
         //Get sheet by Name
-        var worksheet = workbook.getWorksheet('Hoja1');
+        var worksheet = workbook.getWorksheet('META_SQL');
 
         const promises = [];
         worksheet.eachRow(function (row, rowNumber) {
