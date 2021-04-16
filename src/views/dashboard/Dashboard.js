@@ -42,7 +42,7 @@ const Dashboard = () => {
   const parentsData = [];
   const success = useSelector((state) => state.excelReducer.response);
   console.log(success);
-  
+
   if (success) {
     toast.success("File Uploaded Successfully");
 
@@ -162,19 +162,14 @@ const Dashboard = () => {
                   <CLabel htmlFor="city">Pitch : </CLabel>
                 </CCol>
                 <CCol xs="7">
-                  <CSelect custom name="select" id="select">
-                    <option value="0">15min</option>
-                    <option value="1">30min</option>
-                    <option value="2">1hour</option>
-                    <option value="3">2hour</option>
-                  </CSelect>
+                  <CInput type="time" id="appt" name="appt" min="09:00" max="18:00"></CInput>
                 </CCol>
               </CFormGroup>
             </CCol>
             {unique.map(i => {
               return (
                 <CCol xs="8">
-                  <CLabel htmlFor="city">{i}</CLabel>
+                  <CLabel style={{ marginLeft: '-15px', fontWeight: 'Bold'}} htmlFor="city">{i}</CLabel>
                   <CFormGroup row>
                     {inputList}
 
@@ -205,10 +200,7 @@ const Dashboard = () => {
                   <CLabel htmlFor="city">Download Hour</CLabel>
                 </CCol>
                 <CCol xs="7">
-                  <CSelect custom name="select" id="select">
-                    <option value="0">5:00</option>
-                    <option value="1">6:00</option>
-                  </CSelect>
+                  <CInput type="time" id="appt" name="appt" min="09:00" max="18:00"></CInput>
                 </CCol>
               </CFormGroup>
             </CCol>
