@@ -69,20 +69,18 @@ const Users = () => {
     currentPage !== page && setPage(currentPage)
   }, [currentPage, page])
 
+  // const cardsSet = ['red', 'lightgreen'];
   const cards = ['red', 'lightgreen'];
 
   const cardsData = parentsData.slice(0).reverse().map(k => {
-
+    console.log(k, 'record')
     return (
-
       <CWidgetBrand
-        style={{ marginLeft:'5px'}}
+        style={{ marginLeft: '5px' }}
         color={k.color}
-        shift={k.shift_PPSHFT_IS}
-
+        shift={k.per_pack_sec_VOIPITI_FM}
         cardName={cards.map(i => {
           return (
-
             // <CIcon
             //   title="5"
             //   content={freeSet.cilSquare}
@@ -91,7 +89,8 @@ const Users = () => {
             //   style={{ color: i, backgroundColor: i, marginLeft:'5px' }}
             //   width="50"
             //   className="my-4"
-            // ></CIcon>  
+            // ></CIcon>
+
             <span style={{
               backgroundColor: i,
               padding: '5px',
@@ -100,7 +99,7 @@ const Users = () => {
               textAlign: 'center',
               textWeight: 'bold',
               fontSize: '24px'
-            }}>5</span>
+            }}>{k.per_pallet_qty_UNITAPALET_IU}</span>
             // <CFormGroup row>
             //   <div
             //     className="col-sm"
@@ -115,16 +114,12 @@ const Users = () => {
 
           )
         })}
-
         leftHeader="459"
         leftFooter="feeds"
       >
-      </CWidgetBrand>
-
-
+      </CWidgetBrand >
     );
   });
-
 
   return (
     <CFormGroup>
@@ -148,7 +143,7 @@ const Users = () => {
           <CWidgetSimple header="Target" text="700" />
         </CCol>
       </CRow>
-      <hr></hr>
+      <hr style={{ borderTop: '3px solid rgba(0, 0, 21, 0.2)' }}></hr>
       <CRow>
         {/* <CCol xl={12}> */}
         {cardsData}
