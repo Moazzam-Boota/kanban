@@ -17,7 +17,7 @@ const dbDetails = {
     url: 'localhost:5984',
     user: 'admin',
     pass: 'admin',
-    db: 'excel5',
+    db: 'excel8',
 };
 
 var excel = new PouchDB(dbDetails.db);
@@ -63,7 +63,7 @@ app.post('/api/excel-upload', (req, res) => {
                     'order_num_VHMFNO_D': row.getCell('D').value,
                     'part_num_VHPRNO_C': row.getCell('C').value,
                     'description_VHTXT1_W': row.getCell('W').value,
-                    'quantity_VHROQ_?': '10000',
+                    'quantity_VHOROQ_AH': row.getCell('AH').value,
                     'line_VOPLGR_EF': row.getCell('EF').value,
                     'start_time_VHMSTI_CG': row.getCell('CG').value,
                     'end_time_VHMFTI_CH': row.getCell('CH').value,
@@ -93,7 +93,7 @@ app.post('/api/excel-upload', (req, res) => {
 
         });
 
-        excel.sync(remoteDB);
+        // excel.sync(remoteDB);
 
         Promise.all(promises).then(() => {
             excel.sync(remoteDB);
@@ -108,7 +108,7 @@ app.post('/api/excel-upload', (req, res) => {
 app.get('/api/intial-excel-upload', (req, res) => {
 
     getDocs(res);
-    
+
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

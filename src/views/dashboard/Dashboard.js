@@ -179,7 +179,7 @@ const Dashboard = () => {
           </CCardHeader>
       <CCardBody>
         <CRow>
-          {/* <CForm action="" method="post" className="form-horizontal">
+          <CForm action="" method="post" className="form-horizontal">
             <CFormGroup row>
               <CInput type="file" name="hf-file" onChange={changeHandler} placeholder="Upload file..." autoComplete="file" />
               <CFormText className="help-block">Please enter your email</CFormText >
@@ -188,7 +188,7 @@ const Dashboard = () => {
           <CCardFooter>
             <CButton onClick={handleSubmit} type="submit" size="sm" color="primary"><CIcon name="cil-scrubber" /> Upload</CButton>
             <ToastContainer />
-          </CCardFooter> */}
+          </CCardFooter>
           <CCol xs="4" sm="4" md="4" lg="4">
             <CFormGroup row>
               <CCol xs="3">
