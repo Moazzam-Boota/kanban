@@ -115,12 +115,11 @@ const Users = () => {
   // TODO:: sum of all orders, quantity
   // 
 
-  const donePieces = 100;
+  const donePieces = 100; //receive from clicking the button double click
 
   const kanbanBoxes = (dailyHours * 60) / pitchPeriod;
   console.log(kanbanBoxes, 'kanbanBoxes');
 
-  // const cardsData = parentsData.slice(0).reverse().map(k => {
   const cardsData = [];
   for (var i = kanbanBoxes; i >= 1; i--) {
     console.log(i, 'data')
@@ -134,7 +133,6 @@ const Users = () => {
 
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px' }}
-      // color={k.color}
       color={color}
       shift={Math.round(boxesPerPitch)}
       cardName={dataGroupByProduct.map(product => {
@@ -142,12 +140,17 @@ const Users = () => {
           <span style={{
             backgroundColor: product.color,
             padding: '5px',
-            width: '10px',
             marginLeft: '5px',
+            width: '10px',
             textAlign: 'center',
             textWeight: 'bold',
-            fontSize: '24px'
-          }}>{Math.round(product.productsPerBox / boxesPerPitch)}</span>
+            fontSize: '24px',
+            color: 'white'
+          }}>
+            <span style={{
+              padding: '5px'
+            }}>{Math.round(product.productsPerBox / boxesPerPitch)}</span>
+          </span>
         )
       })}
       leftHeader="459"
@@ -155,54 +158,6 @@ const Users = () => {
     >
     </CWidgetBrand >);
   }
-  // const cardsData = parentsData.map(k => {
-  //   return (
-  //     <CWidgetBrand
-  //       style={{ marginLeft: '5px' }}
-  //       color={k.color}
-  //       shift={k.per_pack_sec_VOIPITI_FM}
-  //       cardName={cards.map(i => {
-  //         return (
-  //           // <CIcon
-  //           //   title="5"
-  //           //   content={freeSet.cilSquare}
-  //           //   height="50"
-  //           //   // style
-  //           //   style={{ color: i, backgroundColor: i, marginLeft:'5px' }}
-  //           //   width="50"
-  //           //   className="my-4"
-  //           // ></CIcon>
-
-  //           <span style={{
-  //             backgroundColor: i,
-  //             padding: '5px',
-  //             width: '10px',
-  //             marginLeft: '5px',
-  //             textAlign: 'center',
-  //             textWeight: 'bold',
-  //             fontSize: '24px'
-  //           }}>{k.per_pallet_qty_UNITAPALET_IU}</span>
-  //           // <CFormGroup row>
-  //           //   <div
-  //           //     className="col-sm"
-  //           //     // title="5"
-  //           //     // content={freeSet.cilSquare}
-  //           //     // height="50"
-  //           //     // style
-  //           //     style={{ color: i, backgroundColor: i, width: '5px', height: '50px', marginTop: '5px' }}
-  //           //   // width="50"
-  //           //   // className="my-4"
-  //           //   ><p style={{ color: 'Yellow' }}>5</p></div></CFormGroup>
-
-  //         )
-  //       })}
-  //       leftHeader="459"
-  //       leftFooter="feeds"
-  //     >
-  //     </CWidgetBrand >
-  //   );
-  // });
-
   return (
     <CFormGroup>
       <CRow>
@@ -231,8 +186,20 @@ const Users = () => {
         {cardsData}
         {/* </CCol> */}
       </CRow>
+      <CRow>
+        <CCol xs={{ offset: 9, size: 3 }} >
+          <CWidgetSimple header="Kanban en curs" text={<div>
+            <p>Ordre de fabricació </p>
+            <p>Referencia de producte </p>
+            <p>Descripció de producte </p>
+            <p>Quantitat a produir total </p>
+            <p>Quantitat que falten per produit </p>
+            <p>Quantitat per caixa </p>
+          </div>} />
+        </CCol>
+      </CRow>
     </CFormGroup>
   )
 }
 
-export default Users
+export default Users;
