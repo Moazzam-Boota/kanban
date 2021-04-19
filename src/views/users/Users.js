@@ -12,16 +12,6 @@ import {
 
 const lodash = require('lodash');
 
-const getBadge = status => {
-  switch (status) {
-    case 'Active': return 'success'
-    case 'Inactive': return 'secondary'
-    case 'Pending': return 'warning'
-    case 'Banned': return 'danger'
-    default: return 'primary'
-  }
-}
-
 const Users = () => {
   const dispatch = useDispatch()
 
@@ -36,12 +26,6 @@ const Users = () => {
         parentsData.push(values);
       });
     });
-
-    // for (var i = 0; i <= parentsData.length; i++) {
-    //   if (parentsData[i] !== undefined) {
-    //     parentsData[i].color = colors[i];
-    //   }
-    // }
   }
 
   function getRandomColor() {
@@ -53,20 +37,12 @@ const Users = () => {
     return color;
   }
 
-  const colors = ['black', 'black', 'black', 'black', 'black', 'red', 'red', 'red', 'orange', 'orange', 'orange', 'green', 'green', 'green', 'royalBlue', 'royalBlue'];
-  //   // const colors = ['royalBlue', 'royalBlue', 'green', 'green', 'green', 'orange', 'orange', 'orange', 'red', 'red', 'red', 'black', 'black', 'black', 'black', 'black'];
-
   useEffect(() => {
     dispatch(intial_excel_sheet());
 
     currentPage !== page && setPage(currentPage)
   }, [currentPage, page])
 
-  // const cardsSet = ['red', 'lightgreen'];
-  const cards = ['red', 'lightgreen'];
-
-  console.log(lodash.groupBy(['one', 'two', 'three', 'two', 'one']))
-  console.log(parentsData, 'parentsData')
   const dataGroupByOrder = lodash.chain(parentsData)
     // Group the elements of Array based on `color` property
     .groupBy("order_num_VHMFNO_D")
@@ -103,10 +79,10 @@ const Users = () => {
   const totalQuantity = lodash.sumBy(parentsData, 'quantity_VHOROQ_AH'); //sum of all quantities
   const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
   const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
-  const quantityPerSecond = quantityPerMinute * 60;   // quanitity per second
+  // const quantityPerSecond = quantityPerMinute * 60;   // quanitity per second
 
   const quantityPerBoxPerMinute = quantityPerBox * quantityPerMinute;  // per box time
-  const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
+  // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
 
   const boxesPerPitch = pitchPeriod / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
   console.log(boxesPerPitch, 'boxesPerPitch', quantityPerBoxPerMinute)

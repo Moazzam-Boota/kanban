@@ -1,5 +1,4 @@
-import React, { lazy, useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { excel_sheet, intial_excel_sheet } from "../../redux/actions/actions";
 import { ToastContainer, toast } from 'react-toastify';
@@ -7,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import MultiSelect from './MultiSelect';
 import {
   CInput,
-  CContainer,
   CLabel,
   CForm,
   CFormGroup,
@@ -18,11 +16,6 @@ import {
   CCardHeader,
   CCardFooter,
   CCardBody,
-  CSelect,
-  CDropdownMenu,
-  CDropdownToggle,
-  CDropdown,
-  CInputGroup,
   CRow
 
 } from '@coreui/react'
@@ -32,13 +25,6 @@ import CIcon from '@coreui/icons-react'
 const Dashboard = () => {
 
   const dispatch = useDispatch()
-
-  const queryPage = useLocation().search.match(/page=([0-9]+)/, '')
-  const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
-  const [page, setPage] = useState(currentPage)
-
-
-  // const success = useSelector((state) => state.excelReducer.response);
   const response = useSelector((state) => state.excelReducer.apiCalled);
   const parentsData = [];
   const success = useSelector((state) => state.excelReducer.response);
@@ -62,25 +48,6 @@ const Dashboard = () => {
     dispatch(excel_sheet(formData))
   };
 
-  // console.log(success);
-
-  // if (success) {
-  //   toast.success("File Uploaded Successfully");
-
-  // }
-  // const [selectedFile, setSelectedFile] = useState();
-
-  // const changeHandler = (event) => {
-  //   setSelectedFile(event.target.files[0]);
-  //   // setIsSelected(true);
-  // };
-  // const handleSubmit = () => {
-
-  //   const formData = new FormData();
-  //   formData.append("file", selectedFile);
-
-  //   dispatch(excel_sheet(formData))
-  // };
   var unique = [];
   function onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
@@ -124,7 +91,7 @@ const Dashboard = () => {
   }
 
   const ShiftTime = ({ shiftNumber }) => {
-    const [value, onChange] = useState(['08:00', '14:00']);
+    // const [value, onChange] = useState(['08:00', '14:00']);
     console.log(inputList.filter(e => { return e.shiftNumber === shiftNumber }), 'rnage')
     return (<CFormGroup row>
       <CCol xs="2">
@@ -140,12 +107,10 @@ const Dashboard = () => {
             shiftRange[0].time = value;
             console.log(shiftRange, 'shiftRange')
             setInputList([...inputList])
-            // setInputList(inputList.filter((e) => { return e.shiftNumber !== shiftNumber }))
 
           }}
           value={inputList.filter(e => { return e.shiftNumber === shiftNumber })[0].time}
         />
-        {/* <CInput type="time" id="appt" name="appt" min="09:00" max="18:00"></CInput> */}
       </CCol>
       <CCol xs="2">
         <CLabel htmlFor="city">BreakTime</CLabel>
@@ -164,10 +129,6 @@ const Dashboard = () => {
   };
 
 
-
-
-
-
   useEffect(() => {
     dispatch(intial_excel_sheet());
   }, []);
@@ -179,7 +140,7 @@ const Dashboard = () => {
           </CCardHeader>
       <CCardBody>
         <CRow>
-          <CForm action="" method="post" className="form-horizontal">
+          {/* <CForm action="" method="post" className="form-horizontal">
             <CFormGroup row>
               <CInput type="file" name="hf-file" onChange={changeHandler} placeholder="Upload file..." autoComplete="file" />
               <CFormText className="help-block">Please enter your email</CFormText >
@@ -188,7 +149,7 @@ const Dashboard = () => {
           <CCardFooter>
             <CButton onClick={handleSubmit} type="submit" size="sm" color="primary"><CIcon name="cil-scrubber" /> Upload</CButton>
             <ToastContainer />
-          </CCardFooter>
+          </CCardFooter> */}
           <CCol xs="4" sm="4" md="4" lg="4">
             <CFormGroup row>
               <CCol xs="3">
@@ -236,4 +197,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default Dashboard;
