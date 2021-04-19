@@ -43,6 +43,13 @@ const Users = () => {
     currentPage !== page && setPage(currentPage)
   }, [currentPage, page])
 
+  const dataGroupByLine = lodash.chain(parentsData)
+    // Group the elements of Array based on `color` property
+    .groupBy("line_VOPLGR_EF")
+    // `key` is group's name (color), `value` is the array of objects
+    .map((value, key) => ({ lineNumber: key, data: value }))
+    .value();
+
   const dataGroupByOrder = lodash.chain(parentsData)
     // Group the elements of Array based on `color` property
     .groupBy("order_num_VHMFNO_D")
@@ -90,9 +97,7 @@ const Users = () => {
   // TODO:: sum of all orders, quantity
   // TODO:: sum of all orders, quantity
   // 
-
   const donePieces = 100; //receive from clicking the button double click
-
   const kanbanBoxes = (dailyHours * 60) / pitchPeriod;
   console.log(kanbanBoxes, 'kanbanBoxes');
 
@@ -156,6 +161,7 @@ const Users = () => {
           <CWidgetSimple header="Pieces/Hour (Target)" text={totalQuantity / kanbanBoxes} />
         </CCol>
       </CRow>
+      <h1>{lodash.get(dataGroupByLine, '[0].lineNumber')}</h1>
       <hr style={{ borderTop: '3px solid rgba(0, 0, 21, 0.2)' }}></hr>
       <CRow>
         {/* <CCol xl={12}> */}

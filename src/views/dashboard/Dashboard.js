@@ -53,14 +53,12 @@ const Dashboard = () => {
     return self.indexOf(value) === index;
   }
   if (response) {
-    console.log(response)
     response.rows.map(row => {
       row.doc.values.map(values => {
         parentsData.push(values.line_VOPLGR_EF);
       });
     });
     unique = parentsData.filter(onlyUnique);
-    console.log(unique);
   }
 
   const shiftSet = [
