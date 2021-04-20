@@ -60,6 +60,7 @@ export default function MultiSelectSort() {
             // small fix for https://github.com/clauderic/react-sortable-hoc/pull/352:
             getHelperDimensions={({ node }) => node.getBoundingClientRect()}
             // react-select props:
+            hideSelectedOptions={false}
             isMulti
             options={[{ value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
             { value: 'blue', label: 'Blue', color: '#0052CC'},
