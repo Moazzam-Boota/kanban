@@ -9,7 +9,7 @@ import {
   CCol,
   CRow,
 } from '@coreui/react'
-
+import './index.css';
 const lodash = require('lodash');
 
 const Users = () => {
@@ -98,11 +98,12 @@ const Users = () => {
   // TODO:: sum of all orders, quantity
   // 
   const donePieces = 100; //receive from clicking the button double click
+  const skipBoxes = 3;
   const kanbanBoxes = (dailyHours * 60) / pitchPeriod;
   console.log(kanbanBoxes, 'kanbanBoxes');
 
   const cardsData = [];
-  for (var i = kanbanBoxes; i >= 1; i--) {
+  for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
     console.log(i, 'data')
     var color = '';
 
@@ -113,32 +114,43 @@ const Users = () => {
     else if (i > 11) color = 'black';
 
     cardsData.push(<CWidgetBrand
-      style={{ marginLeft: '5px' }}
+      style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={Math.round(boxesPerPitch)}
       cardName={dataGroupByProduct.map(product => {
         return (
-          <span style={{
+          <span className="content-center" style={{
             backgroundColor: product.color,
             padding: '5px',
-            marginLeft: '5px',
-            width: '10px',
+            // marginLeft: '5px',
+            // width: '10px',
             textAlign: 'center',
             textWeight: 'bold',
             fontSize: '24px',
-            color: 'white'
+            color: 'white',
+            // display: 'flex',
+            // flexDirection: 'column',
+            display: 'inline-block',
+            width: '40px',
+            // fontSize: '30px',
+            textAlign: 'center',
+            margin: '5px'
           }}>
-            <span style={{
+            {/* <span style={{
               padding: '5px'
-            }}>{Math.round(product.productsPerBox / boxesPerPitch)}</span>
-          </span>
+            }}> */}
+            {Math.round(product.productsPerBox / boxesPerPitch)}</span>
+          // </span>
         )
-      })}
+      })
+      }
       leftHeader="459"
       leftFooter="feeds"
     >
     </CWidgetBrand >);
   }
+  const kanbanBoxWidgetStyle = { fontSize: '14px' };
+  const metricStyle = { fontWeight: 'bold' };
   return (
     <CFormGroup>
       <CRow>
@@ -170,14 +182,16 @@ const Users = () => {
       </CRow>
       <CRow>
         <CCol xs={{ offset: 9, size: 3 }} >
-          <CWidgetSimple header="Kanban en curs" text={<div>
-            <p>Ordre de fabricació </p>
-            <p>Referencia de producte </p>
-            <p>Descripció de producte </p>
-            <p>Quantitat a produir total </p>
-            <p>Quantitat que falten per produit </p>
-            <p>Quantitat per caixa </p>
-          </div>} />
+          <CWidgetSimple className='widgetBackground' header="Kanban en curs" text={
+            <div style={{ textAlign: 'left' }}>
+              <p style={kanbanBoxWidgetStyle}>Ordre de fabricació: <span style={metricStyle}>{lodash.get(dataGroupByOrder, '[0].orderNumber')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Referencia de producte: <span style={metricStyle}>{lodash.get(dataGroupByProduct, '[0].product')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Descripció de producte: <span style={metricStyle}>{lodash.get(dataGroupByProduct, '[0].data[0].description_VHTXT1_W')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(dataGroupByProduct, '[0].sum')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(dataGroupByProduct, '[0].sum') - 3}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat per caixa: <span style={metricStyle}>{lodash.get(dataGroupByProduct, '[0].productsPerBox')}</span> </p>
+            </div>
+          } />
         </CCol>
       </CRow>
     </CFormGroup>
