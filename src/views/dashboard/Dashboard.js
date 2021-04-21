@@ -21,6 +21,12 @@ import {
 } from '@coreui/react'
 import TimeRangePicker from '@wojtekmaj/react-timerange-picker';
 import CIcon from '@coreui/icons-react'
+import {
+  SortableContainer,
+  SortableElement,
+  sortableHandle,
+} from 'react-sortable-hoc';
+import Select, { components } from 'react-select';
 
 const Dashboard = () => {
 
@@ -78,7 +84,6 @@ const Dashboard = () => {
   const addShift = () => {
     count = count + 1;
     setCount(count)
-
     setInputList([...inputList, { ...shiftSet[0], shiftNumber: count }])
     addBreakTime();
     // setInputList([...inputList, count])
@@ -110,12 +115,43 @@ const Dashboard = () => {
       setBreakCount(breakCount);
     }
   }
+  const SortableSelect = SortableContainer(Select);
+  const ShiftDays = () => {
+    return (
+      <SortableSelect
+        // useDragHandle
+        // react-sortable-hoc props:
+        axis="xy"
+        distance={4}
+        // small fix for https://github.com/clauderic/react-sortable-hoc/pull/352:
+        // getHelperDimensions={({ node }) => node.getBoundingClientRect()}
+        // react-select props:
+        hideSelectedOptions={false}
+        isMulti
+        options={[{ value: 'Monday', label: 'Monday', color: '#00B8D9', isFixed: true },
+        { value: 'Tuesday', label: 'Tuesday', color: '#0052CC' },
+        { value: 'Wednesday', label: 'Wednesday', color: '#5243AA' },
+        { value: 'Thursday', label: 'Thursday', color: '#FF5630', isFixed: true },
+        { value: 'Friday', label: 'Friday', color: '#FF8B00' },
+        { value: 'Saturday', label: 'Saturday', color: '#FFC400' },
+        { value: 'Sunday', label: 'Sunday', color: '#36B37E' }]}
 
+        closeMenuOnSelect={false}
+      />
+    );
+  }
 
   const ShiftTime = ({ shiftNumber }) => {
     // const [value, onChange] = useState(['08:00', '14:00']);
     // console.log(inputList.filter(e => { return e.shiftNumber === shiftNumber }), 'rnage')
     return (<CFormGroup >
+      <CRow xs="2">
+        <CCol xs="2"></CCol>
+        <CCol xs="3">
+          <ShiftDays />
+        </CCol>
+      </CRow>
+      <br />
       <CRow xs="2">
         <CCol xs="2">
           <CLabel htmlFor="city">Shift : {shiftNumber}</CLabel>
@@ -210,7 +246,12 @@ const Dashboard = () => {
                 <CLabel htmlFor="city">Pitch :</CLabel>
               </CCol>
               <CCol xs="3">
-                <CInput type="time" id="appt" name="appt" min="09:00" max="18:00"></CInput>
+                <CInput type="number" id="appt" name="appt" max="999" min="0"
+                  onInput={(e) => {
+                    e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 3)
+                  }}
+                >
+                </CInput>
               </CCol>
             </CFormGroup>
             <CFormGroup row>
