@@ -27,6 +27,7 @@ import {
   sortableHandle,
 } from 'react-sortable-hoc';
 import Select, { components } from 'react-select';
+import { cibLgtm } from '@coreui/icons';
 
 const Dashboard = () => {
 
@@ -71,28 +72,33 @@ const Dashboard = () => {
     { shiftNumber: 1, time: ['08:00', '14:00'] },
   ]
   const breakSet = [
-    { breakNumber: 1, time: ['08:00', '14:00'] },
+    { breakNumber: 2, time: ['08:00', '14:00'] },
   ]
-  var [inputList, setInputList] = useState(shiftSet);
-  var [breakList, setBreakList] = useState(breakSet);
+  var [inputList, setInputList] = useState([
+    shiftSet[0],
+    breakSet[0]
+  ]);
+  // var [breakList, setBreakList] = useState(breakSet);
 
   // const [inputList, setInputList] = useState([1]);
-  var [count, setCount] = useState(1);
-  var [breakCount, setBreakCount] = useState(1);
+  var [count, setCount] = useState(2);
+  // var [breakCount, setBreakCount] = useState(1);
 
 
   const addShift = () => {
     count = count + 1;
     setCount(count)
-    setInputList([...inputList, { ...shiftSet[0], shiftNumber: count }])
-    addBreakTime();
+    setInputList([...inputList, { ...shiftSet[0], shiftNumber: count }, { ...breakSet[0], breakNumber: count + 1 }])
+    count = count + 1;
+    setCount(count)
+    // addBreakTime();
     // setInputList([...inputList, count])
   }
   const addBreakTime = () => {
-    breakCount = breakCount + 1;
-    setBreakCount(breakCount)
-
-    setBreakList([...breakList, { ...breakSet[0], breakNumber: breakCount }])
+    count = count + 1;
+    setCount(count)
+    // setBreakCount(breakCount)
+    setInputList([...inputList, { ...breakSet[0], breakNumber: count }])
     // console.log(breakList);
   }
   const deleteShift = () => {
@@ -106,13 +112,13 @@ const Dashboard = () => {
     }
   }
   const deleteBreakTime = () => {
-    if (breakCount !== 1) {
+    if (count !== 2) {
       // shiftSet.filter(k=>k.shiftNumber===count);
       // console.log(inputList.filter(function (e) { return e.shiftNumber !== count }), 'delete')
-      setBreakList(breakList.filter(function (e) { return e.breakNumber !== breakCount }))
+      setInputList(inputList.filter(function (e) { return e.breakNumber !== count }))
       // setInputList(inputList.filter(function (e) { return e !== count }))
-      breakCount = breakCount - 1;
-      setBreakCount(breakCount);
+      count = count - 1;
+      setCount(count);
     }
   }
   const SortableSelect = SortableContainer(Select);
@@ -154,7 +160,7 @@ const Dashboard = () => {
       <br />
       <CRow xs="2">
         <CCol xs="2">
-          <CLabel htmlFor="city">Shift : {shiftNumber}</CLabel>
+          <CLabel htmlFor="city">Shift </CLabel>
         </CCol>
         <CCol xs="3">
           <TimeRangePicker
@@ -187,7 +193,7 @@ const Dashboard = () => {
     return (<CFormGroup >
       <CRow>
         <CCol xs="2">
-          <CLabel htmlFor="city">BreakTime</CLabel>
+          <CLabel htmlFor="city">BreakTime </CLabel>
         </CCol>
         <CCol xs="3">
           <TimeRangePicker
@@ -195,13 +201,13 @@ const Dashboard = () => {
             onChange={(value) => {
               // console.log(value, 'timerange');
               // inputList
-              var breakRange = breakList.filter((e) => { return e.breakNumber === breakNumber });
+              var breakRange = inputList.filter((e) => { return e.breakNumber === breakNumber });
               breakRange[0].time = value;
               // console.log(shiftRange, 'shiftRange')
-              setBreakList([...breakList])
+              setInputList([...inputList])
 
             }}
-            value={breakList.filter(e => { return e.breakNumber === breakNumber })[0].time}
+            value={inputList.filter(e => { return e.breakNumber === breakNumber })[0].time}
           />
         </CCol>
         {/* <CCol xs="3">
@@ -276,8 +282,11 @@ const Dashboard = () => {
               return (
                 <CCol xs="12">
                   <CLabel style={{ marginLeft: '-15px', fontWeight: 'Bold' }} htmlFor="city">{i}</CLabel>
-                  {inputList.map(k => <ShiftTime shiftNumber={k.shiftNumber} />)}
-                  {breakList.map(k => <BreakTime breakNumber={k.breakNumber} />)}
+                  {/* {inputList.map(k =>  <ShiftTime shiftNumber={k.shiftNumber} />)}
+                  {inputList.map(k => <BreakTime breakNumber={k.breakNumber} />)} */}
+                  {inputList.map(k =>
+                    k.shiftNumber != undefined ? <ShiftTime shiftNumber={k.shiftNumber} /> : <BreakTime breakNumber={k.breakNumber} />
+                  )}
                 </CCol>
               )
             })}
