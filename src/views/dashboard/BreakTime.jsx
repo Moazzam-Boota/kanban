@@ -12,7 +12,7 @@ const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount }) => {
           <TimeRangePicker
             key={`breakTimePicker_${shiftKey}_${breakCount}`}
             onChange={(value) => {
-              // set in redux
+              // set time for a break in redux
             }}
             value={["08:00", "14:00"]}
           />
@@ -21,6 +21,8 @@ const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount }) => {
           <CButton
             key={`breakAddBtn_${shiftKey}_${breakCount}`}
             onClick={() => {
+              // add break-data to redux, for a shift in assemblyLine
+
               let counter = breakCount;
               counter++;
               let newShifts = [...totalBreaks, counter];
@@ -37,6 +39,8 @@ const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount }) => {
           <CButton
             key={`breakRemoveBtn_${shiftKey}_${breakCount}`}
             onClick={() => {
+              // remove break-data from redux, for a shift in assemblyLine
+
               let newShifts = totalBreaks.filter((k) => k !== breakCount);
               if (newShifts.length >= 1) setBreakCount(newShifts);
             }}

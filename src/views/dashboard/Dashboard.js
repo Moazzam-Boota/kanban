@@ -25,6 +25,41 @@ import CIcon from '@coreui/icons-react'
 import { cibLgtm } from '@coreui/icons';
 import ShiftTime from './Shift';
 
+const data = {
+  PERS044: {  // assembly Line
+    shift_1: {
+      week_days: ['Wed', 'Fri'],
+      time: {
+        start: '08:00',
+        end: '14:00',
+      },
+      break_1: {
+        start: '08:00',
+        end: '08:15',
+      },
+      break_2: {
+        start: '10:00',
+        end: '10:15',
+      },
+    },
+    shift_2: {
+      week_days: ['Mon', 'Thur'],
+      time: {
+        start: '14:00',
+        end: '22:00',
+      },
+      break_1: {
+        start: '14:00',
+        end: '14:15',
+      },
+      break_2: {
+        start: '16:00',
+        end: '16:15',
+      },
+    },
+  }
+};
+
 const Dashboard = () => {
   var [shiftCount, setShiftCount] = useState([1]);
   var [pitchTime, setPitchTime] = useState(15);
@@ -48,7 +83,7 @@ const Dashboard = () => {
   };
 
   const saveParametersData = () => {
-
+    // get data from redux
   }
 
   const fileFormSubmit = () => {
@@ -136,7 +171,7 @@ const Dashboard = () => {
             </CFormGroup>
             <CFormGroup row>
               <CCol xs="3">
-                <CLabel htmlFor="city">Color :</CLabel>
+                <CLabel htmlFor="city">Colors :</CLabel>
               </CCol>
               <CCol xs="7">
                 <MultiSelect></MultiSelect>
@@ -149,7 +184,13 @@ const Dashboard = () => {
                 <CCol xs="12">
                   <h3 style={{ textDecoration: 'underline' }}>{assemblyLine}</h3>
                   <br></br>
-                  {shiftCount.map(k => <ShiftTime totalShifts={shiftCount} shiftCount={k} setShiftCount={setShiftCount} />)}
+                  {shiftCount.map(k =>
+                    <ShiftTime
+                      assemblyLine={assemblyLine}
+                      totalShifts={shiftCount}
+                      shiftCount={k}
+                      setShiftCount={setShiftCount} />
+                  )}
                 </CCol>
               )
             })}

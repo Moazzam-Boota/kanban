@@ -6,7 +6,12 @@ import { SortableContainer } from "react-sortable-hoc";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 
 const SortableSelect = SortableContainer(Select);
-const ShiftTime = ({ shiftCount, totalShifts, setShiftCount }) => {
+const ShiftTime = ({
+  assemblyLine,
+  shiftCount,
+  totalShifts,
+  setShiftCount,
+}) => {
   // shift breaks, handle here
   var [breakCount, setBreakCount] = useState([1]);
 
@@ -44,13 +49,16 @@ const ShiftTime = ({ shiftCount, totalShifts, setShiftCount }) => {
               { value: "Sun", label: "Sun", color: "#36B37E" },
             ]}
             closeMenuOnSelect={false}
+            onChange={() => {
+              // set week_days in redux for a assemblyLine
+            }}
           />
         </CCol>
         <CCol xs="4">
           <TimeRangePicker
             key={`shiftTimePicker_${shiftCount}`}
             onChange={(value) => {
-              // set in redux
+              // set time for a shift in redux
             }}
             value={["08:00", "14:00"]}
           />
@@ -59,6 +67,8 @@ const ShiftTime = ({ shiftCount, totalShifts, setShiftCount }) => {
           <CButton
             key={`shiftAddBtn_${shiftCount}`}
             onClick={() => {
+              // add shift-data to redux, for a assemblyLine
+
               let counter = shiftCount;
               counter++;
               let newShifts = [...totalShifts, counter];
@@ -75,6 +85,8 @@ const ShiftTime = ({ shiftCount, totalShifts, setShiftCount }) => {
           <CButton
             key={`shiftRemoveBtn_${shiftCount}`}
             onClick={() => {
+              // remove shift-data from redux, for a assemblyLine
+
               let newShifts = totalShifts.filter((k) => k !== shiftCount);
               if (newShifts.length >= 1) setShiftCount(newShifts);
             }}
