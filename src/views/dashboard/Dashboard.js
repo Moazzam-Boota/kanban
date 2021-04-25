@@ -101,24 +101,43 @@ const Dashboard = () => {
     setInputList([...inputList, { ...breakSet[0], breakNumber: count }])
     // console.log(breakList);
   }
+  console.log(inputList);
   const deleteShift = () => {
     if (count !== 1) {
+      let checkCondition = false;
       // shiftSet.filter(k=>k.shiftNumber===count);
       // console.log(inputList.filter(function (e) { return e.shiftNumber !== count }), 'delete')
-      setInputList(inputList.filter(function (e) { return e.shiftNumber !== count }))
+      // setInputList(inputList.filter(function (e) { return e.shiftNumber !== count }))
+      inputList.filter(function (e) {
+        if (e.shiftNumber == count) {
+          checkCondition = true;
+          setInputList(inputList.filter(function (e) { return e.shiftNumber !== count }))
+        }
+      })
       // setInputList(inputList.filter(function (e) { return e !== count }))
-      count = count - 1;
-      setCount(count);
+      if (checkCondition === true) {
+        count = count - 1;
+        setCount(count);
+      }
     }
   }
   const deleteBreakTime = () => {
     if (count !== 2) {
+      let checkCondition = false;
       // shiftSet.filter(k=>k.shiftNumber===count);
       // console.log(inputList.filter(function (e) { return e.shiftNumber !== count }), 'delete')
-      setInputList(inputList.filter(function (e) { return e.breakNumber !== count }))
+      // setInputList(inputList.filter(function (e) { return e.breakNumber !== count }))
+      inputList.filter(function (e) {
+        if (e.breakNumber == count) {
+          checkCondition = true;
+          setInputList(inputList.filter(function (e) { return e.breakNumber !== count }))
+        }
+      })
       // setInputList(inputList.filter(function (e) { return e !== count }))
-      count = count - 1;
-      setCount(count);
+      if (checkCondition === true) {
+        count = count - 1;
+        setCount(count);
+      }
     }
   }
   const SortableSelect = SortableContainer(Select);
@@ -146,8 +165,11 @@ const Dashboard = () => {
       />
     );
   }
-
+  let countCheck = false;
+  let shiftCount = 0;
   const ShiftTime = ({ shiftNumber }) => {
+    shiftCount = shiftCount + 1;
+    countCheck = true;
     // const [value, onChange] = useState(['08:00', '14:00']);
     // console.log(inputList.filter(e => { return e.shiftNumber === shiftNumber }), 'rnage')
     return (<CFormGroup >
@@ -160,7 +182,7 @@ const Dashboard = () => {
       <br />
       <CRow xs="2">
         <CCol xs="2">
-          <CLabel htmlFor="city">Shift </CLabel>
+          <CLabel htmlFor="city">Shift : {shiftCount}</CLabel>
         </CCol>
         <CCol xs="3">
           <TimeRangePicker
@@ -187,13 +209,17 @@ const Dashboard = () => {
     </CFormGroup>
     )
   };
+  let breakCount = 0;
   const BreakTime = ({ breakNumber }) => {
+    countCheck == true ? breakCount = 0 : breakCount = breakCount;
+    breakCount = breakCount + 1;
+    countCheck = false;
     // const [value, onChange] = useState(['08:00', '14:00']);
     // console.log(inputList.filter(e => { return e.shiftNumber === shiftNumber }), 'rnage')
     return (<CFormGroup >
       <CRow>
         <CCol xs="2">
-          <CLabel htmlFor="city">BreakTime </CLabel>
+          <CLabel htmlFor="city">BreakTime : {breakCount}</CLabel>
         </CCol>
         <CCol xs="3">
           <TimeRangePicker
