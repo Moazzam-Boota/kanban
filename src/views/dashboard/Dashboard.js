@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { excel_sheet, intial_excel_sheet } from "../../redux/actions/actions";
+import { excel_sheet, intial_excel_sheet, Pitch_Time } from "../../redux/actions/actions";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MultiSelect from './MultiSelect';
@@ -82,7 +82,12 @@ const Dashboard = () => {
     // setIsSelected(true);
   };
 
+  console.log(pitchTime, " PitchTime");
+  console.log("File Download Type is ", fileDownloadType);
+  console.log("Total Shifts are ", shiftCount);
+
   const saveParametersData = () => {
+    dispatch(Pitch_Time(pitchTime));
     // get data from redux
   }
 

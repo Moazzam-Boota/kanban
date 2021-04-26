@@ -12,6 +12,7 @@ const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount }) => {
           <TimeRangePicker
             key={`breakTimePicker_${shiftKey}_${breakCount}`}
             onChange={(value) => {
+              { console.log("BreakTime is ", value) }
               // set time for a break in redux
             }}
             value={["08:00", "14:00"]}

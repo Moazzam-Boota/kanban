@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux'
-import { excelReducer } from "./redux/reducer/excelReducer";
+import { excelReducer, pitchTimeReducer } from "./redux/reducer/excelReducer";
 import thunk from "redux-thunk";
 const initialState = {
   sidebarShow: 'responsive'
@@ -17,6 +17,7 @@ const changeState = (state = initialState, { type, ...rest }) => {
 
 const store = createStore(combineReducers({
   changeState,
+  pitchTimeReducer,
   excelReducer,
 }), applyMiddleware(...middleWare))
 export default store

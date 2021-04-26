@@ -44,4 +44,13 @@ export function intial_excel_sheet() {
       });
   };
 }
+export function Pitch_Time(data) {
+  console.log(data, "Action")
+  return function (dispatch) {
 
+    dispatch({
+      type: types.Pitch_Time,
+      data: data,
+    });
+  }
+}

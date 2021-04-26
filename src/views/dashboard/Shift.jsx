@@ -12,6 +12,9 @@ const ShiftTime = ({
   totalShifts,
   setShiftCount,
 }) => {
+  const [selected, setSelected] = React.useState([]);
+  const onChange = selectedOptions => setSelected(selectedOptions);
+  console.log("Selected days are ", selected);
   // shift breaks, handle here
   var [breakCount, setBreakCount] = useState([1]);
 
@@ -49,9 +52,9 @@ const ShiftTime = ({
               { value: "Sun", label: "Sun", color: "#36B37E" },
             ]}
             closeMenuOnSelect={false}
-            onChange={() => {
+            onChange={onChange
               // set week_days in redux for a assemblyLine
-            }}
+            }
           />
         </CCol>
         <CCol xs="4">
@@ -59,6 +62,7 @@ const ShiftTime = ({
             key={`shiftTimePicker_${shiftCount}`}
             onChange={(value) => {
               // set time for a shift in redux
+              { console.log("Shift Time", value) }
             }}
             value={["08:00", "14:00"]}
           />
