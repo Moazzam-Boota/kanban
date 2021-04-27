@@ -95,11 +95,11 @@ const Dashboard = () => {
       console.log('data for frontend - red');
     });
 
-    socket.on("FromAPI", data => {
-      setSocketResponse(data);
-      socket.emit("lightred", Number(Math.random() < 0.5));
-      socket.emit("lightgreen", Number(Math.random() < 0.5));
-    });
+    // socket.on("FromAPI", data => {
+    //   setSocketResponse(data);
+    //   socket.emit("lightred", Number(Math.random() < 0.5));
+    //   socket.emit("lightgreen", Number(Math.random() < 0.5));
+    // });
   }, []);
   // handle shifts number here
   const dispatch = useDispatch()

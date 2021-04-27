@@ -154,10 +154,10 @@ var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and '
 
 io.on("connection", (socket) => {
     console.log("New client connected");
-    if (interval) {
-        clearInterval(interval);
-    }
-    interval = setInterval(() => getApiAndEmit(socket), 1000);
+    // if (interval) {
+    //     clearInterval(interval);
+    // }
+    // interval = setInterval(() => getApiAndEmit(socket), 1000);
 
 
     var lightvalue = 0; //static variable for current status
