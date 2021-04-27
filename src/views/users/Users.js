@@ -39,7 +39,7 @@ const Users = () => {
       socket.emit("lightgreen", data); //send push button status to back to server
       console.log('data for frontend - green');
       // setSocketResponse(true);
-      var peices = donePieces + 1;
+      var peices = 1 + donePieces;
       console.log(peices)
       setDonePieces(peices);
 
