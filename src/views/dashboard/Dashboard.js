@@ -25,10 +25,6 @@ import CIcon from '@coreui/icons-react'
 import { cibLgtm } from '@coreui/icons';
 import ShiftTime from './Shift';
 
-import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://127.0.0.1:4001";
-
-
 const data = {
   PERS044: {  // assembly Line
     shift_1: {
@@ -69,38 +65,7 @@ const Dashboard = () => {
   var [pitchTime, setPitchTime] = useState(15);
   var [fileDownloadType, setFileDownloadType] = useState('');
   var [downloadTime, setDownloadTime] = useState([]);
-  const [socketResponse, setSocketResponse] = useState("");
-
-  useEffect(() => {
-    const socket = socketIOClient(ENDPOINT);
-    // var socket = io(); //load socket.io-client and connect to the host that serves the page
-    // window.addEventListener("load", function () { //when page loads
-    // var lightboxgreen = document.getElementById("lightgreen");
-    // lightboxgreen.addEventListener("change", function () { //add event listener for when checkbox changes
-    //   socket.emit("lightgreen", Number(this.checked)); //send button status to server (as 1 or 0)
-    // });
-    // var lightboxred = document.getElementById("lightred");
-    // lightboxred.addEventListener("change", function () { //add event listener for when checkbox changes
-    //   socket.emit("lightred", Number(this.checked)); //send button status to server (as 1 or 0)
-    // });
-    // });
-    socket.on('lightgreen', function (data) { //get button status from client
-      // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
-      socket.emit("lightgreen", data); //send push button status to back to server
-      console.log('data for frontend - green');
-    });
-    socket.on('lightred', function (data) { //get button status from client
-      // document.getElementById("lightred").checked = data; //change checkbox according to push button on Raspberry Pi
-      // socket.emit("lightred", data); //send push button status to back to server
-      console.log('data for frontend - red');
-    });
-
-    // socket.on("FromAPI", data => {
-    //   setSocketResponse(data);
-    //   socket.emit("lightred", Number(Math.random() < 0.5));
-    //   socket.emit("lightgreen", Number(Math.random() < 0.5));
-    // });
-  }, []);
+  
   // handle shifts number here
   const dispatch = useDispatch()
   const response = useSelector((state) => state.excelReducer.apiCalled);
