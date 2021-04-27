@@ -79,9 +79,11 @@ const Dashboard = () => {
   const parentsData = [];
   const success = useSelector((state) => state.excelReducer.response);
   console.log(shiftCount);
+  const allState = useSelector((state) => state.excelReducer);
+  console.log(allState, 'allState')
   // console.log(response)
   // console.log(shiftCount);
-  const fileType = useSelector((state) => state.fileDownloadTypeReducer);
+  // const fileType = useSelector((state) => state.fileDownloadTypeReducer);
 
   if (success) {
     toast.success("File Uploaded Successfully");
@@ -95,7 +97,7 @@ const Dashboard = () => {
   };
 
   console.log(pitchTime, " PitchTime");
-  console.log("File Download Type is ", fileDownloadType);
+  // console.log("File Download Type is ", fileDownloadType);
   console.log("Total Shifts are ", shiftCount);
 
   const saveParametersData = () => {

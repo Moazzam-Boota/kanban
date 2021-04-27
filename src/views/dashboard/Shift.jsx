@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from "react-redux";
 import { CFormGroup, CButton, CCol, CRow } from "@coreui/react";
 import BreakTime from "./BreakTime";
 import Select from "react-select";
@@ -14,22 +14,27 @@ const ShiftTime = ({
   totalShifts,
   setShiftCount,
 }) => {
-  const [selected, setSelected] = React.useState([]);
-  const [shiftTime, setShifttime] = React.useState([]);
-  const onChange = selectedOptions => {
-    setSelected(selectedOptions);
-  }
-  const dispatch = useDispatch()
-  dispatch(shift_Days(selected));
-  console.log("Selected days are ", selected);
+  // const [selected, setSelected] = React.useState([]);
+  // const [shiftTime, setShifttime] = React.useState([]);
+  const onChange = (selectedOptions) => {
+    // setSelected(selectedOptions);
+    dispatch(
+      shift_Days({ shiftDays: selectedOptions, shiftCount: shiftCount })
+    );
+  };
+  const dispatch = useDispatch();
+
+  console.log("Selected days are ");
   // shift breaks, handle here
   var [breakCount, setBreakCount] = useState([1]);
 
-  const timeChange = value => {
-    { console.log("Shift Time", value) }
-    setShifttime(value);
-  }
-  dispatch(shift_Time(shiftTime));
+  const timeChange = (value) => {
+    {
+      console.log("Shift Time", value);
+    }
+    // setShifttime(value);
+    dispatch(shift_Time({ shiftTime: value, shiftCount: shiftCount }));
+  };
 
   return (
     <CFormGroup>
@@ -65,7 +70,8 @@ const ShiftTime = ({
               { value: "Sun", label: "Sun", color: "#36B37E" },
             ]}
             closeMenuOnSelect={false}
-            onChange={onChange
+            onChange={
+              onChange
               // set week_days in redux for a assemblyLine
             }
           />

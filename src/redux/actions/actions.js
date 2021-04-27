@@ -34,10 +34,7 @@ export function intial_excel_sheet() {
         dispatch({
           type: types.Excel,
           data: data,
-
         });
-
-
       })
       .catch((error) => {
         // toast.error(error.response.data.errors);
