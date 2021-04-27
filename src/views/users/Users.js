@@ -17,6 +17,7 @@ const lodash = require('lodash');
 const Users = () => {
   const dispatch = useDispatch()
   const [socketResponse, setSocketResponse] = useState("");
+  const [donePieces, setDonePieces] = useState(100);
 
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
@@ -33,9 +34,12 @@ const Users = () => {
     // });
     console.log('use effect - green');
     socket.on('lightgreen', function (data) { //get button status from client
+      // var count = 0;
       // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
       socket.emit("lightgreen", data); //send push button status to back to server
       console.log('data for frontend - green');
+      // setSocketResponse(true);
+      setDonePieces(donePieces - 1);
     });
     socket.on('lightred', function (data) { //get button status from client
       // document.getElementById("lightred").checked = data; //change checkbox according to push button on Raspberry Pi
@@ -132,7 +136,7 @@ const Users = () => {
   // TODO:: sum of all orders, quantity
   // TODO:: sum of all orders, quantity
   // 
-  const donePieces = 100; //receive from clicking the button double click
+  // const donePieces = 100; //receive from clicking the button double click
   const skipBoxes = 3;
   const kanbanBoxes = (dailyHours * 60) / pitchPeriod;
   console.log(kanbanBoxes, 'kanbanBoxes');
