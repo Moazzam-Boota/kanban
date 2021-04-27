@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { excel_sheet, intial_excel_sheet, pitch_Time, file_Download_Type, downlaod_Time } from "../../redux/actions/actions";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Sliders from './Sliders';
 import {
   CInput,
   CLabel,
@@ -298,7 +297,6 @@ const Dashboard = () => {
                     </CForm>
                   </CCol>
                 </CRow>
-                {/* <Sliders /> */}
               </CCol>
             </CFormGroup>
           </CCol>
