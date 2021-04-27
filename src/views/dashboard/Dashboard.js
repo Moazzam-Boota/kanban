@@ -86,12 +86,12 @@ const Dashboard = () => {
     // });
     socket.on('lightgreen', function (data) { //get button status from client
       // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
-      socket.emit("lightgreen", data); //send push button status to back to server
+      // socket.emit("lightgreen", data); //send push button status to back to server
       console.log('data for frontend - green');
     });
     socket.on('lightred', function (data) { //get button status from client
       // document.getElementById("lightred").checked = data; //change checkbox according to push button on Raspberry Pi
-      socket.emit("lightred", data); //send push button status to back to server
+      // socket.emit("lightred", data); //send push button status to back to server
       console.log('data for frontend - red');
     });
 

@@ -168,7 +168,7 @@ io.on("connection", (socket) => {
         }
         lightvalue = value;
         socket.emit('lightgreen', lightvalue); //send button status to client
-        socket.emit('lightred', lightvalue); //send button status to client
+        // socket.emit('lightred', lightvalue); //send button status to client
     });
     socket.on('lightgreen', function (data) { //get light switch status from client
         lightvalue = data;
