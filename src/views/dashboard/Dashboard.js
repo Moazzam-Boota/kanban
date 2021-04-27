@@ -134,9 +134,6 @@ const Dashboard = () => {
           </CCardHeader>
       <CCardBody>
         <CRow>
-          <p>
-            It's {socketResponse}
-          </p>
           <CCol xs="4" sm="4" md="4" lg="4">
             <CFormGroup row>
               <CCol xs="3">
