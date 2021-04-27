@@ -37,11 +37,11 @@ const Users = () => {
       // var count = 0;
       // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
       socket.emit("lightgreen", data); //send push button status to back to server
-      console.log('data for frontend - green');
+      console.log('data for frontend - green', data);
       // setSocketResponse(true);
       var peices = 1 + donePieces;
-      console.log(peices)
-      setDonePieces(peices);
+      console.log(peices, data)
+      setDonePieces(data);
 
     });
     socket.on('lightred', function (data) { //get button status from client

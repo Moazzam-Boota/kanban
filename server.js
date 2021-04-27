@@ -166,7 +166,8 @@ io.on("connection", (socket) => {
             console.error('There was an error', err); //output error message to console
             return;
         }
-        lightvalue = value;
+        // lightvalue = value;
+        lightvalue = lightvalue + 1;
         socket.emit('lightgreen', lightvalue); //send button status to client
         // socket.emit('lightred', lightvalue); //send button status to client
     });
