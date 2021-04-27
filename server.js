@@ -115,21 +115,19 @@ app.listen(port, () => console.log(`Listening on port ${port}`));
 
 
 
-// const express = require("express");
+// *****************************************************************************
+// ************************ SOCKET Button Implmentation ************************ 
+// *****************************************************************************
+
 const http = require("http");
 const socketIo = require("socket.io");
-
 const socketPort = process.env.PORT || 4001;
-// const index = require("./routes/index");
-// const express = require("express");
 const router = express.Router();
 
 router.get("/", (req, res) => {
     res.send({ response: "I am alive" }).status(200);
 });
 
-
-// const app = express();
 app.use(router);
 
 const server = http.createServer(app);
@@ -145,84 +143,56 @@ const io = socketIo(server, {
     allowEIO3: true
 });
 
-let interval;
-var Gpio = require('onoff').Gpio; //include onoff to interact with the Gpio
-var LED_RED = new Gpio('21', 'out'); //use Gpio pin 21 as output for LED RED
-var LED_GREEN = new Gpio('20', 'out'); //use Gpio pin 20 as output for LED GREEN
-var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and 'both' button presses, and releases should be handled
+// let interval;
+// var Gpio = require('onoff').Gpio; //include onoff to interact with the Gpio
+// var LED_RED = new Gpio('21', 'out'); //use Gpio pin 21 as output for LED RED
+// var LED_GREEN = new Gpio('20', 'out'); //use Gpio pin 20 as output for LED GREEN
+// var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and 'both' button presses, and releases should be handled
 
 
-io.on("connection", (socket) => {
-    console.log("New client connected");
-    // if (interval) {
-    //     clearInterval(interval);
-    // }
-    // interval = setInterval(() => getApiAndEmit(socket), 1000);
+// io.on("connection", (socket) => {
+//     console.log("New client connected");
 
+//     var lightvalue = 0; //static variable for current status
 
-    var lightvalue = 0; //static variable for current status
-    pushButton.watch(function (err, value) { //Watch for hardware interrupts on pushButton
-        if (err) { //if an error
-            console.error('There was an error', err); //output error message to console
-            return;
-        }
-        // lightvalue = value;
-        lightvalue = lightvalue + 1;
-        socket.emit('lightgreen', lightvalue); //send button status to client
-        // socket.emit('lightred', lightvalue); //send button status to client
-    });
-    socket.on('lightgreen', function (data) { //get light switch status from client
-        lightvalue = data;
-        if (lightvalue != LED_GREEN.readSync()) { //only change LED_GREEN if status has changed
-            LED_GREEN.writeSync(lightvalue); //turn LED_GREEN on or off
-        }
-    });
-    socket.on('lightred', function (data) { //get light switch status from client
-        lightvalue = data;
-        if (lightvalue != LED_RED.readSync()) { //only change LED_RED if status has changed
-            LED_RED.writeSync(lightvalue); //turn LED_RED on or off
-        }
-    });
+//     pushButton.watch(function (err, value) { //Watch for hardware interrupts on pushButton
+//         if (err) { //if an error
+//             console.error('There was an error', err); //output error message to console
+//             return;
+//         }
+//         // lightvalue = value;
+//         lightvalue = lightvalue + 1;
+//         socket.emit('lightgreen', lightvalue); //send button status to client
+//         // socket.emit('lightred', lightvalue); //send button status to client
+//     });
 
+//     socket.on('lightgreen', function (data) { //get light switch status from client
+//         lightvalue = data;
+//         if (lightvalue != LED_GREEN.readSync()) { //only change LED_GREEN if status has changed
+//             LED_GREEN.writeSync(lightvalue); //turn LED_GREEN on or off
+//         }
+//     });
 
-    socket.on("disconnect", () => {
-        console.log("Client disconnected");
-        clearInterval(interval);
-    });
-});
+//     socket.on('lightred', function (data) { //get light switch status from client
+//         lightvalue = data;
+//         if (lightvalue != LED_RED.readSync()) { //only change LED_RED if status has changed
+//             LED_RED.writeSync(lightvalue); //turn LED_RED on or off
+//         }
+//     });
 
+//     socket.on("disconnect", () => {
+//         console.log("Client disconnected");
+//         clearInterval(interval);
+//     });
+// });
 
+// process.on('SIGINT', function () { //on ctrl+c
+//     LED_RED.writeSync(0); // Turn LED_RED off
+//     LED_RED.unexport(); // Unexport LED_RED Gpio to free resources
+//     LED_GREEN.writeSync(0); // Turn LED_GREEN off
+//     LED_GREEN.unexport(); // Unexport LED_GREEN Gpio to free resources
+//     pushButton.unexport(); // Unexport Button Gpio to free resources
+//     process.exit(); //exit completely
+// });
 
-// http.listen(8080); //listen to port 8080
-
-// function handler (req, res) { //create server
-//   fs.readFile(__dirname + '/public/index.html', function(err, data) { //read file index.html in public folder
-//     if (err) {
-//       res.writeHead(404, {'Content-Type': 'text/html'}); //display 404 on error
-//       return res.end("404 Not Found");
-//     }
-//     res.writeHead(200, {'Content-Type': 'text/html'}); //write HTML
-//     res.write(data); //write data from index.html
-//     return res.end();
-//   });
-// }
-
-process.on('SIGINT', function () { //on ctrl+c
-    LED_RED.writeSync(0); // Turn LED_RED off
-    LED_RED.unexport(); // Unexport LED_RED Gpio to free resources
-    LED_GREEN.writeSync(0); // Turn LED_GREEN off
-    LED_GREEN.unexport(); // Unexport LED_GREEN Gpio to free resources
-    pushButton.unexport(); // Unexport Button Gpio to free resources
-    process.exit(); //exit completely
-});
-
-
-
-const getApiAndEmit = socket => {
-    const response = new Date();
-    console.log(response, 'response')
-    // Emitting a new message. Will be consumed by the client
-    socket.emit("FromAPI", response);
-};
-
-server.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
+// server.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));

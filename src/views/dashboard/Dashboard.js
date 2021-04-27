@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { excel_sheet, intial_excel_sheet, pitch_Time, file_Download_Type, downlaod_Time } from "../../redux/actions/actions";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import MultiSelect from './MultiSelect';
+import Sliders from './Sliders';
 import {
   CInput,
   CLabel,
@@ -63,9 +63,17 @@ const data = {
 const Dashboard = () => {
   var [shiftCount, setShiftCount] = useState([1]);
   var [pitchTime, setPitchTime] = useState(15);
+  var [blueColor, setBlueColor] = useState(2);
+  var [greenMinColor, setGreenMinColor] = useState(3);
+  var [greenMaxColor, setGreenMaxColor] = useState(5);
+  var [orangeMinColor, setOrangeMinColor] = useState(6);
+  var [orangeMaxColor, setOrangeMaxColor] = useState(8);
+  var [redMinColor, setRedMinColor] = useState(9);
+  var [redMaxColor, setRedMaxColor] = useState(11);
+  var [blackColor, setBlackColor] = useState(12);
   var [fileDownloadType, setFileDownloadType] = useState('');
   var [downloadTime, setDownloadTime] = useState([]);
-  
+
   // handle shifts number here
   const dispatch = useDispatch()
   const response = useSelector((state) => state.excelReducer.apiCalled);
@@ -190,7 +198,107 @@ const Dashboard = () => {
                 <CLabel htmlFor="city">Colors :</CLabel>
               </CCol>
               <CCol xs="7">
-                <MultiSelect></MultiSelect>
+                <CRow>
+                  <CCol lg="12">
+                    <CForm action="" method="post" inline>
+                      <CFormGroup className="pr-1">
+                        <CLabel htmlFor="exampleInputName2" className="pr-1"><span><b>blau</b> </span> <span style={{ marginLeft: '33px' }}>{'<'}</span></CLabel>
+                        <CInput type="number" id="blueColor" name="blueColor" min={0} max={12} step={1} value={blueColor}
+                          onChange={(e) => {
+                            setBlueColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                          }}
+                        />
+                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '5px' }}>{`   pitchs`}</CLabel>
+                      </CFormGroup>
+                    </CForm>
+                  </CCol>
+                </CRow>
+                <br></br>
+                <CRow>
+                  <CCol lg="12">
+                    <CForm action="" method="post" inline>
+                      <CFormGroup className="pr-1">
+                        <CLabel htmlFor="exampleInputName2" className="pr-1"><b>verd</b></CLabel>
+                        <CInput type="number" id="blueColor" name="blueColor" min={0} max={12} step={1} value={greenMinColor} style={{ marginLeft: '42px' }}
+                          onChange={(e) => {
+                            setGreenMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                          }}
+                        />
+                        {'   '}
+                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel>
+                        <CInput type="number" id="blueColor" name="blueColor" min={0} max={12} step={1} value={greenMaxColor}
+                          onChange={(e) => {
+                            setGreenMaxColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                          }}
+                        />
+                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '5px' }}>{`   pitch`}</CLabel>
+                      </CFormGroup>
+                    </CForm>
+                  </CCol>
+                </CRow>
+                <br></br>
+                <CRow>
+                  <CCol lg="12">
+                    <CForm action="" method="post" inline>
+                      <CFormGroup className="pr-1">
+                        <CLabel htmlFor="exampleInputName2" className="pr-1"><b>taronja</b></CLabel>
+                        <CInput type="number" id="blueColor" name="blueColor" min={0} max={12} step={1} value={orangeMinColor} style={{ marginLeft: '25px' }}
+                          onChange={(e) => {
+                            setOrangeMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                          }}
+                        />
+                        {'   '}
+                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel>
+                        <CInput type="number" id="blueColor" name="blueColor" min={0} max={12} step={1} value={orangeMaxColor}
+                          onChange={(e) => {
+                            setOrangeMaxColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                          }}
+                        />
+                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '5px' }}>{`   pitch`}</CLabel>
+                      </CFormGroup>
+                    </CForm>
+                  </CCol>
+                </CRow>
+                <br></br>
+                <CRow>
+                  <CCol lg="12">
+                    <CForm action="" method="post" inline>
+                      <CFormGroup className="pr-1">
+                        <CLabel htmlFor="exampleInputName2" className="pr-1"><b>vermell</b></CLabel>
+                        <CInput type="number" id="blueColor" name="blueColor" min={0} max={12} step={1} value={redMinColor} style={{ marginLeft: '25px' }}
+                          onChange={(e) => {
+                            setRedMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                          }}
+                        />
+                        {'   '}
+                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel>
+                        <CInput type="number" id="blueColor" name="blueColor" min={0} max={12} step={1} value={redMaxColor}
+                          onChange={(e) => {
+                            setRedMaxColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                          }}
+                        />
+                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '5px' }}>{`   pitch`}</CLabel>
+                      </CFormGroup>
+                    </CForm>
+                  </CCol>
+                </CRow>
+                <br></br>
+                <CRow>
+                  <CCol lg="12">
+                    <CForm action="" method="post" inline>
+                      <CFormGroup className="pr-1">
+                        <CLabel htmlFor="exampleInputName2" className="pr-1"><span><b>negre</b> </span> <span style={{ marginLeft: '28px' }}>{'>'}</span></CLabel>
+                        <CInput type="number" id="blueColor" name="blueColor" min={0} max={12} step={1} value={blackColor}
+                          onChange={(e) => {
+                            setBlackColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                          }}
+                        />
+                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ paddingLeft: '5px' }}>{`   pitchs`}</CLabel>
+                      </CFormGroup>
+                    </CForm>
+                  </CCol>
+                </CRow>
+                {/* <Sliders /> */}
               </CCol>
             </CFormGroup>
           </CCol>

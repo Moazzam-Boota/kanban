@@ -3,7 +3,7 @@ import InputRange from 'react-input-range';
 import "react-input-range/lib/css/index.css"
 import { range_Select } from "../../redux/actions/actions";
 import { useDispatch, useSelector } from 'react-redux'
-export default function MultiSelectSort() {
+export default function Sliders() {
     const [range, setRange] = React.useState({
         value: {
             min: 0,
@@ -22,8 +22,8 @@ export default function MultiSelectSort() {
             max: 11,
         },
         value5: {
-            min: 12,
-            max: 20,
+            min: 11,
+            max: 12,
         },
     });
     const dispatch = useDispatch();
@@ -35,7 +35,7 @@ export default function MultiSelectSort() {
             <br />
             <br />
             <InputRange
-                maxValue={20}
+                maxValue={12}
                 minValue={0}
                 value={range.value}
                 onChange={value => setRange({ ...range, value: value })} />
@@ -45,7 +45,7 @@ export default function MultiSelectSort() {
             <br />
             <br />
             <InputRange
-                maxValue={20}
+                maxValue={12}
                 minValue={0}
                 value={range.value2}
                 onChange={value => setRange({ ...range, value2: value })} />
@@ -55,7 +55,7 @@ export default function MultiSelectSort() {
             <br />
             <br />
             <InputRange
-                maxValue={20}
+                maxValue={12}
                 minValue={0}
                 // formatLabel={value => value.toFixed(2)}
                 value={range.value3}
@@ -66,7 +66,7 @@ export default function MultiSelectSort() {
             <br />
             <br />
             <InputRange
-                maxValue={20}
+                maxValue={12}
                 minValue={0}
                 // formatLabel={value => `${value} kg`}
                 value={range.value4}
@@ -79,7 +79,7 @@ export default function MultiSelectSort() {
             <br />
             <InputRange
                 draggableTrack
-                maxValue={20}
+                maxValue={12}
                 minValue={0}
                 value={range.value5}
                 onChange={value => setRange({ ...range, value5: value })} />
