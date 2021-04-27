@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { excel_sheet, intial_excel_sheet, Pitch_Time } from "../../redux/actions/actions";
+import { excel_sheet, intial_excel_sheet, pitch_Time, file_Download_Type, downlaod_Time } from "../../redux/actions/actions";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import MultiSelect from './MultiSelect';
@@ -64,12 +64,16 @@ const Dashboard = () => {
   var [shiftCount, setShiftCount] = useState([1]);
   var [pitchTime, setPitchTime] = useState(15);
   var [fileDownloadType, setFileDownloadType] = useState('');
+  var [downloadTime, setDownloadTime] = useState([]);
   // handle shifts number here
   const dispatch = useDispatch()
   const response = useSelector((state) => state.excelReducer.apiCalled);
   const parentsData = [];
   const success = useSelector((state) => state.excelReducer.response);
   console.log(shiftCount);
+  // console.log(response)
+  // console.log(shiftCount);
+  const fileType = useSelector((state) => state.fileDownloadTypeReducer);
 
   if (success) {
     toast.success("File Uploaded Successfully");
@@ -87,9 +91,16 @@ const Dashboard = () => {
   console.log("Total Shifts are ", shiftCount);
 
   const saveParametersData = () => {
-    dispatch(Pitch_Time(pitchTime));
+    dispatch(pitch_Time(pitchTime));
+    dispatch(file_Download_Type(fileDownloadType));
     // get data from redux
   }
+  const getTime = (value) => {
+    // console.log(value);
+    setDownloadTime(value);
+  }
+  console.log("Autmatic downlaod time", downloadTime);
+  dispatch(downlaod_Time(downloadTime));
 
   const fileFormSubmit = () => {
     const formData = new FormData();
@@ -157,7 +168,7 @@ const Dashboard = () => {
                 <CLabel htmlFor="autoFile"></CLabel>
               </CCol>
 
-              {fileDownloadType === 'automatic' ? <CCol md="3"><CInput type="time" id="autoDownloadTime" name="autoDownloadTime" min="09:00" max="18:00"></CInput></CCol>
+              {fileDownloadType === 'automatic' ? <CCol md="3"><CInput onChange={(e) => { getTime(e.target.value) }} type="time" id="autoDownloadTime" name="autoDownloadTime" min="09:00" max="18:00"></CInput></CCol>
                 : fileDownloadType === 'manual' ? <CCol md="9">
                   <CForm name="fileSubmitForm" id="fileSubmitForm" action="" method="post" className="form-horizontal">
                     <CFormGroup row>

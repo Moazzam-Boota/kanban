@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux'
 import { CFormGroup, CButton, CCol, CRow } from "@coreui/react";
 import BreakTime from "./BreakTime";
 import Select from "react-select";
 import { SortableContainer } from "react-sortable-hoc";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
+import { shift_Days, shift_Time } from "../../redux/actions/actions";
 
 const SortableSelect = SortableContainer(Select);
 const ShiftTime = ({
@@ -13,10 +15,21 @@ const ShiftTime = ({
   setShiftCount,
 }) => {
   const [selected, setSelected] = React.useState([]);
-  const onChange = selectedOptions => setSelected(selectedOptions);
+  const [shiftTime, setShifttime] = React.useState([]);
+  const onChange = selectedOptions => {
+    setSelected(selectedOptions);
+  }
+  const dispatch = useDispatch()
+  dispatch(shift_Days(selected));
   console.log("Selected days are ", selected);
   // shift breaks, handle here
   var [breakCount, setBreakCount] = useState([1]);
+
+  const timeChange = value => {
+    { console.log("Shift Time", value) }
+    setShifttime(value);
+  }
+  dispatch(shift_Time(shiftTime));
 
   return (
     <CFormGroup>
@@ -60,9 +73,9 @@ const ShiftTime = ({
         <CCol xs="4">
           <TimeRangePicker
             key={`shiftTimePicker_${shiftCount}`}
-            onChange={(value) => {
+            onChange={(val) => {
+              timeChange(val);
               // set time for a shift in redux
-              { console.log("Shift Time", value) }
             }}
             value={["08:00", "14:00"]}
           />

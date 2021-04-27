@@ -1,8 +1,10 @@
 import React from 'react';
 import InputRange from 'react-input-range';
 import "react-input-range/lib/css/index.css"
+import { range_Select } from "../../redux/actions/actions";
+import { useDispatch, useSelector } from 'react-redux'
 export default function MultiSelectSort() {
-    const [state, setState] = React.useState({
+    const [range, setRange] = React.useState({
         value: {
             min: 0,
             max: 2,
@@ -24,6 +26,8 @@ export default function MultiSelectSort() {
             max: 20,
         },
     });
+    const dispatch = useDispatch();
+    dispatch(range_Select(range));
 
     return (
         <form className="form">
@@ -33,9 +37,8 @@ export default function MultiSelectSort() {
             <InputRange
                 maxValue={20}
                 minValue={0}
-                value={state.value}
-                onChange={value => setState({ ...state, value: value })}
-                onChangeComplete={value => console.log(value)} />
+                value={range.value}
+                onChange={value => setRange({ ...range, value: value })} />
             <br />
 
             <label>Verd :</label>
@@ -44,9 +47,8 @@ export default function MultiSelectSort() {
             <InputRange
                 maxValue={20}
                 minValue={0}
-                value={state.value2}
-                onChange={value => setState({ ...state, value2: value })}
-                onChangeComplete={value => console.log(value)} />
+                value={range.value2}
+                onChange={value => setRange({ ...range, value2: value })} />
             <br />
 
             <label>Taronja :</label>
@@ -56,9 +58,8 @@ export default function MultiSelectSort() {
                 maxValue={20}
                 minValue={0}
                 // formatLabel={value => value.toFixed(2)}
-                value={state.value3}
-                onChange={value => setState({ ...state, value3: value })}
-                onChangeComplete={value => console.log(value)} />
+                value={range.value3}
+                onChange={value => setRange({ ...range, value3: value })} />
             <br />
 
             <label>Vermell :</label>
@@ -68,9 +69,8 @@ export default function MultiSelectSort() {
                 maxValue={20}
                 minValue={0}
                 // formatLabel={value => `${value} kg`}
-                value={state.value4}
-                onChange={value => setState({ ...state, value4: value })}
-                onChangeComplete={value => console.log(value)} />
+                value={range.value4}
+                onChange={value => setRange({ ...range, value4: value })} />
             <br />
 
 
@@ -81,9 +81,8 @@ export default function MultiSelectSort() {
                 draggableTrack
                 maxValue={20}
                 minValue={0}
-                onChange={value => setState({ ...state, value5: value })}
-                onChangeComplete={value => console.log(value)}
-                value={state.value5} />
+                value={range.value5}
+                onChange={value => setRange({ ...range, value5: value })} />
         </form>
     );
 }
