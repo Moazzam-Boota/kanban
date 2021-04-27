@@ -13,8 +13,8 @@ app.use(express.json({ limit: '200mb' }));
 app.use(fileUpload());
 
 const dbDetails = {
-    // url: '192.168.1.53:5984',
-    url: 'localhost:5984',
+    url: '192.168.1.15:5984',
+    // url: 'localhost:5984',
     user: 'admin',
     pass: 'admin',
     db: 'excel8',
