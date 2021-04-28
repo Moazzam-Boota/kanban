@@ -155,11 +155,15 @@ const Users = () => {
     else if (i > 8 && i <= 11) color = 'red';
     else if (i > 11) color = 'black';
 
+    const dataGroupRandom = dataGroupByProduct.slice(0, Math.floor(Math.random() * dataGroupByProduct.length) + 1);
+    
+    // dataGroupByProduct
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={Math.round(boxesPerPitch)}
-      cardName={dataGroupByProduct.map(product => {
+      cardName={dataGroupRandom.map((product, index) => {
+        console.log(product, i, dataGroupByProduct.length - 1, index, 'product')
         return (
           <span className="content-center" style={{
             backgroundColor: product.color,
@@ -176,12 +180,13 @@ const Users = () => {
             width: '40px',
             // fontSize: '30px',
             textAlign: 'center',
-            margin: '5px'
+            margin: '5px',
+            border: (i === 1 && dataGroupByProduct.length - 1 === index) ? '5px solid black' : 'inherit'
           }}>
             {/* <span style={{
               padding: '5px'
             }}> */}
-            {Math.round(product.productsPerBox / boxesPerPitch)}</span>
+            {Math.floor(product.productsPerBox / boxesPerPitch)}</span>
           // </span>
         )
       })
