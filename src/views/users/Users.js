@@ -16,7 +16,7 @@ const lodash = require('lodash');
 
 const Users = () => {
   const dispatch = useDispatch()
-  const [socketResponse, setSocketResponse] = useState("");
+  // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(100);
 
   useEffect(() => {

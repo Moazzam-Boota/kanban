@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { CFormGroup, CButton, CCol, CRow } from "@coreui/react";
 import BreakTime from "./BreakTime";
 import Select from "react-select";
 import { SortableContainer } from "react-sortable-hoc";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
-import { shift_Days, shift_Time } from "../../redux/actions/actions";
+import { shift_days, shift_time } from "../../redux/actions/actions";
 
 const SortableSelect = SortableContainer(Select);
 const ShiftTime = ({
@@ -19,7 +19,7 @@ const ShiftTime = ({
   const onChange = (selectedOptions) => {
     // setSelected(selectedOptions);
     dispatch(
-      shift_Days({ shiftDays: selectedOptions, shiftCount: shiftCount })
+      shift_days({ shiftDays: selectedOptions, shiftCount: shiftCount })
     );
   };
   const dispatch = useDispatch();
@@ -29,11 +29,10 @@ const ShiftTime = ({
   var [breakCount, setBreakCount] = useState([1]);
 
   const timeChange = (value) => {
-    {
+    
       console.log("Shift Time", value);
-    }
     // setShifttime(value);
-    dispatch(shift_Time({ shiftTime: value, shiftCount: shiftCount }));
+    dispatch(shift_time({ shiftTime: value, shiftCount: shiftCount }));
   };
 
   return (

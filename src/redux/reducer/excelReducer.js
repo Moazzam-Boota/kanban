@@ -21,7 +21,7 @@ export default function excelReducer(state = init, action) {
     case types.Pitch_Time: {
 
       //types.Pitch_Time
-      console.log(action.data, "pitchtime Reducer");
+      // console.log(action.data, "pitchtime Reducer");
       return {
         ...state,
         pitchTime: action.data
@@ -30,7 +30,7 @@ export default function excelReducer(state = init, action) {
 
     case "File_Download_Type": {
 
-      console.log(action.data, " file download type Reducer");
+      // console.log(action.data, " file download type Reducer");
       return {
         ...state,
         fileDownloadType: action.data
@@ -39,7 +39,7 @@ export default function excelReducer(state = init, action) {
 
     case "Shift_Time": {
 
-      console.log(action.data, " Shift time Reducer");
+      // console.log(action.data, " Shift time Reducer");
       return {
         ...state,
         [action.data.shiftCount]: {
@@ -62,22 +62,16 @@ export default function excelReducer(state = init, action) {
         }
       };
     }
-    // case "Range_Select":
-    //   console.log(action.data, " Range select Reducer");
-    //   return {
-    //     ...state,
-    //     range: action.data
-    //   };
 
-    // case types.Download_Time:
-    //   console.log(action.data, " Downlaod Time Reducer");
-    //   return {
-    //     ...state,
-    //     downloadTime: action.data
-    //   };
+    case types.Download_Time:
+      console.log(action.data, " Downlaod Time Reducer");
+      return {
+        ...state,
+        downloadTime: action.data
+      };
 
     case "Shift_Days": {
-      console.log(state, action.data, " Shift Days Reducer");
+      // console.log(state, action.data, " Shift Days Reducer");
       return {
         ...state,
         [action.data.shiftCount]: {

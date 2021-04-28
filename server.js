@@ -13,8 +13,8 @@ app.use(express.json({ limit: '200mb' }));
 app.use(fileUpload());
 
 const dbDetails = {
-    url: '192.168.1.15:5984',
-    // url: 'localhost:5984',
+    // url: '192.168.1.15:5984',
+    url: 'localhost:5984',
     user: 'admin',
     pass: 'admin',
     db: 'excel8',
@@ -27,13 +27,30 @@ var remoteURL = 'http://' + dbDetails.user + ':' + dbDetails.pass + '@' + dbDeta
 var remoteDB = new PouchDB(`${remoteURL}`);
 
 function getDocs(res) {
+    excel.sync(remoteDB);
     excel.allDocs({
         include_docs: true,
         attachments: true,
-        // startkey: new Date().toISOString().slice(0, 10),
-        // endkey: new Date().toISOString().slice(0, 10),
+        // startkey: 'excel',
+        endkey: 'excels',
     }, function (err, response) {
-        console.log(response);
+        console.log(response.rows.doc)
+        response.rows.map(i => {
+            // i.doc.values.map(k => {
+            //     if (k.type !== 'excels') {
+            //         // console.log(i);
+            //         delete response.rows.i
+            //     }
+            // });
+            // delete names.father
+
+            // i.doc.values.map(k => {
+            //     console.log(k);
+            //     // if (k.values.type === 'excels') {
+            //     //     console.log(k)
+            //     // }
+            // });
+        });
         res.send(response)
         excel.sync(remoteDB);
 
@@ -72,11 +89,13 @@ app.post('/api/excel-upload', (req, res) => {
                     'per_box_qty_UNITCAIXA_IT': row.getCell('IT').value,
                     'per_pallet_qty_UNITAPALET_IU': row.getCell('IU').value,
                     'per_pack_sec_VOIPITI_FM': row.getCell('FM').value,
+                    
                     "Date": new Date().toISOString().slice(0, 10)
                 });
 
                 var data = {
                     _id: new Date().toISOString().slice(0, 10) + Math.random().toString(36),
+                    type: 'excel',
                     values: rowsData
                 };
 
@@ -105,6 +124,33 @@ app.post('/api/excel-upload', (req, res) => {
     });
 });
 
+app.post('/api/push-shifts-data', (req, res) => {
+
+    // console.log(req.body);
+    const promises = [];
+    var ShiftsData = {
+        _id: new Date().toISOString().slice(0, 10) + Math.random().toString(36),
+        type: 'shifts',
+        values: req.body
+    };
+    const promise = excel
+        .put(ShiftsData, { force: true }).then(function (response) {
+            console.log("Success", response)
+        }).then(function (err) {
+
+        });
+    promises.push(promise);
+    Promise.all(promises).then(() => {
+        excel.sync(remoteDB);
+        getDocs(res);
+        console.log("Done")
+    }).catch((err) => {
+        console.log("An error occurred while inserting data", err);
+    });
+    excel.sync(remoteDB);
+    res.send("true")
+
+});
 app.get('/api/intial-excel-upload', (req, res) => {
 
     getDocs(res);

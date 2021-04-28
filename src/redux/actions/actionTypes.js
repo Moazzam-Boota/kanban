@@ -6,3 +6,4 @@ export const Shift_Time = "Shift_Time";
 export const Break_Time = "Break_Time";
 export const Range_Select = "Range_Select";
 export const Download_Time = "Download_Time";
+export const Push_Data = "Push_Data";

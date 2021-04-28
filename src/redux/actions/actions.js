@@ -24,6 +24,25 @@ export function excel_sheet(data) {
       });
   };
 }
+export function push_shifts_data(data) {
+  return function (dispatch) {
+    console.log(data);
+    return axios
+      .post(process.env.REACT_APP_BASE_URL + "api/push-shifts-data", data, {})
+      .then(({ data }) => {
+        // console.log(data);
+        dispatch({
+          type: types.Push_Data,
+          data: data,
+          // response: true
+        });
+      })
+      .catch((error) => {
+        console.log("error")
+        // toast.error(error.response.data.errors);
+      });
+  };
+}
 export function intial_excel_sheet() {
   return function (dispatch) {
     // console.log("actions", data.get('file'));
@@ -41,8 +60,8 @@ export function intial_excel_sheet() {
       });
   };
 }
-export function pitch_Time(data) {
-  // console.log(data, "Action pitchtime")
+export function pitch_time(data) {
+  // console.log(data, "Action pitchtime");
   return function (dispatch) {
 
     dispatch({
@@ -51,7 +70,7 @@ export function pitch_Time(data) {
     });
   }
 }
-export function file_Download_Type(data) {
+export function file_download_type(data) {
   // console.log(data, "Action file download type")
   return function (dispatch) {
 
@@ -61,7 +80,7 @@ export function file_Download_Type(data) {
     });
   }
 }
-export function shift_Days(data) {
+export function shift_days(data) {
   // console.log(data, "Action shift days");
   return function (dispatch) {
 
@@ -71,7 +90,7 @@ export function shift_Days(data) {
     });
   }
 }
-export function shift_Time(data) {
+export function shift_time(data) {
   // console.log(data, "Action shift time");
   return function (dispatch) {
 
@@ -81,8 +100,8 @@ export function shift_Time(data) {
     });
   }
 }
-export function break_Time(data) {
-  // console.log(data, "Action Break time");
+export function break_time(data) {
+  console.log(data, "Action Break time");
   return function (dispatch) {
 
     dispatch({
@@ -91,18 +110,8 @@ export function break_Time(data) {
     });
   }
 }
-export function range_Select(data) {
-  // console.log(data, "Range Action");
-  return function (dispatch) {
-
-    dispatch({
-      type: types.Range_Select,
-      data: data,
-    });
-  }
-}
-export function downlaod_Time(data) {
-  // console.log(data, "Download Time Action");
+export function download_time(data) {
+  console.log(data, "Download Time Action");
   return function (dispatch) {
 
     dispatch({
