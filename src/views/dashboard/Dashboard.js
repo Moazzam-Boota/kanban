@@ -127,11 +127,14 @@ const Dashboard = () => {
     return self.indexOf(value) === index;
   }
   if (response) {
-    response.rows.map(row => {
-      row.doc.values.map(values => {
+    console.log(response.values, "here");
+    response.map(row => {
+      row.values.map(values => {
+        // console.log(values.line_VOPLGR_EF)
         parentsData.push(values.line_VOPLGR_EF);
       });
     });
+    // console.log(parentsData,"paraent");
     uniqueAssemblyLines = parentsData.filter(onlyUnique);
   }
 

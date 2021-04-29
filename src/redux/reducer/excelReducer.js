@@ -9,12 +9,20 @@ const lodash = require('lodash');
 export default function excelReducer(state = init, action) {
   switch (action.type) {
 
-    case "Excel": {
+    case types.Excel: {
 
       return {
         ...state,
         apiCalled: action.data,
         response: action.response
+      };
+    }
+    case types.Push_Data: {
+      console.log(action.data)
+      return {
+        ...state,
+        allState: action.data,
+        res: action.response
       };
     }
 
@@ -28,7 +36,7 @@ export default function excelReducer(state = init, action) {
       };
     }
 
-    case "File_Download_Type": {
+    case types.File_Download_Type: {
 
       // console.log(action.data, " file download type Reducer");
       return {
@@ -37,7 +45,7 @@ export default function excelReducer(state = init, action) {
       };
     }
 
-    case "Shift_Time": {
+    case types.Shift_Time: {
 
       // console.log(action.data, " Shift time Reducer");
       return {
@@ -64,13 +72,13 @@ export default function excelReducer(state = init, action) {
     }
 
     case types.Download_Time:
-      console.log(action.data, " Downlaod Time Reducer");
+      // console.log(action.data, " Downlaod Time Reducer");
       return {
         ...state,
         downloadTime: action.data
       };
 
-    case "Shift_Days": {
+    case types.Shift_Days: {
       // console.log(state, action.data, " Shift Days Reducer");
       return {
         ...state,

@@ -26,7 +26,7 @@ var remoteURL = 'http://' + dbDetails.user + ':' + dbDetails.pass + '@' + dbDeta
 
 var remoteDB = new PouchDB(`${remoteURL}`);
 
-function getDocs(res) {
+function getDocs(res, type) {
     excel.sync(remoteDB);
     excel.allDocs({
         include_docs: true,
@@ -34,24 +34,17 @@ function getDocs(res) {
         // startkey: 'excel',
         endkey: 'excels',
     }, function (err, response) {
-        console.log(response.rows.doc)
+        var filterRows = [];
+        // console.log(response.rows)
         response.rows.map(i => {
-            // i.doc.values.map(k => {
-            //     if (k.type !== 'excels') {
-            //         // console.log(i);
-            //         delete response.rows.i
-            //     }
-            // });
-            // delete names.father
+            if (i.doc.type === type) {
+                filterRows.push(i.doc);
 
-            // i.doc.values.map(k => {
-            //     console.log(k);
-            //     // if (k.values.type === 'excels') {
-            //     //     console.log(k)
-            //     // }
-            // });
+            }
+
         });
-        res.send(response)
+        // console.log(filterRows)
+        res.send(filterRows)
         excel.sync(remoteDB);
 
         if (err) { return console.log(err); }
@@ -89,7 +82,7 @@ app.post('/api/excel-upload', (req, res) => {
                     'per_box_qty_UNITCAIXA_IT': row.getCell('IT').value,
                     'per_pallet_qty_UNITAPALET_IU': row.getCell('IU').value,
                     'per_pack_sec_VOIPITI_FM': row.getCell('FM').value,
-                    
+
                     "Date": new Date().toISOString().slice(0, 10)
                 });
 
@@ -116,7 +109,7 @@ app.post('/api/excel-upload', (req, res) => {
 
         Promise.all(promises).then(() => {
             excel.sync(remoteDB);
-            getDocs(res);
+            getDocs(res, "excels");
             console.log("Done")
         }).catch((err) => {
             console.log("An error occurred while inserting data", err);
@@ -153,7 +146,7 @@ app.post('/api/push-shifts-data', (req, res) => {
 });
 app.get('/api/intial-excel-upload', (req, res) => {
 
-    getDocs(res);
+    getDocs(res, "excels");
 
 });
 
