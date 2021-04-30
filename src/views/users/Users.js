@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { intial_excel_sheet } from "../../redux/actions/actions";
+import { intial_excel_sheet, get_chart_data } from "../../redux/actions/actions";
 import CWidgetBrand from './CWidgetBrand';
 import {
   CWidgetSimple,
@@ -61,9 +61,17 @@ const Users = () => {
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
   const [page, setPage] = useState(currentPage)
   const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
+  const data = useSelector((state) => state.excelReducer.chartData);
   const parentsData = [];
+  console.log(data, "Moazzam")
+
+  // if (chartData) {
+  //   console.log(chartData)
+  // }
   if (successforgotmsg) {
-    successforgotmsg.rows.map(row => {
+    console.log(successforgotmsg);
+    // successforgotmsg.rows.map(row => {
+    [].map(row => {
       row.doc.values.map(values => {
         parentsData.push(values);
       });
@@ -81,6 +89,7 @@ const Users = () => {
 
   useEffect(() => {
     dispatch(intial_excel_sheet());
+    dispatch(get_chart_data());
 
     currentPage !== page && setPage(currentPage)
   }, [currentPage, page])
@@ -179,7 +188,6 @@ const Users = () => {
             display: 'inline-block',
             width: '40px',
             // fontSize: '30px',
-            textAlign: 'center',
             margin: '5px',
             border: (i === 1 && dataGroupByProduct.length - 1 === index) ? '5px solid black' : 'inherit'
           }}>

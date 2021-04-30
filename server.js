@@ -32,7 +32,7 @@ function getDocs(res, type) {
         include_docs: true,
         attachments: true,
         // startkey: 'excel',
-        endkey: 'excels',
+        endkey: 'excel',
     }, function (err, response) {
         var filterRows = [];
         // console.log(response.rows)
@@ -109,7 +109,7 @@ app.post('/api/excel-upload', (req, res) => {
 
         Promise.all(promises).then(() => {
             excel.sync(remoteDB);
-            getDocs(res, "excels");
+            getDocs(res, "excel");
             console.log("Done")
         }).catch((err) => {
             console.log("An error occurred while inserting data", err);
@@ -146,7 +146,12 @@ app.post('/api/push-shifts-data', (req, res) => {
 });
 app.get('/api/intial-excel-upload', (req, res) => {
 
-    getDocs(res, "excels");
+    getDocs(res, "excel");
+
+});
+app.get('/api/get-chart-data', (req, res) => {
+
+    getDocs(res, "shifts");
 
 });
 

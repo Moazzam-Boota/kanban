@@ -60,6 +60,23 @@ export function intial_excel_sheet() {
       });
   };
 }
+export function get_chart_data() {
+  return function (dispatch) {
+    // console.log("actions", data.get('file'));
+    return axios
+      .get(process.env.REACT_APP_BASE_URL + "api/get-chart-data", {}, {})
+      .then(({ data }) => {
+        // console.log(data);
+        dispatch({
+          type: types.Chart,
+          data: data,
+        });
+      })
+      .catch((error) => {
+        // toast.error(error.response.data.errors);
+      });
+  };
+}
 export function pitch_time(data) {
   // console.log(data, "Action pitchtime");
   return function (dispatch) {
@@ -116,6 +133,16 @@ export function download_time(data) {
 
     dispatch({
       type: types.Download_Time,
+      data: data,
+    });
+  }
+}
+export function colors_range(data) {
+  console.log(data, "Colors Action");
+  return function (dispatch) {
+
+    dispatch({
+      type: types.Colors_Range,
       data: data,
     });
   }

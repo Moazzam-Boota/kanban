@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { excel_sheet, intial_excel_sheet, pitch_time, file_download_type, download_time, push_shifts_data } from "../../redux/actions/actions";
+import { excel_sheet, intial_excel_sheet, pitch_time, file_download_type, download_time, push_shifts_data, colors_range } from "../../redux/actions/actions";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
 import {
   CInput,
   CLabel,
@@ -72,7 +74,27 @@ const Dashboard = () => {
   var [blackColor, setBlackColor] = useState(12);
   var [fileDownloadType, setFileDownloadType] = useState('');
   var [downloadTime, setDownloadTime] = useState([]);
-
+  let colors = {
+    blau: {
+      color: blueColor
+    },
+    verd: {
+      min: greenMinColor,
+      max: greenMaxColor
+    },
+    taronja: {
+      min: orangeMinColor,
+      max: orangeMaxColor
+    },
+    vermell: {
+      min: redMaxColor,
+      max: redMinColor
+    },
+    negre: {
+      color: blackColor
+    }
+  }
+  console.log(colors)
   // handle shifts number here
   const dispatch = useDispatch()
   const response = useSelector((state) => state.excelReducer.apiCalled);
@@ -80,8 +102,6 @@ const Dashboard = () => {
   const success = useSelector((state) => state.excelReducer.response);
   console.log(shiftCount);
   const allState = useSelector((state) => state.excelReducer);
-  console.log(allState);
-  delete allState.apiCalled;
   console.log(allState);
   // console.log(response)
   // console.log(shiftCount);
@@ -106,7 +126,15 @@ const Dashboard = () => {
     dispatch(pitch_time(pitchTime));
     dispatch(file_download_type(fileDownloadType));
     dispatch(download_time(downloadTime));
+    dispatch(colors_range(colors));
+    delete allState.apiCalled;
+    console.log(allState);
     dispatch(push_shifts_data(allState));
+    Swal.fire(
+      'Saved',
+      'Shift data is saved!',
+      'success'
+    )
     // get data from redux
   }
   const getTime = (value) => {

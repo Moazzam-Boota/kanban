@@ -17,6 +17,15 @@ export default function excelReducer(state = init, action) {
         response: action.response
       };
     }
+
+    case types.Chart: {
+      console.log(action.data)
+      return {
+        ...state,
+        chartData: action.data
+      };
+    }
+
     case types.Push_Data: {
       console.log(action.data)
       return {
@@ -89,6 +98,13 @@ export default function excelReducer(state = init, action) {
         }
       };
     }
+
+    case types.Colors_Range:
+      console.log(action.data, " Colors Reducer");
+      return {
+        ...state,
+        colors: action.data
+      };
 
     default:
       return state;
