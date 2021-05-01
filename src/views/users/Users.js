@@ -63,16 +63,16 @@ const Users = () => {
   const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
   const data = useSelector((state) => state.excelReducer.chartData);
   const parentsData = [];
-  console.log(data, "Moazzam")
+  console.log(successforgotmsg, "Moazzam")
 
   // if (chartData) {
   //   console.log(chartData)
   // }
   if (successforgotmsg) {
     console.log(successforgotmsg);
-    // successforgotmsg.rows.map(row => {
-    [].map(row => {
-      row.doc.values.map(values => {
+    successforgotmsg.map(row => {
+      // [].map(row => {
+      row.values.map(values => {
         parentsData.push(values);
       });
     });
@@ -165,7 +165,7 @@ const Users = () => {
     else if (i > 11) color = 'black';
 
     const dataGroupRandom = dataGroupByProduct.slice(0, Math.floor(Math.random() * dataGroupByProduct.length) + 1);
-    
+
     // dataGroupByProduct
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}

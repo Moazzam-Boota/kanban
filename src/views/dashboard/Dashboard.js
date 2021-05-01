@@ -213,18 +213,18 @@ const Dashboard = () => {
 
               {fileDownloadType === 'automatic' ? <CCol md="3"><CInput onChange={(e) => { getTime(e.target.value) }} type="time" id="autoDownloadTime" name="autoDownloadTime" min="09:00" max="18:00"></CInput></CCol>
                 : fileDownloadType === 'manual' ? <CCol md="9">
-                  <CForm name="fileSubmitForm" id="fileSubmitForm" action="" method="post" className="form-horizontal">
-                    <CFormGroup row>
-                      <CCol md="7">
+                  {/* <CForm name="fileSubmitForm" id="fileSubmitForm" action="" method="post" className="form-horizontal"> */}
+                  <CFormGroup row>
+                    <CCol md="7">
 
-                        <CInput type="file" required name="hf-file" onChange={changeHandler} placeholder="Upload file..." autoComplete="file" />
-                      </CCol>
-                      <CCol md="5">
-                        <CButton onClick={fileFormSubmit} type="submit" size="sm" color="primary"><CIcon name="cil-scrubber" /> Upload</CButton>
-                        <ToastContainer />
-                      </CCol>
-                    </CFormGroup>
-                  </CForm>
+                      <CInput type="file" required name="hf-file" onChange={changeHandler} placeholder="Upload file..." autoComplete="file" />
+                    </CCol>
+                    <CCol md="5">
+                      <CButton onClick={fileFormSubmit} type="submit" size="sm" color="primary"><CIcon name="cil-scrubber" /> Upload</CButton>
+                      <ToastContainer />
+                    </CCol>
+                  </CFormGroup>
+                  {/* </CForm> */}
                 </CCol> : ''}
 
             </CFormGroup>
