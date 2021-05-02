@@ -127,7 +127,7 @@ app.post('/api/push-shifts-data', (req, res) => {
         type: 'shifts',
         values: req.body
     };
-    const promise = excel
+    const promise = pouchDBConnection
         .put(ShiftsData, { force: true }).then(function (response) {
             console.log("Success", response)
         }).then(function (err) {

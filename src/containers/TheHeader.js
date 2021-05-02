@@ -14,8 +14,9 @@ const TheHeader = () => {
     <CHeader withSubheader>
       <div className="navbar-left">
         <CImg
-          src={'logo/logo.svg'}
+          src={'logo/gestlean.png'}
           className="c-avatar-img"
+          style={{ width: "116px" }}
           alt="admin@bootstrapmaster.com"
         />
       </div>

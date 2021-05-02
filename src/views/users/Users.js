@@ -13,6 +13,7 @@ import './index.css';
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://127.0.0.1:4001";
 const lodash = require('lodash');
+const moment = require('moment');
 
 const Users = () => {
   const dispatch = useDispatch()
@@ -61,10 +62,12 @@ const Users = () => {
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
   const [page, setPage] = useState(currentPage)
   const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
-  const chartParams = lodash.get(useSelector((state) => state.excelReducer.chartParams), '[0].values');
+  const dbChartParams = useSelector((state) => state.excelReducer.chartParams);
+  const chartParams = lodash.get(lodash.last(dbChartParams), 'values');
   const parentsData = [];
   const colorChartParams = lodash.get(chartParams, 'colors', {});
-  console.log(chartParams, "Moazzam", colorChartParams)
+  const lineChartParams = lodash.get(chartParams, 'PERS044', {});
+  console.log(lineChartParams, "Moazzam", colorChartParams)
   if (successforgotmsg) {
     console.log(successforgotmsg);
     successforgotmsg.map(row => {
@@ -124,13 +127,12 @@ const Users = () => {
       color: getRandomColor(),
       sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
       productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
-    }))
-    .value();
+    })).value();
   console.log(dataGroupByOrder, 'newData', dataGroupByShift, 'product', dataGroupByProduct);
   // console.log(dataGroupByOrder, 'newData', parentsData.slice(0).reverse())
 
   const dailyHours = 8; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
-  const pitchPeriod = 30; //minutes
+  const pitchPeriod = lodash.get(chartParams, 'pitchTime', 0); //minutes
   const totalQuantity = lodash.sumBy(parentsData, 'quantity_VHOROQ_AH'); //sum of all quantities
   const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
   const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
@@ -165,14 +167,36 @@ const Users = () => {
     else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) color = 'red';
     else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) color = 'black';
 
-    const dataGroupRandom = dataGroupByProduct.slice(0, Math.floor(Math.random() * dataGroupByProduct.length) + 1);
+    const dataGroupByProductRandom = i <= blueColorChartParams.min ? dataGroupByProduct : [];
+    // const dataGroupByProductRandom = i === 1 ? dataGroupByProduct : [];
+    const timeRange = lodash.get(lineChartParams, '[1].time', []);
+    // const dataGroupRandom = dataGroupByProduct.slice(0, Math.floor(Math.random() * dataGroupByProduct.length) + 1);
+    console.log(lodash.get(lineChartParams, '[1].time', []), 'time', pitchPeriod, moment());
 
+    var format = 'hh:mm'
+
+    // var time = moment() gives you current time. no format required.
+    var time = moment('15:34', format),
+      beforeTime = moment(timeRange[0], format),
+      afterTime = moment(timeRange[1], format);
+
+    if (time.isBetween(beforeTime, afterTime)) {
+
+      console.log('is between')
+
+    } else {
+
+      console.log('is not between')
+
+    }
+
+    // console.log(dataGroupByProductRandom, 'dataGroupRandom', i === blueColorChartParams.min, color)
     // dataGroupByProduct
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={Math.round(boxesPerPitch)}
-      cardName={dataGroupRandom.map((product, index) => {
+      cardName={dataGroupByProductRandom.map((product, index) => {
         console.log(product, i, dataGroupByProduct.length - 1, index, 'product')
         return (
           <span className="content-center" style={{
@@ -220,13 +244,13 @@ const Users = () => {
           <CWidgetSimple header="Pending Pieces" text={totalQuantity - donePieces} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple header="Pieces/Hour (On Time)" text={(totalQuantity - donePieces) / dailyHours} />
+          <CWidgetSimple header="Pieces/Hour (On Time)" text={parseFloat((totalQuantity - donePieces) / dailyHours).toFixed(2)} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple header="Pieces/Hour (Day)" text={totalQuantity / dailyHours} />
+          <CWidgetSimple header="Pieces/Hour (Day)" text={parseFloat(totalQuantity / dailyHours).toFixed(2)} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple header="Pieces/Hour (Target)" text={totalQuantity / kanbanBoxes} />
+          <CWidgetSimple header="Pieces/Hour (Target)" text={parseFloat(totalQuantity / kanbanBoxes).toFixed(2)} />
         </CCol>
       </CRow>
       <h1>{lodash.get(dataGroupByLine, '[0].lineNumber')}</h1>
