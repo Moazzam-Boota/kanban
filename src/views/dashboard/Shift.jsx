@@ -5,7 +5,12 @@ import BreakTime from "./BreakTime";
 import Select from "react-select";
 import { SortableContainer } from "react-sortable-hoc";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
-import { shift_days, shift_time } from "../../redux/actions/actions";
+import {
+  shift_days,
+  shift_time,
+  addShift,
+  deleteShift,
+} from "../../redux/actions/actions";
 
 const SortableSelect = SortableContainer(Select);
 const ShiftTime = ({
@@ -16,24 +21,11 @@ const ShiftTime = ({
 }) => {
   // const [selected, setSelected] = React.useState([]);
   // const [shiftTime, setShifttime] = React.useState([]);
-  const onChange = (selectedOptions) => {
-    // setSelected(selectedOptions);
-    dispatch(
-      shift_days({ shiftDays: selectedOptions, shiftCount: shiftCount })
-    );
-  };
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   console.log("Selected days are ");
   // shift breaks, handle here
   var [breakCount, setBreakCount] = useState([1]);
-
-  const timeChange = (value) => {
-    
-      console.log("Shift Time", value);
-    // setShifttime(value);
-    dispatch(shift_time({ shiftTime: value, shiftCount: shiftCount }));
-  };
 
   return (
     <CFormGroup>
@@ -50,37 +42,34 @@ const ShiftTime = ({
             isMulti
             // required
             options={[
-              {
-                value: "Mon",
-                label: "Mon",
-                color: "#00B8D9",
-                isFixed: true,
-              },
-              { value: "Tue", label: "Tue", color: "#0052CC" },
-              { value: "Wed", label: "Wed", color: "#5243AA" },
-              {
-                value: "Thur",
-                label: "Thur",
-                color: "#FF5630",
-                isFixed: true,
-              },
-              { value: "Fri", label: "Fri", color: "#FF8B00" },
-              { value: "Sat", label: "Sat", color: "#FFC400" },
-              { value: "Sun", label: "Sun", color: "#36B37E" },
+              { value: "Mon", label: "Mon" },
+              { value: "Tue", label: "Tue" },
+              { value: "Wed", label: "Wed" },
+              { value: "Thur", label: "Thur" },
+              { value: "Fri", label: "Fri" },
+              { value: "Sat", label: "Sat" },
+              { value: "Sun", label: "Sun" },
             ]}
             closeMenuOnSelect={false}
-            onChange={
-              onChange
+            onChange={(selectedOptions) => {
               // set week_days in redux for a assemblyLine
-            }
+              dispatch(
+                shift_days({
+                  shiftDays: selectedOptions.map((k) => k.value),
+                  shiftCount: shiftCount,
+                })
+              );
+            }}
           />
         </CCol>
         <CCol xs="4">
           <TimeRangePicker
             key={`shiftTimePicker_${shiftCount}`}
-            onChange={(val) => {
-              timeChange(val);
+            onChange={(value) => {
               // set time for a shift in redux
+              dispatch(
+                shift_time({ shiftTime: value, shiftCount: shiftCount })
+              );
             }}
             value={["08:00", "14:00"]}
           />
@@ -95,6 +84,12 @@ const ShiftTime = ({
               counter++;
               let newShifts = [...totalShifts, counter];
               setShiftCount([...new Set(newShifts)]);
+
+              dispatch(
+                addShift({
+                  addShift: counter,
+                })
+              );
             }}
             type="submit"
             size="sm"
@@ -110,7 +105,15 @@ const ShiftTime = ({
               // remove shift-data from redux, for a assemblyLine
 
               let newShifts = totalShifts.filter((k) => k !== shiftCount);
-              if (newShifts.length >= 1) setShiftCount(newShifts);
+              if (newShifts.length >= 1) {
+                setShiftCount(newShifts);
+
+                dispatch(
+                  deleteShift({
+                    deleteShift: shiftCount,
+                  })
+                );
+              }
             }}
             type="submit"
             size="sm"

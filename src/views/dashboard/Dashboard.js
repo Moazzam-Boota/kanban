@@ -26,41 +26,6 @@ import CIcon from '@coreui/icons-react'
 // import { cibLgtm } from '@coreui/icons';
 import ShiftTime from './Shift';
 
-// const data = {
-//   PERS044: {  // assembly Line
-//     shift_1: {
-//       week_days: ['Wed', 'Fri'],
-//       time: {
-//         start: '08:00',
-//         end: '14:00',
-//       },
-//       break_1: {
-//         start: '08:00',
-//         end: '08:15',
-//       },
-//       break_2: {
-//         start: '10:00',
-//         end: '10:15',
-//       },
-//     },
-//     shift_2: {
-//       week_days: ['Mon', 'Thur'],
-//       time: {
-//         start: '14:00',
-//         end: '22:00',
-//       },
-//       break_1: {
-//         start: '14:00',
-//         end: '14:15',
-//       },
-//       break_2: {
-//         start: '16:00',
-//         end: '16:15',
-//       },
-//     },
-//   }
-// };
-
 const Dashboard = () => {
   var [shiftCount, setShiftCount] = useState([1]);
   var [pitchTime, setPitchTime] = useState(15);
@@ -71,30 +36,11 @@ const Dashboard = () => {
   var [orangeMaxColor, setOrangeMaxColor] = useState(8);
   var [redMinColor, setRedMinColor] = useState(9);
   var [redMaxColor, setRedMaxColor] = useState(11);
-  var [blackColor, setBlackColor] = useState(12);
+  var [blackMinColor, setBlackMinColor] = useState(12);
+  var [blackMaxColor, setBlackMaxColor] = useState(13);
   var [fileDownloadType, setFileDownloadType] = useState('');
   var [downloadTime, setDownloadTime] = useState([]);
-  let colors = {
-    blau: {
-      color: blueColor
-    },
-    verd: {
-      min: greenMinColor,
-      max: greenMaxColor
-    },
-    taronja: {
-      min: orangeMinColor,
-      max: orangeMaxColor
-    },
-    vermell: {
-      min: redMaxColor,
-      max: redMinColor
-    },
-    negre: {
-      color: blackColor
-    }
-  }
-  console.log(colors)
+
   // handle shifts number here
   const dispatch = useDispatch()
   const response = useSelector((state) => state.excelReducer.apiCalled);
@@ -118,18 +64,79 @@ const Dashboard = () => {
     // setIsSelected(true);
   };
 
-  console.log(pitchTime, " PitchTime");
-  // console.log("File Download Type is ", fileDownloadType);
-  console.log("Total Shifts are ", shiftCount);
-
   const saveParametersData = () => {
-    dispatch(pitch_time(pitchTime));
-    dispatch(file_download_type(fileDownloadType));
-    dispatch(download_time(downloadTime));
-    dispatch(colors_range(colors));
-    delete allState.apiCalled;
-    console.log(allState);
-    dispatch(push_shifts_data(allState));
+    const dataState = { ...allState };
+    delete dataState.apiCalled;
+
+    const data = {
+      pitchTime: pitchTime,
+      fileDownloadType: fileDownloadType,
+      downloadTime: downloadTime, // in case of manual, undefined
+      colors: {
+        blau: {
+          min: blueColor
+        },
+        verd: {
+          min: greenMinColor,
+          max: greenMaxColor
+        },
+        taronja: {
+          min: orangeMinColor,
+          max: orangeMaxColor
+        },
+        vermell: {
+          min: redMinColor,
+          max: redMaxColor
+        },
+        negre: {
+          min: blackMinColor,
+          max: blackMaxColor
+        }
+      },
+      PERS044: {  // assembly Line
+        ...dataState
+        // shift_1: {
+        //   week_days: ['Wed', 'Fri'],
+        //   time: {
+        //     start: '08:00',
+        //     end: '14:00',
+        //   },
+        //   break_1: {
+        //     start: '08:00',
+        //     end: '08:15',
+        //   },
+        //   break_2: {
+        //     start: '10:00',
+        //     end: '10:15',
+        //   },
+        // },
+        // shift_2: {
+        //   week_days: ['Mon', 'Thur'],
+        //   time: {
+        //     start: '14:00',
+        //     end: '22:00',
+        //   },
+        //   break_1: {
+        //     start: '14:00',
+        //     end: '14:15',
+        //   },
+        //   break_2: {
+        //     start: '16:00',
+        //     end: '16:15',
+        //   },
+        // },
+      }
+    };
+
+    // pitchTime
+    // Download Type: automatic -> time
+    // Colors -> list save
+    // shifts
+    // dispatch(pitch_time(pitchTime));
+    // dispatch(file_download_type(fileDownloadType));
+    // dispatch(download_time(downloadTime));
+    // dispatch(colors_range(colors));
+    dispatch(push_shifts_data(data));
     Swal.fire(
       'Saved',
       'Shift data is saved!',
@@ -323,12 +330,19 @@ const Dashboard = () => {
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
                         <CLabel htmlFor="exampleInputName2" className="pr-1"><span><b>negre</b> </span> <span style={{ marginLeft: '28px' }}>{'>'}</span></CLabel>
-                        <CInput type="number" id="blueColor" name="blueColor" min={0} max={12} step={1} value={blackColor}
+                        <CInput type="number" id="blackMinColor" name="blackMinColor" min={0} max={12} step={1} value={blackMinColor}
                           onChange={(e) => {
-                            setBlackColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                            setBlackMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
                           }}
                         />
-                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ paddingLeft: '5px' }}>{`   pitchs`}</CLabel>
+                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel>
+                        <CInput type="number" id="blackMaxColor" name="blackMaxColor" min={0} max={13} step={1} value={blackMaxColor}
+                          onChange={(e) => {
+                            setBlackMaxColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                          }}
+                        />
+                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ paddingLeft: '5px' }}>{`   pitch`}</CLabel>
+
                       </CFormGroup>
                     </CForm>
                   </CCol>

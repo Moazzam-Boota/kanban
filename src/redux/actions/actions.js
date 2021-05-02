@@ -117,6 +117,50 @@ export function shift_time(data) {
     });
   }
 }
+
+export function addShift(data) {
+  // console.log(data, "Action shift time");
+  return function (dispatch) {
+
+    dispatch({
+      type: types.ADD_SHIFT,
+      data: data,
+    });
+  }
+}
+
+export function deleteShift(data) {
+  // console.log(data, "Action shift time");
+  return function (dispatch) {
+
+    dispatch({
+      type: types.DELETE_SHIFT,
+      data: data,
+    });
+  }
+}
+
+export function addBreak(data) {
+  // console.log(data, "Action shift time");
+  return function (dispatch) {
+
+    dispatch({
+      type: types.ADD_BREAK,
+      data: data,
+    });
+  }
+}
+
+export function deleteBreak(data) {
+  // console.log(data, "Action shift time");
+  return function (dispatch) {
+
+    dispatch({
+      type: types.DELETE_BREAK,
+      data: data,
+    });
+  }
+}
 export function break_time(data) {
   console.log(data, "Action Break time");
   return function (dispatch) {

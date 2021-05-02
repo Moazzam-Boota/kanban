@@ -63,7 +63,7 @@ const Users = () => {
   const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
   const data = useSelector((state) => state.excelReducer.chartData);
   const parentsData = [];
-  console.log(successforgotmsg, "Moazzam")
+  console.log(data, "Moazzam")
 
   // if (chartData) {
   //   console.log(chartData)

@@ -191,38 +191,48 @@ const io = socketIo(server, {
 // var Gpio = require('onoff').Gpio; //include onoff to interact with the Gpio
 // var LED_RED = new Gpio('21', 'out'); //use Gpio pin 21 as output for LED RED
 // var LED_GREEN = new Gpio('20', 'out'); //use Gpio pin 20 as output for LED GREEN
-// var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and 'both' button presses, and releases should be handled
-
+// //var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and 'both' button presses, and releases should be handled
+// var pushButton = new Gpio('26', 'in', 'rising', { debounceTimeout: 10 });
 
 // io.on("connection", (socket) => {
 //     console.log("New client connected");
+//     // if (interval) {
+//     //     clearInterval(interval);
+//     // }
+//     // interval = setInterval(() => getApiAndEmit(socket), 1000);
+
 
 //     var lightvalue = 0; //static variable for current status
-
+//     var countValue = 0;
 //     pushButton.watch(function (err, value) { //Watch for hardware interrupts on pushButton
 //         if (err) { //if an error
 //             console.error('There was an error', err); //output error message to console
 //             return;
 //         }
 //         // lightvalue = value;
-//         lightvalue = lightvalue + 1;
-//         socket.emit('lightgreen', lightvalue); //send button status to client
-//         // socket.emit('lightred', lightvalue); //send button status to client
-//     });
 
+//         countValue = countValue + 1;
+
+//         if (countValue === 2) {
+//             lightvalue = lightvalue + 1;
+//             socket.emit('lightgreen', lightvalue); //send button status to client
+//             // socket.emit('lightred', lightvalue); //send button status to client
+//             countValue = 0;
+//         }
+//     });
 //     socket.on('lightgreen', function (data) { //get light switch status from client
 //         lightvalue = data;
 //         if (lightvalue != LED_GREEN.readSync()) { //only change LED_GREEN if status has changed
 //             LED_GREEN.writeSync(lightvalue); //turn LED_GREEN on or off
 //         }
 //     });
-
 //     socket.on('lightred', function (data) { //get light switch status from client
 //         lightvalue = data;
 //         if (lightvalue != LED_RED.readSync()) { //only change LED_RED if status has changed
 //             LED_RED.writeSync(lightvalue); //turn LED_RED on or off
 //         }
 //     });
+
 
 //     socket.on("disconnect", () => {
 //         console.log("Client disconnected");

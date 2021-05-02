@@ -2,20 +2,10 @@ import { CLabel, CFormGroup, CButton, CCol, CRow } from "@coreui/react";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 import { useDispatch } from "react-redux";
 // import React, { useState, useEffect } from "react";
-import { break_time } from "../../redux/actions/actions";
+import { break_time, addBreak, deleteBreak } from "../../redux/actions/actions";
 
 const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount }) => {
   const dispatch = useDispatch();
-  const timeChange = (value) => {
-    console.log("BreakTime is ", value);
-    dispatch(
-      break_time({
-        shiftCount: shiftKey,
-        breakCount: breakCount,
-        breakValue: value,
-      })
-    );
-  };
 
   return (
     <CFormGroup>
@@ -26,9 +16,15 @@ const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount }) => {
         <CCol xs="4">
           <TimeRangePicker
             key={`breakTimePicker_${shiftKey}_${breakCount}`}
-            onChange={(val) => {
-              timeChange(val);
+            onChange={(value) => {
               // set time for a break in redux
+              dispatch(
+                break_time({
+                  shiftCount: shiftKey,
+                  breakCount: breakCount,
+                  breakValue: value,
+                })
+              );
             }}
             value={["08:00", "14:00"]}
           />
@@ -43,6 +39,13 @@ const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount }) => {
               counter++;
               let newShifts = [...totalBreaks, counter];
               setBreakCount([...new Set(newShifts)]);
+
+              dispatch(
+                addBreak({
+                  shiftCount: shiftKey,
+                  addBreak: counter,
+                })
+              );
             }}
             type="submit"
             size="sm"
@@ -58,7 +61,15 @@ const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount }) => {
               // remove break-data from redux, for a shift in assemblyLine
 
               let newShifts = totalBreaks.filter((k) => k !== breakCount);
-              if (newShifts.length >= 1) setBreakCount(newShifts);
+              if (newShifts.length >= 1) {
+                setBreakCount(newShifts);
+                dispatch(
+                  deleteBreak({
+                    shiftCount: shiftKey,
+                    deleteBreak: breakCount,
+                  })
+                );
+              }
             }}
             type="submit"
             size="sm"
