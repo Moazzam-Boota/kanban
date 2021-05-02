@@ -19,6 +19,7 @@ const Users = () => {
   const dispatch = useDispatch()
   // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(100);
+  var headerWidgetColor = '';
 
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
@@ -161,13 +162,19 @@ const Users = () => {
   for (var i = blackColorChartParams.max; i >= 1; i--) {
     var color = '';
 
-    if (i <= parseInt(blueColorChartParams.min)) color = 'blue';
-    else if (i >= parseInt(greenColorChartParams.min) && i <= parseInt(greenColorChartParams.max)) color = 'green';
-    else if (i >= parseInt(orangeColorChartParams.min) && i <= parseInt(orangeColorChartParams.max)) color = 'orange';
-    else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) color = 'red';
-    else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) color = 'black';
+    if (i <= parseInt(blueColorChartParams.min)) { color = 'blue'; }
+    else if (i >= parseInt(greenColorChartParams.min) && i <= parseInt(greenColorChartParams.max)) { color = 'green'; }
+    else if (i >= parseInt(orangeColorChartParams.min) && i <= parseInt(orangeColorChartParams.max)) { color = 'orange'; }
+    else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) { color = 'red'; }
+    else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
 
-    const dataGroupByProductRandom = i <= blueColorChartParams.min ? dataGroupByProduct : [];
+    // setHeaderWidgetColor(color);
+    var dataGroupByProductRandom = [];
+
+    if (i <= parseInt(greenColorChartParams.max)) {
+      headerWidgetColor = 'green';
+      dataGroupByProductRandom = dataGroupByProduct;
+    }
     // const dataGroupByProductRandom = i === 1 ? dataGroupByProduct : [];
     const timeRange = lodash.get(lineChartParams, '[1].time', []);
     // const dataGroupRandom = dataGroupByProduct.slice(0, Math.floor(Math.random() * dataGroupByProduct.length) + 1);
@@ -229,28 +236,29 @@ const Users = () => {
     >
     </CWidgetBrand >);
   }
+
   const kanbanBoxWidgetStyle = { fontSize: '14px' };
   const metricStyle = { fontWeight: 'bold' };
   return (
     <CFormGroup>
       <CRow>
         <CCol xs="2">
-          <CWidgetSimple header="Total Pieces" text={totalQuantity} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Total Pieces" text={totalQuantity} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple header="Done Pieces" text={donePieces} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Done Pieces" text={donePieces} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple header="Pending Pieces" text={totalQuantity - donePieces} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pending Pieces" text={totalQuantity - donePieces} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple header="Pieces/Hour (On Time)" text={parseFloat((totalQuantity - donePieces) / dailyHours).toFixed(2)} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (On Time)" text={parseFloat((totalQuantity - donePieces) / dailyHours).toFixed(2)} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple header="Pieces/Hour (Day)" text={parseFloat(totalQuantity / dailyHours).toFixed(2)} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Day)" text={parseFloat(totalQuantity / dailyHours).toFixed(2)} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple header="Pieces/Hour (Target)" text={parseFloat(totalQuantity / kanbanBoxes).toFixed(2)} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Target)" text={parseFloat(totalQuantity / kanbanBoxes).toFixed(2)} />
         </CCol>
       </CRow>
       <h1>{lodash.get(dataGroupByLine, '[0].lineNumber')}</h1>
