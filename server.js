@@ -20,15 +20,15 @@ const dbDetails = {
     db: 'excel8',
 };
 
-var excel = new PouchDB(dbDetails.db);
+var pouchDBConnection = new PouchDB(dbDetails.db);
 
 var remoteURL = 'http://' + dbDetails.user + ':' + dbDetails.pass + '@' + dbDetails.url + '/' + dbDetails.db;
 
 var remoteDB = new PouchDB(`${remoteURL}`);
 
 function getDocs(res, type) {
-    excel.sync(remoteDB);
-    excel.allDocs({
+    pouchDBConnection.sync(remoteDB);
+    pouchDBConnection.allDocs({
         include_docs: true,
         attachments: true,
         // startkey: 'excel',
@@ -38,6 +38,7 @@ function getDocs(res, type) {
         // console.log(response.rows)
         response.rows.map(i => {
             if (i.doc.type === type) {
+                console.log(i.doc.values, 'i.doc')
                 filterRows.push(i.doc);
 
             }
@@ -45,7 +46,7 @@ function getDocs(res, type) {
         });
         // console.log(filterRows)
         res.send(filterRows)
-        excel.sync(remoteDB);
+        pouchDBConnection.sync(remoteDB);
 
         if (err) { return console.log(err); }
         // handle result
@@ -54,7 +55,7 @@ function getDocs(res, type) {
 
 app.post('/api/excel-upload', (req, res) => {
 
-    var workbook = new Excel.Workbook();
+    var workbook = new pouchDBConnection.Workbook();
     workbook.xlsx.load(req.files.file.data).then(function () {
 
         //Get sheet by Name
@@ -105,10 +106,10 @@ app.post('/api/excel-upload', (req, res) => {
 
         });
 
-        // excel.sync(remoteDB);
+        // pouchDBConnection.sync(remoteDB);
 
         Promise.all(promises).then(() => {
-            excel.sync(remoteDB);
+            pouchDBConnection.sync(remoteDB);
             getDocs(res, "excel");
             console.log("Done")
         }).catch((err) => {
@@ -134,13 +135,13 @@ app.post('/api/push-shifts-data', (req, res) => {
         });
     promises.push(promise);
     Promise.all(promises).then(() => {
-        excel.sync(remoteDB);
+        pouchDBConnection.sync(remoteDB);
         getDocs(res);
         console.log("Done")
     }).catch((err) => {
         console.log("An error occurred while inserting data", err);
     });
-    excel.sync(remoteDB);
+    pouchDBConnection.sync(remoteDB);
     res.send("true")
 
 });
@@ -150,9 +151,7 @@ app.get('/api/intial-excel-upload', (req, res) => {
 
 });
 app.get('/api/get-chart-data', (req, res) => {
-
     getDocs(res, "shifts");
-
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

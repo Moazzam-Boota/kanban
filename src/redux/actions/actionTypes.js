@@ -1,5 +1,5 @@
 export const Excel = "Excel";
-export const Chart = "Chart";
+export const GET_CHART_DATA = "GET_CHART_DATA";
 export const Pitch_Time = "Pitch_Time";
 export const File_Download_Type = "File_Download_Type";
 export const Shift_Days = "Shift_Days";

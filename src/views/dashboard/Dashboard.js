@@ -46,11 +46,8 @@ const Dashboard = () => {
   const response = useSelector((state) => state.excelReducer.apiCalled);
   const parentsData = [];
   const success = useSelector((state) => state.excelReducer.response);
-  console.log(shiftCount);
   const allState = useSelector((state) => state.excelReducer);
   console.log(allState);
-  // console.log(response)
-  // console.log(shiftCount);
   // const fileType = useSelector((state) => state.fileDownloadTypeReducer);
 
   if (success) {
@@ -68,75 +65,37 @@ const Dashboard = () => {
     const dataState = { ...allState };
     delete dataState.apiCalled;
 
-    const data = {
+    const parameters = {
       pitchTime: pitchTime,
       fileDownloadType: fileDownloadType,
       downloadTime: downloadTime, // in case of manual, undefined
       colors: {
-        blau: {
+        blue: {
           min: blueColor
         },
-        verd: {
+        green: {
           min: greenMinColor,
           max: greenMaxColor
         },
-        taronja: {
+        orange: {
           min: orangeMinColor,
           max: orangeMaxColor
         },
-        vermell: {
+        red: {
           min: redMinColor,
           max: redMaxColor
         },
-        negre: {
+        black: {
           min: blackMinColor,
           max: blackMaxColor
         }
       },
       PERS044: {  // assembly Line
         ...dataState
-        // shift_1: {
-        //   week_days: ['Wed', 'Fri'],
-        //   time: {
-        //     start: '08:00',
-        //     end: '14:00',
-        //   },
-        //   break_1: {
-        //     start: '08:00',
-        //     end: '08:15',
-        //   },
-        //   break_2: {
-        //     start: '10:00',
-        //     end: '10:15',
-        //   },
-        // },
-        // shift_2: {
-        //   week_days: ['Mon', 'Thur'],
-        //   time: {
-        //     start: '14:00',
-        //     end: '22:00',
-        //   },
-        //   break_1: {
-        //     start: '14:00',
-        //     end: '14:15',
-        //   },
-        //   break_2: {
-        //     start: '16:00',
-        //     end: '16:15',
-        //   },
-        // },
-      }
+      },
+      createdAt: new Date()
     };
-
-    // pitchTime
-    // Download Type: automatic -> time
-    // Colors -> list save
-    // shifts
-    // dispatch(pitch_time(pitchTime));
-    // dispatch(file_download_type(fileDownloadType));
-    // dispatch(download_time(downloadTime));
-    // dispatch(colors_range(colors));
-    dispatch(push_shifts_data(data));
+    dispatch(push_shifts_data(parameters));
     Swal.fire(
       'Saved',
       'Shift data is saved!',
@@ -145,10 +104,8 @@ const Dashboard = () => {
     // get data from redux
   }
   const getTime = (value) => {
-    // console.log(value);
     setDownloadTime(value);
   }
-  console.log("Autmatic downlaod time", downloadTime);
 
   const fileFormSubmit = () => {
     const formData = new FormData();
@@ -162,14 +119,11 @@ const Dashboard = () => {
     return self.indexOf(value) === index;
   }
   if (response) {
-    console.log(response.values, "here");
     response.map(row => {
       row.values.map(values => {
-        // console.log(values.line_VOPLGR_EF)
         parentsData.push(values.line_VOPLGR_EF);
       });
     });
-    // console.log(parentsData,"paraent");
     uniqueAssemblyLines = parentsData.filter(onlyUnique);
   }
 
@@ -190,12 +144,18 @@ const Dashboard = () => {
                 <CLabel htmlFor="city">Pitch :</CLabel>
               </CCol>
               <CCol xs="2">
-                <CInput type="number" id="pitchTime" name="pitchTime" min={1} max={999} value={pitchTime}
-                  onChange={(e) => {
-                    setPitchTime(Math.max(0, parseInt(e.target.value)).toString().slice(0, 3));
-                  }}
-                >
-                </CInput>
+                <CForm action="" method="post" inline>
+                  <CFormGroup className="pr-1">
+                    {/* <CLabel htmlFor="city">Pitch :</CLabel> */}
+                    <CInput type="number" id="pitchTime" name="pitchTime" min={1} max={999} value={pitchTime}
+                      onChange={(e) => {
+                        setPitchTime(Math.max(0, parseInt(e.target.value)).toString().slice(0, 3));
+                      }}
+                    />
+                    <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '5px' }}>{`   mins`}</CLabel>
+                  </CFormGroup>
+                </CForm>
+
               </CCol>
             </CFormGroup>
             <CFormGroup row>
@@ -245,7 +205,7 @@ const Dashboard = () => {
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
                         <CLabel htmlFor="exampleInputName2" className="pr-1"><span><b>blau</b> </span> <span style={{ marginLeft: '33px' }}>{'<'}</span></CLabel>
-                        <CInput type="number" name="blueColor" min={0} max={12} step={1} value={blueColor}
+                        <CInput type="number" id="blueColor" name="blueColor" min={0} max={13} step={1} value={blueColor}
                           onChange={(e) => {
                             setBlueColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
                           }}
@@ -261,14 +221,14 @@ const Dashboard = () => {
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
                         <CLabel htmlFor="exampleInputName2" className="pr-1"><b>verd</b></CLabel>
-                        <CInput type="number" name="blueColor" min={0} max={12} step={1} value={greenMinColor} style={{ marginLeft: '42px' }}
+                        <CInput type="number" name="greenMinColor" min={0} max={13} step={1} value={greenMinColor} style={{ marginLeft: '42px' }}
                           onChange={(e) => {
                             setGreenMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
                           }}
                         />
                         {'   '}
                         <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel>
-                        <CInput type="number" name="blueColor" min={0} max={12} step={1} value={greenMaxColor}
+                        <CInput type="number" name="greenMaxColor" min={0} max={13} step={1} value={greenMaxColor}
                           onChange={(e) => {
                             setGreenMaxColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
                           }}
@@ -284,14 +244,14 @@ const Dashboard = () => {
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
                         <CLabel htmlFor="exampleInputName2" className="pr-1"><b>taronja</b></CLabel>
-                        <CInput type="number" name="blueColor" min={0} max={12} step={1} value={orangeMinColor} style={{ marginLeft: '25px' }}
+                        <CInput type="number" name="orangeMinColor" min={0} max={13} step={1} value={orangeMinColor} style={{ marginLeft: '25px' }}
                           onChange={(e) => {
                             setOrangeMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
                           }}
                         />
                         {'   '}
                         <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel>
-                        <CInput type="number" name="blueColor" min={0} max={12} step={1} value={orangeMaxColor}
+                        <CInput type="number" name="blueColor" min={0} max={13} step={1} value={orangeMaxColor}
                           onChange={(e) => {
                             setOrangeMaxColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
                           }}
@@ -307,14 +267,14 @@ const Dashboard = () => {
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
                         <CLabel htmlFor="exampleInputName2" className="pr-1"><b>vermell</b></CLabel>
-                        <CInput type="number" name="blueColor" min={0} max={12} step={1} value={redMinColor} style={{ marginLeft: '25px' }}
+                        <CInput type="number" name="blueColor" min={0} max={13} step={1} value={redMinColor} style={{ marginLeft: '25px' }}
                           onChange={(e) => {
                             setRedMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
                           }}
                         />
                         {'   '}
                         <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel>
-                        <CInput type="number" name="blueColor" min={0} max={12} step={1} value={redMaxColor}
+                        <CInput type="number" name="blueColor" min={0} max={13} step={1} value={redMaxColor}
                           onChange={(e) => {
                             setRedMaxColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
                           }}
@@ -330,7 +290,7 @@ const Dashboard = () => {
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
                         <CLabel htmlFor="exampleInputName2" className="pr-1"><span><b>negre</b> </span> <span style={{ marginLeft: '28px' }}>{'>'}</span></CLabel>
-                        <CInput type="number" id="blackMinColor" name="blackMinColor" min={0} max={12} step={1} value={blackMinColor}
+                        <CInput type="number" id="blackMinColor" name="blackMinColor" min={0} max={13} step={1} value={blackMinColor}
                           onChange={(e) => {
                             setBlackMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
                           }}

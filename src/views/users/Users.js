@@ -61,13 +61,10 @@ const Users = () => {
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
   const [page, setPage] = useState(currentPage)
   const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
-  const data = useSelector((state) => state.excelReducer.chartData);
+  const chartParams = lodash.get(useSelector((state) => state.excelReducer.chartParams), '[0].values');
   const parentsData = [];
-  console.log(data, "Moazzam")
-
-  // if (chartData) {
-  //   console.log(chartData)
-  // }
+  const colorChartParams = lodash.get(chartParams, 'colors', {});
+  console.log(chartParams, "Moazzam", colorChartParams)
   if (successforgotmsg) {
     console.log(successforgotmsg);
     successforgotmsg.map(row => {
@@ -151,18 +148,22 @@ const Users = () => {
   // const donePieces = 100; //receive from clicking the button double click
   const skipBoxes = 3;
   const kanbanBoxes = (dailyHours * 60) / pitchPeriod;
-  console.log(kanbanBoxes, 'kanbanBoxes');
+  const blueColorChartParams = lodash.get(colorChartParams, 'blue', {});
+  const greenColorChartParams = lodash.get(colorChartParams, 'green', {});
+  const orangeColorChartParams = lodash.get(colorChartParams, 'orange', {});
+  const redColorChartParams = lodash.get(colorChartParams, 'red', {});
+  const blackColorChartParams = lodash.get(colorChartParams, 'black', {});
 
   const cardsData = [];
-  for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
-    console.log(i, 'data')
+  // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
+  for (var i = blackColorChartParams.max; i >= 1; i--) {
     var color = '';
 
-    if (i <= 2) color = 'blue';
-    else if (i > 2 && i <= 5) color = 'green';
-    else if (i > 5 && i <= 8) color = 'orange';
-    else if (i > 8 && i <= 11) color = 'red';
-    else if (i > 11) color = 'black';
+    if (i <= parseInt(blueColorChartParams.min)) color = 'blue';
+    else if (i >= parseInt(greenColorChartParams.min) && i <= parseInt(greenColorChartParams.max)) color = 'green';
+    else if (i >= parseInt(orangeColorChartParams.min) && i <= parseInt(orangeColorChartParams.max)) color = 'orange';
+    else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) color = 'red';
+    else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) color = 'black';
 
     const dataGroupRandom = dataGroupByProduct.slice(0, Math.floor(Math.random() * dataGroupByProduct.length) + 1);
 

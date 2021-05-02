@@ -31,11 +31,11 @@ export default function excelReducer(state = initialState, action) {
       };
     }
 
-    case types.Chart: {
-      console.log(action.data)
+    case types.GET_CHART_DATA: {
+      console.log(action.data, 'GET_CHART_DATA')
       return {
         ...state,
-        chartData: action.data
+        chartParams: action.data
       };
     }
 

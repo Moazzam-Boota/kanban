@@ -68,7 +68,7 @@ export function get_chart_data() {
       .then(({ data }) => {
         // console.log(data);
         dispatch({
-          type: types.Chart,
+          type: types.GET_CHART_DATA,
           data: data,
         });
       })
