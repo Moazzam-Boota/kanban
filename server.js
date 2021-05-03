@@ -168,10 +168,11 @@ app.get('/api/excel-upload-auto', (req, res) => {
         } else {
           console.log("Success", data.Buckets);
         }
+    });
 //     res.attachment('Dades sist Sequenciador MVP4 ruben 3 12.04.21.xlsx');
 //     var fileStream = s3.getObject(options).createReadStream();
 //     fileStream.pipe(res);
-// });
+});
 // *****************************************************************************
 // ************************ SOCKET Button Implmentation ************************ 
 // *****************************************************************************
