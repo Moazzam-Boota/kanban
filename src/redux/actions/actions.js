@@ -3,7 +3,7 @@ import * as types from "./actionTypes";
 // import { toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
-export function excel_sheet(data) {
+export function excel_sheet(data) { //excelSheet
   return function (dispatch) {
     // console.log("actions", data.get('file'));
     return axios
@@ -24,7 +24,7 @@ export function excel_sheet(data) {
       });
   };
 }
-export function push_shifts_data(data) {
+export function push_shifts_data(data) { //pushShiftsData
   return function (dispatch) {
     console.log(data);
     return axios

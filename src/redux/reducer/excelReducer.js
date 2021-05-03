@@ -48,7 +48,7 @@ export default function excelReducer(state = initialState, action) {
       };
     }
 
-    case types.Pitch_Time: {
+    case types.Pitch_Time: { //PITCH_TIME
 
       //types.Pitch_Time
       // console.log(action.data, "pitchtime Reducer");
