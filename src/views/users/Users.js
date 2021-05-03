@@ -34,22 +34,18 @@ const Users = () => {
     //   socket.emit("lightred", Number(this.checked)); //send button status to server (as 1 or 0)
     // });
     // });
-    console.log('use effect - green');
     socket.on('lightgreen', function (data) { //get button status from client
       // var count = 0;
       // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
       socket.emit("lightgreen", data); //send push button status to back to server
-      console.log('data for frontend - green', data);
       // setSocketResponse(true);
-      var peices = 1 + donePieces;
-      console.log(peices, data)
+      // var peices = 1 + donePieces;
       setDonePieces(data);
 
     });
     socket.on('lightred', function (data) { //get button status from client
       // document.getElementById("lightred").checked = data; //change checkbox according to push button on Raspberry Pi
       // socket.emit("lightred", data); //send push button status to back to server
-      console.log('data for frontend - red');
     });
 
     // socket.on("FromAPI", data => {
@@ -68,11 +64,9 @@ const Users = () => {
   const parentsData = [];
   const colorChartParams = lodash.get(chartParams, 'colors', {});
   const lineChartParams = lodash.get(chartParams, 'PERS044', {});
-  console.log(lineChartParams, "Moazzam", colorChartParams)
   if (successforgotmsg) {
     console.log(successforgotmsg);
     successforgotmsg.map(row => {
-      // [].map(row => {
       row.values.map(values => {
         parentsData.push(values);
       });
@@ -93,7 +87,7 @@ const Users = () => {
     dispatch(get_chart_data());
 
     currentPage !== page && setPage(currentPage)
-  }, [currentPage, page])
+  }, [dispatch, currentPage, page])
 
   const dataGroupByLine = lodash.chain(parentsData)
     // Group the elements of Array based on `color` property
@@ -109,13 +103,10 @@ const Users = () => {
     .map((value, key) => ({ orderNumber: key, data: value }))
     .value();
 
-  const dataGroupByShift = lodash.chain(parentsData)
-    // Group the elements of Array based on `color` property
-    .groupBy("shift_PPSHFT_IS")
-    // `key` is group's name (color), `value` is the array of objects
-    .map((value, key) => ({ shiftNumber: key, data: value }))
-    .value();
-
+  // const dataGroupByShift = lodash.chain(parentsData)
+  // .groupBy("shift_PPSHFT_IS")
+  // .map((value, key) => ({ shiftNumber: key, data: value }))
+  // .value();
   const quantityPerBox = 3;   // .per_box_qty_UNITCAIXA_IT
 
   const dataGroupByProduct = lodash.chain(parentsData)
@@ -129,8 +120,6 @@ const Users = () => {
       sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
       productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
     })).value();
-  console.log(dataGroupByOrder, 'newData', dataGroupByShift, 'product', dataGroupByProduct);
-  // console.log(dataGroupByOrder, 'newData', parentsData.slice(0).reverse())
 
   const dailyHours = 8; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
   const pitchPeriod = lodash.get(chartParams, 'pitchTime', 0); //minutes
@@ -143,13 +132,11 @@ const Users = () => {
   // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
 
   const boxesPerPitch = pitchPeriod / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
-  console.log(boxesPerPitch, 'boxesPerPitch', quantityPerBoxPerMinute)
-  // console.log(totalQuantity, 'totalQuantity')
   // TODO:: sum of all orders, quantity
   // TODO:: sum of all orders, quantity
   // 
   // const donePieces = 100; //receive from clicking the button double click
-  const skipBoxes = 3;
+  // const skipBoxes = 3;
   const kanbanBoxes = (dailyHours * 60) / pitchPeriod;
   const blueColorChartParams = lodash.get(colorChartParams, 'blue', {});
   const greenColorChartParams = lodash.get(colorChartParams, 'green', {});
@@ -178,8 +165,6 @@ const Users = () => {
     // const dataGroupByProductRandom = i === 1 ? dataGroupByProduct : [];
     const timeRange = lodash.get(lineChartParams, '[1].time', []);
     // const dataGroupRandom = dataGroupByProduct.slice(0, Math.floor(Math.random() * dataGroupByProduct.length) + 1);
-    console.log(lodash.get(lineChartParams, '[1].time', []), 'time', pitchPeriod, moment());
-
     var format = 'hh:mm'
 
     // var time = moment() gives you current time. no format required.
@@ -189,22 +174,17 @@ const Users = () => {
 
     if (time.isBetween(beforeTime, afterTime)) {
 
-      console.log('is between')
 
     } else {
 
-      console.log('is not between')
-
     }
 
-    // console.log(dataGroupByProductRandom, 'dataGroupRandom', i === blueColorChartParams.min, color)
     // dataGroupByProduct
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={Math.round(boxesPerPitch)}
       cardName={dataGroupByProductRandom.map((product, index) => {
-        console.log(product, i, dataGroupByProduct.length - 1, index, 'product')
         return (
           <span className="content-center" style={{
             backgroundColor: product.color,

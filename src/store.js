@@ -22,14 +22,6 @@ const middleWare = [thunk];
 // }
 
 const store = createStore(combineReducers({
-  // changeState,
-  // pitchTimeReducer,
-  // fileDownloadTypeReducer,
-  // shiftDaysReducer,
-  // shiftTimeReducer,
-  // breakTimeReducer,
-  // rangeSelectReducer,
-  // downlaodTimeReducer,
   excelReducer,
 }), applyMiddleware(...middleWare))
 export default store

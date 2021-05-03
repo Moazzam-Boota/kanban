@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { excel_sheet, intial_excel_sheet, pitch_time, file_download_type, download_time, push_shifts_data, colors_range } from "../../redux/actions/actions";
+import { excel_sheet, intial_excel_sheet, push_shifts_data } from "../../redux/actions/actions";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -12,7 +12,6 @@ import {
   CFormGroup,
   CInputRadio,
   CButton,
-  // CFormText,
   CCol,
   CCard,
   CCardHeader,
@@ -23,7 +22,6 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 
-// import { cibLgtm } from '@coreui/icons';
 import ShiftTime from './Shift';
 
 const Dashboard = () => {
@@ -41,14 +39,12 @@ const Dashboard = () => {
   var [fileDownloadType, setFileDownloadType] = useState('');
   var [downloadTime, setDownloadTime] = useState([]);
 
-  // handle shifts number here
+  // get data from redux
   const dispatch = useDispatch()
   const response = useSelector((state) => state.excelReducer.apiCalled);
   const parentsData = [];
   const success = useSelector((state) => state.excelReducer.response);
   const allState = useSelector((state) => state.excelReducer);
-  console.log(allState);
-  // const fileType = useSelector((state) => state.fileDownloadTypeReducer);
 
   if (success) {
     toast.success("File Uploaded Successfully");
@@ -62,6 +58,7 @@ const Dashboard = () => {
   };
 
   const saveParametersData = () => {
+        // pass data to database 
     const dataState = { ...allState };
     delete dataState.apiCalled;
 
@@ -101,9 +98,9 @@ const Dashboard = () => {
       'Shift data is saved!',
       'success'
     )
-    // get data from redux
   }
   const getTime = (value) => {
+    //set file download time
     setDownloadTime(value);
   }
 
@@ -129,7 +126,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     dispatch(intial_excel_sheet());
-  }, []);
+  }, [dispatch]);
 
   return (
     <CCard>
@@ -146,7 +143,6 @@ const Dashboard = () => {
               <CCol xs="2">
                 <CForm action="" method="post" inline>
                   <CFormGroup className="pr-1">
-                    {/* <CLabel htmlFor="city">Pitch :</CLabel> */}
                     <CInput type="number" id="pitchTime" name="pitchTime" min={1} max={999} value={pitchTime}
                       onChange={(e) => {
                         setPitchTime(Math.max(0, parseInt(e.target.value)).toString().slice(0, 3));
@@ -180,7 +176,6 @@ const Dashboard = () => {
 
               {fileDownloadType === 'automatic' ? <CCol md="3"><CInput onChange={(e) => { getTime(e.target.value) }} type="time" id="autoDownloadTime" name="autoDownloadTime" min="09:00" max="18:00"></CInput></CCol>
                 : fileDownloadType === 'manual' ? <CCol md="9">
-                  {/* <CForm name="fileSubmitForm" id="fileSubmitForm" action="" method="post" className="form-horizontal"> */}
                   <CFormGroup row>
                     <CCol md="7">
 
@@ -191,7 +186,6 @@ const Dashboard = () => {
                       <ToastContainer />
                     </CCol>
                   </CFormGroup>
-                  {/* </CForm> */}
                 </CCol> : ''}
 
             </CFormGroup>

@@ -14,16 +14,12 @@ import {
 
 const SortableSelect = SortableContainer(Select);
 const ShiftTime = ({
-  assemblyLine,
   shiftCount,
   totalShifts,
   setShiftCount,
 }) => {
-  // const [selected, setSelected] = React.useState([]);
-  // const [shiftTime, setShifttime] = React.useState([]);
 
   const dispatch = useDispatch();
-  console.log("Selected days are ");
   // shift breaks, handle here
   var [breakCount, setBreakCount] = useState([1]);
 

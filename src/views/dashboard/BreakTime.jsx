@@ -1,7 +1,6 @@
 import { CLabel, CFormGroup, CButton, CCol, CRow } from "@coreui/react";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 import { useDispatch } from "react-redux";
-// import React, { useState, useEffect } from "react";
 import { break_time, addBreak, deleteBreak } from "../../redux/actions/actions";
 
 const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount }) => {
