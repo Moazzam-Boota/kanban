@@ -35,20 +35,17 @@ function getDocs(res, type) {
         endkey: 'excel',
     }, function (err, response) {
         var filterRows = [];
-        // console.log(response.rows)
         response.rows.map(i => {
             if (i.doc.type === type) {
-                console.log(i.doc.values, 'i.doc')
                 filterRows.push(i.doc);
 
             }
 
         });
-        // console.log(filterRows)
         res.send(filterRows)
         pouchDBConnection.sync(remoteDB);
 
-        if (err) { return console.log(err); }
+        if (err) {  }
         // handle result
     });
 }
@@ -96,7 +93,6 @@ app.post('/api/excel-upload', (req, res) => {
                 const promise = excel
                     .put(data, { force: true }).then(function (response) {
                         rowsData = [];
-                        console.log("Success", response)
                     }).then(function (err) {
 
                     }); // <-- whatever async operation you have here
@@ -111,16 +107,13 @@ app.post('/api/excel-upload', (req, res) => {
         Promise.all(promises).then(() => {
             pouchDBConnection.sync(remoteDB);
             getDocs(res, "excel");
-            console.log("Done")
         }).catch((err) => {
-            console.log("An error occurred while inserting data", err);
         });
     });
 });
 
 app.post('/api/push-shifts-data', (req, res) => {
 
-    // console.log(req.body);
     const promises = [];
     var ShiftsData = {
         _id: new Date().toISOString().slice(0, 10) + Math.random().toString(36),
@@ -129,7 +122,6 @@ app.post('/api/push-shifts-data', (req, res) => {
     };
     const promise = pouchDBConnection
         .put(ShiftsData, { force: true }).then(function (response) {
-            console.log("Success", response)
         }).then(function (err) {
 
         });
@@ -137,9 +129,7 @@ app.post('/api/push-shifts-data', (req, res) => {
     Promise.all(promises).then(() => {
         pouchDBConnection.sync(remoteDB);
         getDocs(res);
-        console.log("Done")
     }).catch((err) => {
-        console.log("An error occurred while inserting data", err);
     });
     pouchDBConnection.sync(remoteDB);
     res.send("true")
@@ -157,7 +147,31 @@ app.get('/api/get-chart-data', (req, res) => {
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 
+app.get('/api/excel-upload-auto', (req, res) => {
 
+    var AWS = require('aws-sdk');
+    AWS.config.update(
+        {
+            accessKeyId: "AKIAQA425EAVAE6OMI76",
+            secretAccessKey: "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",
+            region: 'EU (Ireland) eu-west-1'
+        }
+    );
+    var s3 = new AWS.S3();
+    var options = {
+        Bucket: 'metalast-file-exchange20210112104029404500000001',
+        Key: 'Dades sist Sequenciador MVP4 ruben 3 12.04.21.xlsx',
+    };
+    s3.listBuckets(function(err, data) {
+        if (err) {
+          console.log("Error", err);
+        } else {
+          console.log("Success", data.Buckets);
+        }
+//     res.attachment('Dades sist Sequenciador MVP4 ruben 3 12.04.21.xlsx');
+//     var fileStream = s3.getObject(options).createReadStream();
+//     fileStream.pipe(res);
+// });
 // *****************************************************************************
 // ************************ SOCKET Button Implmentation ************************ 
 // *****************************************************************************
