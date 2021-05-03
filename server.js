@@ -45,7 +45,7 @@ function getDocs(res, type) {
         res.send(filterRows)
         pouchDBConnection.sync(remoteDB);
 
-        if (err) {  }
+        if (err) { }
         // handle result
     });
 }
@@ -90,7 +90,7 @@ app.post('/api/excel-upload', (req, res) => {
                     values: rowsData
                 };
 
-                const promise = excel
+                const promise = pouchDBConnection
                     .put(data, { force: true }).then(function (response) {
                         rowsData = [];
                     }).then(function (err) {
@@ -162,16 +162,16 @@ app.get('/api/excel-upload-auto', (req, res) => {
         Bucket: 'metalast-file-exchange20210112104029404500000001',
         Key: 'Dades sist Sequenciador MVP4 ruben 3 12.04.21.xlsx',
     };
-    s3.listBuckets(function(err, data) {
+    s3.listBuckets(function (err, data) {
         if (err) {
-          console.log("Error", err);
+            console.log("Error", err);
         } else {
-          console.log("Success", data.Buckets);
+            console.log("Success", data.Buckets);
         }
     });
-//     res.attachment('Dades sist Sequenciador MVP4 ruben 3 12.04.21.xlsx');
-//     var fileStream = s3.getObject(options).createReadStream();
-//     fileStream.pipe(res);
+    //     res.attachment('Dades sist Sequenciador MVP4 ruben 3 12.04.21.xlsx');
+    //     var fileStream = s3.getObject(options).createReadStream();
+    //     fileStream.pipe(res);
 });
 // *****************************************************************************
 // ************************ SOCKET Button Implmentation ************************ 
