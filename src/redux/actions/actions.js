@@ -3,15 +3,14 @@ import * as types from "./actionTypes";
 // import { toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
-export function excel_sheet(data) { //excelSheet
+export function excelSheet(data) { 
   return function (dispatch) {
-    // console.log("actions", data.get('file'));
     return axios
       .post(process.env.REACT_APP_BASE_URL + "api/excel-upload", data, {})
       .then(({ data }) => {
         // console.log(data);
         dispatch({
-          type: types.Excel,
+          type: types.EXCEL,
           data: data,
           response: true
 
@@ -24,7 +23,7 @@ export function excel_sheet(data) { //excelSheet
       });
   };
 }
-export function push_shifts_data(data) { //pushShiftsData
+export function pushShiftsData(data) { 
   return function (dispatch) {
     console.log(data);
     return axios
@@ -32,7 +31,7 @@ export function push_shifts_data(data) { //pushShiftsData
       .then(({ data }) => {
         // console.log(data);
         dispatch({
-          type: types.Push_Data,
+          type: types.PUSH_DATA,
           data: data,
           // response: true
         });
@@ -43,15 +42,14 @@ export function push_shifts_data(data) { //pushShiftsData
       });
   };
 }
-export function intial_excel_sheet() {
+export function intialExcelSheet() {
   return function (dispatch) {
-    // console.log("actions", data.get('file'));
     return axios
       .get(process.env.REACT_APP_BASE_URL + "api/intial-excel-upload", {}, {})
       .then(({ data }) => {
         console.log(data);
         dispatch({
-          type: types.Excel,
+          type: types.EXCEL,
           data: data,
         });
       })
@@ -60,13 +58,11 @@ export function intial_excel_sheet() {
       });
   };
 }
-export function get_chart_data() {
+export function getChartData() {
   return function (dispatch) {
-    // console.log("actions", data.get('file'));
     return axios
       .get(process.env.REACT_APP_BASE_URL + "api/get-chart-data", {}, {})
       .then(({ data }) => {
-        // console.log(data);
         dispatch({
           type: types.GET_CHART_DATA,
           data: data,
@@ -77,49 +73,44 @@ export function get_chart_data() {
       });
   };
 }
-export function pitch_time(data) {
-  // console.log(data, "Action pitchtime");
+export function pitchtime(data) {
   return function (dispatch) {
 
     dispatch({
-      type: types.Pitch_Time,
+      type: types.PITCH_TIME,
       data: data,
     });
   }
 }
-export function file_download_type(data) {
-  // console.log(data, "Action file download type")
+export function fileDownloadType(data) {
   return function (dispatch) {
 
     dispatch({
-      type: types.File_Download_Type,
+      type: types.FILE_DOWNLOAD_TYPE,
       data: data,
     });
   }
 }
-export function shift_days(data) {
-  // console.log(data, "Action shift days");
+export function shiftDays(data) {
   return function (dispatch) {
 
     dispatch({
-      type: types.Shift_Days,
+      type: types.SHIFT_DAYS,
       data: data,
     });
   }
 }
-export function shift_time(data) {
-  // console.log(data, "Action shift time");
+export function shiftTime(data) {
   return function (dispatch) {
 
     dispatch({
-      type: types.Shift_Time,
+      type: types.SHIFT_TIME,
       data: data,
     });
   }
 }
 
 export function addShift(data) {
-  // console.log(data, "Action shift time");
   return function (dispatch) {
 
     dispatch({
@@ -130,7 +121,6 @@ export function addShift(data) {
 }
 
 export function deleteShift(data) {
-  // console.log(data, "Action shift time");
   return function (dispatch) {
 
     dispatch({
@@ -141,7 +131,6 @@ export function deleteShift(data) {
 }
 
 export function addBreak(data) {
-  // console.log(data, "Action shift time");
   return function (dispatch) {
 
     dispatch({
@@ -152,7 +141,6 @@ export function addBreak(data) {
 }
 
 export function deleteBreak(data) {
-  // console.log(data, "Action shift time");
   return function (dispatch) {
 
     dispatch({
@@ -161,32 +149,29 @@ export function deleteBreak(data) {
     });
   }
 }
-export function break_time(data) {
-  console.log(data, "Action Break time");
+export function breakTime(data) {
   return function (dispatch) {
 
     dispatch({
-      type: types.Break_Time,
+      type: types.BREAK_TIME,
       data: data,
     });
   }
 }
-export function download_time(data) {
-  console.log(data, "Download Time Action");
+export function downloadTime(data) {
   return function (dispatch) {
 
     dispatch({
-      type: types.Download_Time,
+      type: types.DOWNLOAD_TIME,
       data: data,
     });
   }
 }
-export function colors_range(data) {
-  console.log(data, "Colors Action");
+export function colorsRange(data) {
   return function (dispatch) {
 
     dispatch({
-      type: types.Colors_Range,
+      type: types.COLORS_RANGE,
       data: data,
     });
   }

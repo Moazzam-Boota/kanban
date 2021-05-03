@@ -22,7 +22,7 @@ const lodash = require('lodash');
 export default function excelReducer(state = initialState, action) {
   switch (action.type) {
 
-    case types.Excel: {
+    case types.EXCEL: {
 
       return {
         ...state,
@@ -32,14 +32,13 @@ export default function excelReducer(state = initialState, action) {
     }
 
     case types.GET_CHART_DATA: {
-      console.log(action.data, 'GET_CHART_DATA')
       return {
         ...state,
         chartParams: action.data
       };
     }
 
-    case types.Push_Data: {
+    case types.PUSH_DATA: {
       console.log(action.data)
       return {
         ...state,
@@ -48,19 +47,16 @@ export default function excelReducer(state = initialState, action) {
       };
     }
 
-    case types.Pitch_Time: { //PITCH_TIME
+    case types.PITCH_TIME: { //PITCH_TIME
 
-      //types.Pitch_Time
-      // console.log(action.data, "pitchtime Reducer");
       return {
         ...state,
         pitchTime: action.data
       };
     }
 
-    case types.File_Download_Type: {
+    case types.FILE_DOWNLOAD_TYPE: {
 
-      // console.log(action.data, " file download type Reducer");
       return {
         ...state,
         fileDownloadType: action.data
@@ -100,9 +96,8 @@ export default function excelReducer(state = initialState, action) {
       return { ...updateState };
     }
 
-    case types.Shift_Time: {
+    case types.SHIFT_TIME: {
 
-      // console.log(action.data, " Shift time Reducer");
       return {
         ...state,
         [action.data.shiftCount]: {
@@ -112,8 +107,7 @@ export default function excelReducer(state = initialState, action) {
       };
     }
 
-    case types.Break_Time: {
-      console.log(lodash.get(state, [action.data.shiftCount, 'breaks'], {}), " Break time Reducer");
+    case types.BREAK_TIME: {
       return {
         ...state,
         [action.data.shiftCount]: {
@@ -126,27 +120,23 @@ export default function excelReducer(state = initialState, action) {
       };
     }
 
-    case types.Download_Time:
-      // console.log(action.data, " Downlaod Time Reducer");
+    case types.DOWNLOAD_TIME:
       return {
         ...state,
         downloadTime: action.data
       };
 
-    case types.Shift_Days: {
-      // console.log(state, action.data, " Shift Days Reducer");
+    case types.SHIFT_DAYS: {
       return {
         ...state,
         [action.data.shiftCount]: {
           ...state[action.data.shiftCount],
-          days: action.data.shiftDays,
-          // time: action.data.shiftDays,
+          days: action.data.shiftDays
         }
       };
     }
 
-    case types.Colors_Range:
-      console.log(action.data, " Colors Reducer");
+    case types.COLORS_RANGE:
       return {
         ...state,
         colors: action.data

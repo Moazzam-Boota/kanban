@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { intial_excel_sheet, get_chart_data } from "../../redux/actions/actions";
+import { intialExcelSheet, getChartData } from "../../redux/actions/actions";
 import CWidgetBrand from './CWidgetBrand';
 import {
   CWidgetSimple,
@@ -83,8 +83,8 @@ const Users = () => {
   }
 
   useEffect(() => {
-    dispatch(intial_excel_sheet());
-    dispatch(get_chart_data());
+    dispatch(intialExcelSheet());
+    dispatch(getChartData());
 
     currentPage !== page && setPage(currentPage)
   }, [dispatch, currentPage, page])

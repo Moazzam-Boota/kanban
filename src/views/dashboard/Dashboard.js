@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { excel_sheet, intial_excel_sheet, push_shifts_data } from "../../redux/actions/actions";
+import { excelSheet, intialExcelSheet, pushShiftsData } from "../../redux/actions/actions";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -92,7 +92,7 @@ const Dashboard = () => {
       },
       createdAt: new Date()
     };
-    dispatch(push_shifts_data(parameters));
+    dispatch(pushShiftsData(parameters));
     Swal.fire(
       'Saved',
       'Shift data is saved!',
@@ -108,7 +108,7 @@ const Dashboard = () => {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    dispatch(excel_sheet(formData))
+    dispatch(excelSheet(formData))
   };
 
   var uniqueAssemblyLines = [];
@@ -125,7 +125,7 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    dispatch(intial_excel_sheet());
+    dispatch(intialExcelSheet());
   }, [dispatch]);
 
   return (

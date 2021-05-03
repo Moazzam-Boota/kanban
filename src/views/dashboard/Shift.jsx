@@ -6,8 +6,8 @@ import Select from "react-select";
 import { SortableContainer } from "react-sortable-hoc";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 import {
-  shift_days,
-  shift_time,
+  shiftDays,
+  shiftTime,
   addShift,
   deleteShift,
 } from "../../redux/actions/actions";
@@ -50,7 +50,7 @@ const ShiftTime = ({
             onChange={(selectedOptions) => {
               // set week_days in redux for a assemblyLine
               dispatch(
-                shift_days({
+                shiftDays({
                   shiftDays: selectedOptions.map((k) => k.value),
                   shiftCount: shiftCount,
                 })
@@ -64,7 +64,7 @@ const ShiftTime = ({
             onChange={(value) => {
               // set time for a shift in redux
               dispatch(
-                shift_time({ shiftTime: value, shiftCount: shiftCount })
+                shiftTime({ shiftTime: value, shiftCount: shiftCount })
               );
             }}
             value={["08:00", "14:00"]}
