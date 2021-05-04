@@ -48,7 +48,7 @@ const dbDetails = {
     url: 'localhost:5984',
     user: 'admin',
     pass: 'admin',
-    db: 'excel8',
+    db: 'excel_files',
 };
 
 var pouchDBConnection = new PouchDB(dbDetails.db);
@@ -83,7 +83,7 @@ function getDocs(res, type) {
 
 app.post('/api/excel-upload', (req, res) => {
 
-    var workbook = new pouchDBConnection.Workbook();
+    var workbook = new Excel.Workbook();
     workbook.xlsx.load(req.files.file.data).then(function () {
 
         //Get sheet by Name
