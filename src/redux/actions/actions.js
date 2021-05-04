@@ -73,7 +73,7 @@ export function getChartData() {
       });
   };
 }
-export function pitchtime(data) {
+export function pitchTime(data) {
   return function (dispatch) {
 
     dispatch({
