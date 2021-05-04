@@ -11,6 +11,9 @@ import {
 } from '@coreui/react'
 import './index.css';
 import socketIOClient from "socket.io-client";
+import Swal from 'sweetalert2/dist/sweetalert2.js';
+import 'sweetalert2/src/sweetalert2.scss';
+
 const ENDPOINT = "http://127.0.0.1:4001";
 const lodash = require('lodash');
 const moment = require('moment');
@@ -41,11 +44,20 @@ const Users = () => {
       // setSocketResponse(true);
       // var peices = 1 + donePieces;
       setDonePieces(data);
-
+      Swal.fire(
+        'Updated',
+        'Box is updated!',
+        'success'
+      )
     });
     socket.on('lightred', function (data) { //get button status from client
       // document.getElementById("lightred").checked = data; //change checkbox according to push button on Raspberry Pi
       // socket.emit("lightred", data); //send push button status to back to server
+      Swal.fire(
+        'Error',
+        'Some Error Occured!',
+        'error'
+      )
     });
 
     // socket.on("FromAPI", data => {
@@ -144,10 +156,26 @@ const Users = () => {
   const redColorChartParams = lodash.get(colorChartParams, 'red', {});
   const blackColorChartParams = lodash.get(colorChartParams, 'black', {});
 
+  // const dataGroupByProductRandom = i === 1 ? dataGroupByProduct : [];
+  const timeRange = lodash.get(lineChartParams, '[1].time', []);
+
+  // const dataGroupRandom = dataGroupByProduct.slice(0, Math.floor(Math.random() * dataGroupByProduct.length) + 1);
+  var format = 'HH:mm'
+  // check if currentTime is between the pitchPeriod, add cards to that pitch
+  // timeRange[0] add pitchPeriod, check if current time is between, old and new+shift time, show boxes
+  // var time = moment() gives you current time. no format required.
+
+
+
+  var startShiftTime = moment(timeRange[1], format);
   const cardsData = [];
+  var activeShiftPeriod = 0;
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
   for (var i = blackColorChartParams.max; i >= 1; i--) {
     var color = '';
+    var time = moment('10:10', format);
+    var beforeTime = moment(startShiftTime.format('HH:mm'), format);
+    var afterTime = moment(startShiftTime.subtract(pitchPeriod, 'minutes').format('HH:mm'), format);
 
     if (i <= parseInt(blueColorChartParams.min)) { color = 'blue'; }
     else if (i >= parseInt(greenColorChartParams.min) && i <= parseInt(greenColorChartParams.max)) { color = 'green'; }
@@ -155,29 +183,21 @@ const Users = () => {
     else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) { color = 'red'; }
     else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
 
-    // setHeaderWidgetColor(color);
-    var dataGroupByProductRandom = [];
+    // startShiftTime = startShiftTime.add(pitchPeriod, 'minutes').format('hh:mm');
+    console.log(time, afterTime, beforeTime, 'timeRange')
+    if (time.isBetween(afterTime, beforeTime)) {
+      activeShiftPeriod = i;
+      headerWidgetColor = color;
+      // console.log(i, activeShiftPeriod, time, beforeTime, afterTime, 'here is')
+    }
 
-    if (i <= parseInt(blueColorChartParams.min)) {
-      headerWidgetColor = 'blue';
+    console.log(beforeTime, afterTime, 'startShiftTime')
+
+    var dataGroupByProductRandom = [];
+    if (i <= activeShiftPeriod) {
       dataGroupByProductRandom = dataGroupByProduct;
     }
-    // const dataGroupByProductRandom = i === 1 ? dataGroupByProduct : [];
-    const timeRange = lodash.get(lineChartParams, '[1].time', []);
-    // const dataGroupRandom = dataGroupByProduct.slice(0, Math.floor(Math.random() * dataGroupByProduct.length) + 1);
-    var format = 'hh:mm'
 
-    // var time = moment() gives you current time. no format required.
-    var time = moment('15:34', format),
-      beforeTime = moment(timeRange[0], format),
-      afterTime = moment(timeRange[1], format);
-
-    if (time.isBetween(beforeTime, afterTime)) {
-
-
-    } else {
-
-    }
 
     // dataGroupByProduct
     cardsData.push(<CWidgetBrand
