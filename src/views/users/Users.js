@@ -158,8 +158,8 @@ const Users = () => {
     // setHeaderWidgetColor(color);
     var dataGroupByProductRandom = [];
 
-    if (i <= parseInt(greenColorChartParams.max)) {
-      headerWidgetColor = 'green';
+    if (i <= parseInt(blueColorChartParams.min)) {
+      headerWidgetColor = 'blue';
       dataGroupByProductRandom = dataGroupByProduct;
     }
     // const dataGroupByProductRandom = i === 1 ? dataGroupByProduct : [];
