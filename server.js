@@ -1,44 +1,15 @@
 const express = require('express');
 const PouchDB = require('pouchdb');
 const Excel = require('exceljs');
+PouchDB.plugin(require('pouchdb-find'));
 
 var cors = require('cors')
 const fileUpload = require('express-fileupload');
-// const downloadTime = require('./src/config');
 const app = express();
 const port = process.env.PORT || 5000;
 
 const schedule = require("node-schedule");
 
-const time = new Date(2021, 04, 04, 16, 20, 0);
-
-// console.log(downloadTime);
-
-schedule.scheduleJob(time, function () {
-    console.log("Time ; ", time);
-    var AWS = require('aws-sdk');
-    var fs = require('fs');
-    AWS.config.update(
-        {
-            accessKeyId: "AKIAQA425EAVAE6OMI76",
-            secretAccessKey: "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",
-            region: 'eu-west-1'
-        }
-    );
-    var s3 = new AWS.S3();
-    var options = {
-        Bucket: 'bestplantbucket',
-        Key: 'META_SQL (1).xlsm',
-    };
-    s3.getObject(options, function (err, data) {
-        if (err) {
-            throw err
-        }
-        fs.writeFileSync('./aws-files/' + options.Key, data.Body)
-        console.log('file downloaded successfully')
-    })
-
-})
 app.use(cors());
 app.use(express.json({ limit: '200mb' }));
 app.use(fileUpload());
@@ -80,7 +51,42 @@ function getDocs(res, type) {
         // handle result
     });
 }
+schedule.scheduleJob(" * * * * * ", function () {
+ var downloadTime=[];
+    remoteDB.find({
+        selector: { type: 'shifts' }
+    }).then(function (res) {
+        res.docs.map(i => {
+            downloadTime.push(i.values.downloadTime);
 
+            schedule.scheduleJob(i.values.downloadTime, function () {
+
+                var AWS = require('aws-sdk');
+                var fs = require('fs');
+                AWS.config.update(
+                    {
+                        accessKeyId: "AKIAQA425EAVAE6OMI76",
+                        secretAccessKey: "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",
+                        region: 'eu-west-1'
+                    }
+                );
+                var s3 = new AWS.S3();
+                var options = {
+                    Bucket: 'bestplantbucket',
+                    Key: 'META_SQL (1).xlsm',
+                };
+                s3.getObject(options, function (err, data) {
+                    if (err) {
+                        throw err
+                    }
+                    fs.writeFileSync('./aws-files/' + options.Key, data.Body)
+                    console.log('file downloaded successfully')
+                })
+
+            })
+        });
+    });
+});
 app.post('/api/excel-upload', (req, res) => {
 
     var workbook = new Excel.Workbook();

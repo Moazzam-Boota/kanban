@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { excelSheet, intialExcelSheet, pushShiftsData } from "../../redux/actions/actions";
-import { latestTime } from "../../config";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -59,7 +58,7 @@ const Dashboard = () => {
   };
 
   const saveParametersData = () => {
-        // pass data to database 
+    // pass data to database 
     const dataState = { ...allState };
     delete dataState.apiCalled;
 
@@ -94,7 +93,6 @@ const Dashboard = () => {
       createdAt: new Date()
     };
     dispatch(pushShiftsData(parameters));
-    // latestTime(new Date());
     Swal.fire(
       'Saved',
       'Shift data is saved!',
@@ -118,8 +116,8 @@ const Dashboard = () => {
     return self.indexOf(value) === index;
   }
   if (response) {
-    response.map(row => {
-      row.values.map(values => {
+    response.forEach(row => {
+      row.values.forEach(values => {
         parentsData.push(values.line_VOPLGR_EF);
       });
     });
@@ -176,7 +174,7 @@ const Dashboard = () => {
                 <CLabel htmlFor="autoFile"></CLabel>
               </CCol>
 
-              {fileDownloadType === 'automatic' ? <CCol md="3"><CInput onChange={(e) => { getTime(e.target.value) }} type="time" id="autoDownloadTime" name="autoDownloadTime" min="09:00" max="18:00"></CInput></CCol>
+              {fileDownloadType === 'automatic' ? <CCol md="5"><CInput onChange={(e) => { getTime(e.target.value) }} type="datetime-local" id="autoDownloadTime" name="autoDownloadTime" min="09:00" max="18:00"></CInput></CCol>
                 : fileDownloadType === 'manual' ? <CCol md="9">
                   <CFormGroup row>
                     <CCol md="7">

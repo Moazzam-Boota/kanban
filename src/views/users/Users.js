@@ -78,8 +78,8 @@ const Users = () => {
   const lineChartParams = lodash.get(chartParams, 'PERS044', {});
   if (successforgotmsg) {
     console.log(successforgotmsg);
-    successforgotmsg.map(row => {
-      row.values.map(values => {
+    successforgotmsg.forEach(row => {
+      row.values.forEach(values => {
         parentsData.push(values);
       });
     });
