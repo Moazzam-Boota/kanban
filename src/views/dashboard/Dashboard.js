@@ -27,7 +27,7 @@ import ShiftTime from './Shift';
 
 const Dashboard = () => {
   var [shiftCount, setShiftCount] = useState([1]);
-  var [pitchTime, setPitchTime] = useState(15);
+  var [pitchTime, setPitchTime] = useState(30);
   var [blueColor, setBlueColor] = useState(2);
   var [greenMinColor, setGreenMinColor] = useState(3);
   var [greenMaxColor, setGreenMaxColor] = useState(5);

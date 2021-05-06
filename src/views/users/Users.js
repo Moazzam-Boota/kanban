@@ -164,7 +164,7 @@ const Users = () => {
   // var time = moment() gives you current time. no format required.
 
   console.log(dataGroupByProduct, 'dataGroupByProduct')
-  var time = moment('13:10', format);
+  var time = moment('10:40', format);
   var startShiftTime = moment(timeRange[1], format);
   const cardsData = [];
   var activeShiftPeriod = 0;
@@ -214,7 +214,7 @@ const Users = () => {
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
-      shift={Math.round(boxesPerPitch)}
+      shift={dataGroupByProductRandom.length != 0 ? Math.round(boxesPerPitch) : 0}
       cardName={dataGroupByProductRandom.map((product, index) => {
         return (
           <span className="content-center" style={{
