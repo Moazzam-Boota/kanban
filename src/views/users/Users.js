@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { intialExcelSheet, getChartData } from "../../redux/actions/actions";
 import CWidgetBrand from './CWidgetBrand';
 import {
-  CWidgetSimple,
   CFormGroup,
   CCol,
   CRow,
 } from '@coreui/react'
+import CWidgetSimple from './CWidgetSimple';
 import './index.css';
 import socketIOClient from "socket.io-client";
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -121,7 +121,7 @@ const Users = () => {
   // .value();
   const quantityPerBox = 3;   // .per_box_qty_UNITCAIXA_IT
 
-  const dataGroupByProduct = lodash.chain(parentsData)
+  const dataGroupByProduct = lodash.orderBy(lodash.chain(parentsData)
     // Group the elements of Array based on `color` property
     .groupBy("part_num_VHPRNO_C")
     // `key` is group's name (color), `value` is the array of objects
@@ -131,7 +131,7 @@ const Users = () => {
       color: getRandomColor(),
       sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
       productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
-    })).value();
+    })).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
 
   const dailyHours = 8; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
   const pitchPeriod = lodash.get(chartParams, 'pitchTime', 0); //minutes
@@ -156,24 +156,22 @@ const Users = () => {
   const redColorChartParams = lodash.get(colorChartParams, 'red', {});
   const blackColorChartParams = lodash.get(colorChartParams, 'black', {});
 
-  // const dataGroupByProductRandom = i === 1 ? dataGroupByProduct : [];
   const timeRange = lodash.get(lineChartParams, '[1].time', []);
 
-  // const dataGroupRandom = dataGroupByProduct.slice(0, Math.floor(Math.random() * dataGroupByProduct.length) + 1);
   var format = 'HH:mm'
   // check if currentTime is between the pitchPeriod, add cards to that pitch
   // timeRange[0] add pitchPeriod, check if current time is between, old and new+shift time, show boxes
   // var time = moment() gives you current time. no format required.
 
-
-
+  console.log(dataGroupByProduct, 'dataGroupByProduct')
+  var time = moment('13:10', format);
   var startShiftTime = moment(timeRange[1], format);
   const cardsData = [];
   var activeShiftPeriod = 0;
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
   for (var i = blackColorChartParams.max; i >= 1; i--) {
     var color = '';
-    var time = moment('10:10', format);
+
     var beforeTime = moment(startShiftTime.format('HH:mm'), format);
     var afterTime = moment(startShiftTime.subtract(pitchPeriod, 'minutes').format('HH:mm'), format);
 
@@ -184,7 +182,7 @@ const Users = () => {
     else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
 
     // startShiftTime = startShiftTime.add(pitchPeriod, 'minutes').format('hh:mm');
-    console.log(time, afterTime, beforeTime, 'timeRange')
+    // console.log(time, afterTime, beforeTime, 'timeRange')
     if (time.isBetween(afterTime, beforeTime)) {
       activeShiftPeriod = i;
       headerWidgetColor = color;
@@ -195,9 +193,22 @@ const Users = () => {
 
     var dataGroupByProductRandom = [];
     if (i <= activeShiftPeriod) {
-      dataGroupByProductRandom = dataGroupByProduct;
-    }
+      console.log(dataGroupByProduct, 'dataGroupByProduct')
+      dataGroupByProductRandom = dataGroupByProduct.map((product, index) => {
 
+        // const singleProduct = Math.floor(product.sum / quantityPerBox); //quantityPerBox
+        const singleProduct = Math.round(product.sum / quantityPerBox / boxesPerPitch);
+        // check if sum 0, skip product
+        // if sum of all products in a shift >=boxesPerPitch, skip
+        // 
+        dataGroupByProduct.filter(k => k.product === product.product)[0].sum = product.sum - singleProduct;
+        console.log(product, boxesPerPitch, product.sum / quantityPerBox, singleProduct, 'singleProduct')
+        return {
+          record: product, singleProduct
+        };
+      });
+    }
+    console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
 
     // dataGroupByProduct
     cardsData.push(<CWidgetBrand
@@ -207,7 +218,7 @@ const Users = () => {
       cardName={dataGroupByProductRandom.map((product, index) => {
         return (
           <span className="content-center" style={{
-            backgroundColor: product.color,
+            backgroundColor: product.record.color,
             padding: '5px',
             // marginLeft: '5px',
             // width: '10px',
@@ -226,7 +237,7 @@ const Users = () => {
             {/* <span style={{
               padding: '5px'
             }}> */}
-            {Math.floor(product.productsPerBox / boxesPerPitch)}</span>
+            {product.singleProduct}</span>
           // </span>
         )
       })
