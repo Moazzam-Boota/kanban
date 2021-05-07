@@ -1,14 +1,11 @@
 import axios from "axios";
 import * as types from "./actionTypes";
-// import { toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
 
 export function excelSheet(data) { 
   return function (dispatch) {
     return axios
       .post(process.env.REACT_APP_BASE_URL + "api/excel-upload", data, {})
       .then(({ data }) => {
-        // console.log(data);
         dispatch({
           type: types.EXCEL,
           data: data,
@@ -16,29 +13,22 @@ export function excelSheet(data) {
 
         });
 
-
       })
       .catch((error) => {
-        // toast.error(error.response.data.errors);
       });
   };
 }
 export function pushShiftsData(data) { 
   return function (dispatch) {
-    console.log(data);
     return axios
       .post(process.env.REACT_APP_BASE_URL + "api/push-shifts-data", data, {})
       .then(({ data }) => {
-        // console.log(data);
         dispatch({
           type: types.PUSH_DATA,
           data: data,
-          // response: true
         });
       })
       .catch((error) => {
-        console.log("error")
-        // toast.error(error.response.data.errors);
       });
   };
 }
@@ -47,14 +37,12 @@ export function intialExcelSheet() {
     return axios
       .get(process.env.REACT_APP_BASE_URL + "api/intial-excel-upload", {}, {})
       .then(({ data }) => {
-        console.log(data);
         dispatch({
           type: types.EXCEL,
           data: data,
         });
       })
       .catch((error) => {
-        // toast.error(error.response.data.errors);
       });
   };
 }
@@ -69,7 +57,6 @@ export function getChartData() {
         });
       })
       .catch((error) => {
-        // toast.error(error.response.data.errors);
       });
   };
 }

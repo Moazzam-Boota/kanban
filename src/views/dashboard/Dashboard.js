@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { excelSheet, intialExcelSheet, pushShiftsData } from "../../redux/actions/actions";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
@@ -47,8 +47,11 @@ const Dashboard = () => {
   const allState = useSelector((state) => state.excelReducer);
 
   if (success) {
-    toast.success("File Uploaded Successfully");
-
+    Swal.fire(
+      'Uploaded',
+      'File Uploaded Successfully!',
+      'success'
+    )
   }
   const [selectedFile, setSelectedFile] = useState();
 
@@ -90,7 +93,7 @@ const Dashboard = () => {
       PERS044: {  // assembly Line
         ...dataState
       },
-      createdAt: new Date()
+      createdAt: new Date().toISOString().slice(0, 10)
     };
     dispatch(pushShiftsData(parameters));
     Swal.fire(
@@ -117,9 +120,7 @@ const Dashboard = () => {
   }
   if (response) {
     response.forEach(row => {
-      row.values.forEach(values => {
-        parentsData.push(values.line_VOPLGR_EF);
-      });
+      parentsData.push(row.line_VOPLGR_EF);
     });
     uniqueAssemblyLines = parentsData.filter(onlyUnique);
   }

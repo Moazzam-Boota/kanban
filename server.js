@@ -32,18 +32,23 @@ function getDocs(res, type) {
     pouchDBConnection.sync(remoteDB);
     pouchDBConnection.allDocs({
         include_docs: true,
-        attachments: true,
-        // startkey: 'excel',
-        endkey: 'excel',
+        attachments: true
     }, function (err, response) {
         var filterRows = [];
         response.rows.map(i => {
-            if (i.doc.type === type) {
+            if (i.doc.type === "shifts" && i.doc.values.createdAt === new Date().toISOString().slice(0, 10)) {
                 filterRows.push(i.doc);
-
             }
-
+            else if (i.doc.type === "excel") {
+                let a = i.doc.values
+                a.map(j => {
+                    if (j.createdAt === new Date().toISOString().slice(0, 10)) {
+                        filterRows.push(i.doc);
+                    }
+                })
+            }
         });
+        console.log(filterRows);
         res.send(filterRows)
         pouchDBConnection.sync(remoteDB);
 
@@ -52,7 +57,7 @@ function getDocs(res, type) {
     });
 }
 schedule.scheduleJob(" * * * * * ", function () {
- var downloadTime=[];
+    var downloadTime = [];
     remoteDB.find({
         selector: { type: 'shifts' }
     }).then(function (res) {
@@ -118,7 +123,7 @@ app.post('/api/excel-upload', (req, res) => {
                     'per_pallet_qty_UNITAPALET_IU': row.getCell('IU').value,
                     'per_pack_sec_VOIPITI_FM': row.getCell('FM').value,
 
-                    "Date": new Date().toISOString().slice(0, 10)
+                    "createdAt": new Date().toISOString().slice(0, 10)
                 });
 
                 var data = {
@@ -138,8 +143,6 @@ app.post('/api/excel-upload', (req, res) => {
             }
 
         });
-
-        // pouchDBConnection.sync(remoteDB);
 
         Promise.all(promises).then(() => {
             pouchDBConnection.sync(remoteDB);

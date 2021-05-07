@@ -39,7 +39,6 @@ export default function excelReducer(state = initialState, action) {
     }
 
     case types.PUSH_DATA: {
-      console.log(action.data)
       return {
         ...state,
         // allState: action.data,
