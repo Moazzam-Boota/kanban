@@ -164,7 +164,7 @@ const Users = () => {
   // var time = moment() gives you current time. no format required.
 
   console.log(dataGroupByProduct, 'dataGroupByProduct')
-  var time = moment('10:40', format);
+  var time = moment('11:10', format);
   var startShiftTime = moment(timeRange[1], format);
   const cardsData = [];
   var activeShiftPeriod = 0;
@@ -202,10 +202,16 @@ const Users = () => {
         // if sum of all products in a shift >=boxesPerPitch, skip
         // 
         dataGroupByProduct.filter(k => k.product === product.product)[0].sum = product.sum - singleProduct;
-        console.log(product, boxesPerPitch, product.sum / quantityPerBox, singleProduct, 'singleProduct')
+        console.log(product.sum, boxesPerPitch, product.sum / quantityPerBox, singleProduct, 'singleProduct')
         return {
           record: product, singleProduct
         };
+      }).filter(k => {
+        {
+          console.log(k.record.sum, 'all')
+          if (k.record.sum > 45 && k.record.sum < 100 && k.singleProduct < 2) return false;
+          return true;
+        }
       });
     }
     console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
