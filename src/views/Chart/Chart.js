@@ -107,8 +107,7 @@ const Users = () => {
       // var peices = 1 + donePieces;
       setDonePieces(data);
 
-
-      setDataGroupByProduct(dataGroupByProduct.forEach((record, index) => {
+      const data = dataGroupByProduct.forEach((record, index) => {
 
 
         // check if sum 0, skip product
@@ -120,7 +119,9 @@ const Users = () => {
         // return {
         //   record: record, productCount
         // };
-      }));
+      });
+
+      setDataGroupByProduct(data);
 
       // lodash.orderBy(lodash.chain(parentsData)
       //   // Group the elements of Array based on `color` property
