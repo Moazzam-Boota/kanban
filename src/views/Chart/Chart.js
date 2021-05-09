@@ -118,7 +118,7 @@ const Users = () => {
       //   //   record: record, productCount
       //   // };
       // });
-      console.log(dataGroupByProduct, 'dataGroupByProduct')
+      console.log(dataGroupByProduct[dataGroupByProduct.length - 1], 'dataGroupByProduct')
       setDataGroupByProduct(dataGroupByProduct);
 
       // lodash.orderBy(lodash.chain(parentsData)
