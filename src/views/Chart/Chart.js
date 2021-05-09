@@ -119,7 +119,7 @@ const Users = () => {
         // };
       });
 
-      setDataGroupByProduct(dataGroup);
+      // setDataGroupByProduct(dataGroup);
 
       // lodash.orderBy(lodash.chain(parentsData)
       //   // Group the elements of Array based on `color` property
@@ -251,7 +251,7 @@ const Users = () => {
     var currentCardBox = {};
     if (i <= activeShiftPeriod) {
       console.log(dataGroupByProduct, 'dataGroupByProduct')
-      dataGroupByProductRandom = dataGroupByProduct && dataGroupByProduct.map((product, index) => {
+      dataGroupByProductRandom = dataGroupByProduct.map((product, index) => {
 
         // const productCount = Math.floor(product.sum / quantityPerBox); //quantityPerBox
         const productCount = Math.round(product.sum / quantityPerBox / boxesPerPitch);
