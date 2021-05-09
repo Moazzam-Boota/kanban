@@ -114,7 +114,7 @@ const Users = () => {
         // check if sum 0, skip product
         // if sum of all products in a shift >=boxesPerPitch, skip
         // dataGroupByProduct.filter(k => k.record === record.product)[0].sum = record.sum - quantityPerBox;
-        // if (index===dataGroupByProduct.)
+        if (index === dataGroupByProduct.length - 1);
         record.sum = record.sum - quantityPerBox;
         console.log(record.sum, boxesPerPitch, dataGroupByProduct, quantityPerBox, 'productCount')
         // return {
