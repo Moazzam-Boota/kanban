@@ -107,9 +107,7 @@ const Users = () => {
       // var peices = 1 + donePieces;
       setDonePieces(data);
 
-      const data = dataGroupByProduct.forEach((record, index) => {
-
-
+      const dataGroup = dataGroupByProduct.forEach((record, index) => {
         // check if sum 0, skip product
         // if sum of all products in a shift >=boxesPerPitch, skip
         // dataGroupByProduct.filter(k => k.record === record.product)[0].sum = record.sum - quantityPerBox;
@@ -121,7 +119,7 @@ const Users = () => {
         // };
       });
 
-      setDataGroupByProduct(data);
+      setDataGroupByProduct(dataGroup);
 
       // lodash.orderBy(lodash.chain(parentsData)
       //   // Group the elements of Array based on `color` property
