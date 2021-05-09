@@ -191,6 +191,7 @@ const Users = () => {
     console.log(beforeTime, afterTime, 'startShiftTime')
 
     var dataGroupByProductRandom = [];
+    var currentCardBox = {};
     if (i <= activeShiftPeriod) {
       console.log(dataGroupByProduct, 'dataGroupByProduct')
       dataGroupByProductRandom = dataGroupByProduct.map((product, index) => {
@@ -214,13 +215,13 @@ const Users = () => {
       });
     }
     console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
-
     // dataGroupByProduct
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
-      shift={dataGroupByProductRandom.length != 0 ? Math.round(boxesPerPitch) : 0}
+      shift={dataGroupByProductRandom.length !== 0 ? Math.round(boxesPerPitch) : undefined}
       cardName={dataGroupByProductRandom.map((product, index) => {
+        currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
         return (
           <span className="content-center" style={{
             backgroundColor: product.record.color,
@@ -237,7 +238,7 @@ const Users = () => {
             width: '40px',
             // fontSize: '30px',
             margin: '5px',
-            border: (i === 1 && dataGroupByProduct.length - 1 === index) ? '5px solid black' : 'inherit'
+            border: (i === 1 && dataGroupByProductRandom.length - 1 === index) ? '5px solid black' : 'inherit'
           }}>
             {/* <span style={{
               padding: '5px'
@@ -252,8 +253,8 @@ const Users = () => {
     >
     </CWidgetBrand >);
   }
-
-  const kanbanBoxWidgetStyle = { fontSize: '14px' };
+  console.log(currentCardBox, 'currentCardBox')
+  const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
   return (
     <CFormGroup>
@@ -286,14 +287,14 @@ const Users = () => {
       </CRow>
       <CRow>
         <CCol xs={{ offset: 9, size: 3 }} >
-          <CWidgetSimple className='widgetBackground' header="Kanban en curs" text={
+          <CWidgetSimple style={{ backgroundColor: lodash.get(currentCardBox, 'record.color'), color: 'white' }} className='widgetBackground' header="Kanban en curs" text={
             <div style={{ textAlign: 'left' }}>
-              <p style={kanbanBoxWidgetStyle}>Ordre de fabricació: <span style={metricStyle}>{lodash.get(dataGroupByOrder, '[0].orderNumber')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Referencia de producte: <span style={metricStyle}>{lodash.get(dataGroupByProduct, '[0].product')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Descripció de producte: <span style={metricStyle}>{lodash.get(dataGroupByProduct, '[0].data[0].description_VHTXT1_W')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(dataGroupByProduct, '[0].sum')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(dataGroupByProduct, '[0].sum') - 3}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat per caixa: <span style={metricStyle}>{lodash.get(dataGroupByProduct, '[0].productsPerBox')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Ordre de fabricació: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.data[0].order_num_VHMFNO_D')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Referencia de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.product')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Descripció de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.data[0].description_VHTXT1_W')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.sum')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.sum') - 3}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat per caixa: <span style={metricStyle}>{parseFloat(lodash.get(currentCardBox, 'record.productsPerBox')).toFixed(2)}</span> </p>
             </div>
           } />
         </CCol>

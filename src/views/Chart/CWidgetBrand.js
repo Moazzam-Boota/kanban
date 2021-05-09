@@ -39,7 +39,7 @@ const CWidgetBrand = props => {
         <div className={`card ${className}`} {...attributes}>
             <div style={lineStyle}></div>
             <div className={headerClasses} style={{ height: '50px', fontSize: '24px', fontWeight: 'bold', backgroundColor: color }}>
-                {shift + `u`}
+                {shift ? shift + `u` : ''}
             </div>
             { bodySlot ||
                 <div className="card-body row text-center">

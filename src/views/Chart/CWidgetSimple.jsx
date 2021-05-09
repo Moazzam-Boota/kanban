@@ -19,7 +19,12 @@ const CWidgetSimple = (props) => {
     <div className={classes} {...attributes}>
       <div className="card-body text-center">
         {header && (
-          <div className="small text-uppercase font-weight-bold">{header}</div>
+          <div
+            style={{ fontSize: "18px" }}
+            className="text-uppercase font-weight-bold"
+          >
+            {header}
+          </div>
         )}
         {text && <div className="h2 py-3">{text}</div>}
         {children}
