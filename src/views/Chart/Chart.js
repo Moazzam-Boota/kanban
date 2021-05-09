@@ -105,8 +105,9 @@ const Users = () => {
       socket.emit("lightgreen", data); //send push button status to back to server
       // setSocketResponse(true);
       // var peices = 1 + donePieces;
-      setDonePieces(data);
       dataGroupByProduct[dataGroupByProduct.length - 1].sum = dataGroupByProduct[dataGroupByProduct.length - 1].sum - quantityPerBox;
+      setDonePieces(data);
+
       // const dataGroup = dataGroupByProduct.forEach((record, index) => {
       //   // check if sum 0, skip product
       //   // if sum of all products in a shift >=boxesPerPitch, skip
