@@ -272,7 +272,7 @@ io.on("connection", (socket) => {
 
         if (countValue === 2) {
             lightvalue = lightvalue + 1;
-            socket.emit('lightgreen', lightvalue); //send button status to client
+            // socket.emit('lightgreen', lightvalue); //send button status to client
             // socket.emit('lightred', lightvalue); //send button status to client
             countValue = 0;
         }
