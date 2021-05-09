@@ -43,19 +43,28 @@ const Users = () => {
       // setSocketResponse(true);
       // var peices = 1 + donePieces;
       setDonePieces(data);
+
       Swal.fire(
-        'Updated',
-        'Box is updated!',
-        'success'
+        {
+          position: 'top-end',
+          icon: 'success',
+          title: 'Card is updated!',
+          showConfirmButton: false,
+          timer: 1500
+        }
       )
     });
     socket.on('lightred', function (data) { //get button status from client
       // document.getElementById("lightred").checked = data; //change checkbox according to push button on Raspberry Pi
       // socket.emit("lightred", data); //send push button status to back to server
       Swal.fire(
-        'Error',
-        'Some Error Occured!',
-        'error'
+        {
+          position: 'top-end',
+          icon: 'error',
+          title: 'Some Error Occured!',
+          showConfirmButton: false,
+          timer: 1500
+        }
       )
     });
 
