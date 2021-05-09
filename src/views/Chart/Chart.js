@@ -108,7 +108,7 @@ const Users = () => {
       setDonePieces(data);
 
 
-      dataGroupByProduct.map((record, index) => {
+      setDataGroupByProduct(dataGroupByProduct.map((record, index) => {
 
 
         // check if sum 0, skip product
@@ -120,7 +120,7 @@ const Users = () => {
         // return {
         //   record: record, productCount
         // };
-      });
+      }));
 
       // lodash.orderBy(lodash.chain(parentsData)
       //   // Group the elements of Array based on `color` property
