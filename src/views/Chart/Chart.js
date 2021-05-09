@@ -81,21 +81,6 @@ const Users = () => {
     //   socket.emit("lightred", Number(this.checked)); //send button status to server (as 1 or 0)
     // });
     // });
-    if (parentsData.length !== 0 && dataGroupByProduct.length == 0) {
-
-      setDataGroupByProduct(lodash.orderBy(lodash.chain(parentsData)
-        // Group the elements of Array based on `color` property
-        .groupBy("part_num_VHPRNO_C")
-        // `key` is group's name (color), `value` is the array of objects
-        .map((value, key) => ({
-          product: key,
-          data: value,
-          color: getRandomColor(),
-          sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
-          productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
-        })).value(), ['sum'], ['desc']).filter(k => k.sum !== null));
-    }
-
 
     console.log(parentsData, 'parentsData', dataGroupByProduct)
 
@@ -164,6 +149,24 @@ const Users = () => {
     //   socket.emit("lightred", Number(Math.random() < 0.5));
     //   socket.emit("lightgreen", Number(Math.random() < 0.5));
     // });
+  }, []);
+
+
+  useEffect(() => {
+    if (parentsData.length !== 0 && dataGroupByProduct.length == 0) {
+
+      setDataGroupByProduct(lodash.orderBy(lodash.chain(parentsData)
+        // Group the elements of Array based on `color` property
+        .groupBy("part_num_VHPRNO_C")
+        // `key` is group's name (color), `value` is the array of objects
+        .map((value, key) => ({
+          product: key,
+          data: value,
+          color: getRandomColor(),
+          sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
+          productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
+        })).value(), ['sum'], ['desc']).filter(k => k.sum !== null));
+    }
   }, [parentsData]);
 
 
