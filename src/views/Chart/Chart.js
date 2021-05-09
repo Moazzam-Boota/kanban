@@ -91,8 +91,8 @@ const Users = () => {
       // setSocketResponse(true);
       // var peices = 1 + donePieces;
       console.log(dataGroupByProduct, dataGroupByProduct[dataGroupByProduct.length - 1], 'dataGroupByProduct');
-      // if (dataGroupByProduct[dataGroupByProduct.length - 1])
-      //   dataGroupByProduct[dataGroupByProduct.length - 1].sum = dataGroupByProduct[dataGroupByProduct.length - 1].sum - quantityPerBox;
+      if (dataGroupByProduct[dataGroupByProduct.length - 1])
+        dataGroupByProduct[dataGroupByProduct.length - 1].sum = dataGroupByProduct[dataGroupByProduct.length - 1].sum - quantityPerBox;
       setDonePieces(data);
 
       // const dataGroup = dataGroupByProduct.forEach((record, index) => {
