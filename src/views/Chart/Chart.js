@@ -108,7 +108,7 @@ const Users = () => {
       setDonePieces(data);
 
 
-      setDataGroupByProduct(dataGroupByProduct.map((record, index) => {
+      setDataGroupByProduct(dataGroupByProduct.forEach((record, index) => {
 
 
         // check if sum 0, skip product
