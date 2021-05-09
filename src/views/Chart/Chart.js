@@ -251,7 +251,7 @@ const Users = () => {
     var currentCardBox = {};
     if (i <= activeShiftPeriod) {
       console.log(dataGroupByProduct, 'dataGroupByProduct')
-      dataGroupByProductRandom = dataGroupByProduct.map((product, index) => {
+      dataGroupByProductRandom = dataGroupByProduct && dataGroupByProduct.map((product, index) => {
 
         // const productCount = Math.floor(product.sum / quantityPerBox); //quantityPerBox
         const productCount = Math.round(product.sum / quantityPerBox / boxesPerPitch);
