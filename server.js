@@ -275,9 +275,6 @@ io.on("connection", (socket) => {
             socket.emit('lightgreen', lightvalue); //send button status to client
             // socket.emit('lightred', lightvalue); //send button status to client
             countValue = 0;
-            if (lightvalue != LED_GREEN.readSync()) { //only change LED_GREEN if status has changed
-                LED_GREEN.writeSync(lightvalue); //turn LED_GREEN on or off
-            }
         }
     });
     socket.on('lightgreen', function (data) { //get light switch status from client

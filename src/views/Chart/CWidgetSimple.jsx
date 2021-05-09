@@ -26,7 +26,7 @@ const CWidgetSimple = (props) => {
             {header}
           </div>
         )}
-        {text && <div className="h2 py-3">{text}</div>}
+        {<div className="h2 py-3">{text}</div>}
         {children}
       </div>
     </div>
