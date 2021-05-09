@@ -24,7 +24,7 @@ import CIcon from '@coreui/icons-react'
 
 import ShiftTime from './Shift';
 
-const Dashboard = () => {
+const Params = () => {
   var [shiftCount, setShiftCount] = useState([1]);
   var [pitchTime, setPitchTime] = useState(30);
   var [blueColor, setBlueColor] = useState(2);
@@ -333,4 +333,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard;
+export default Params;

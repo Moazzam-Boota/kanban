@@ -9,7 +9,6 @@ import {
   CRow,
 } from '@coreui/react'
 import CWidgetSimple from './CWidgetSimple';
-import './index.css';
 import socketIOClient from "socket.io-client";
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
