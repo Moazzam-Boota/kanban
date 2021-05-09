@@ -119,7 +119,7 @@ const Users = () => {
       //   // };
       // });
       console.log(dataGroupByProduct[dataGroupByProduct.length - 1], 'dataGroupByProduct')
-      setDataGroupByProduct(dataGroupByProduct);
+      // setDataGroupByProduct(dataGroupByProduct);
 
       // lodash.orderBy(lodash.chain(parentsData)
       //   // Group the elements of Array based on `color` property
