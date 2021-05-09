@@ -20,7 +20,7 @@ const moment = require('moment');
 const Users = () => {
   const dispatch = useDispatch()
   // const [socketResponse, setSocketResponse] = useState("");
-  const [donePieces, setDonePieces] = useState(100);
+  const [donePieces, setDonePieces] = useState(0);
   var headerWidgetColor = '';
 
   useEffect(() => {
