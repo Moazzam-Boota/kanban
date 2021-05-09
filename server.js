@@ -144,7 +144,7 @@ app.post('/api/excel-upload', (req, res) => {
         });
 
         Promise.all(promises).then(() => {
-            pouchDBConnection.sync(remoteDB);
+            // pouchDBConnection.sync(remoteDB);
             getDocs(res, "excel");
         }).catch((err) => {
         });
@@ -170,8 +170,7 @@ app.post('/api/push-shifts-data', (req, res) => {
         getDocs(res);
     }).catch((err) => {
     });
-    pouchDBConnection.sync(remoteDB);
-    res.send("true")
+    // pouchDBConnection.sync(remoteDB);
 
 });
 app.get('/api/intial-excel-upload', (req, res) => {
