@@ -105,7 +105,7 @@ const Users = () => {
       socket.emit("lightgreen", data); //send push button status to back to server
       // setSocketResponse(true);
       // var peices = 1 + donePieces;
-      console.log(dataGroupByProduct[dataGroupByProduct.length - 1], 'dataGroupByProduct');
+      console.log(dataGroupByProduct, dataGroupByProduct[dataGroupByProduct.length - 1], 'dataGroupByProduct');
       dataGroupByProduct[dataGroupByProduct.length - 1].sum = dataGroupByProduct[dataGroupByProduct.length - 1].sum - quantityPerBox;
       setDonePieces(data);
 
