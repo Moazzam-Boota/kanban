@@ -36,10 +36,9 @@ function getDocs(res, type) {
     }, function (err, response) {
         var filterRows = [];
         response.rows.map(i => {
-            if (i.doc.type === "shifts" && i.doc.values.createdAt === new Date().toISOString().slice(0, 10)) {
+            if (i.doc.type === type && i.doc.values.createdAt === new Date().toISOString().slice(0, 10)) {
                 filterRows.push(i.doc);
-            }
-            else if (i.doc.type === "excel") {
+            } else if (i.doc.type === type) {
                 let a = i.doc.values
                 a.map(j => {
                     if (j.createdAt === new Date().toISOString().slice(0, 10)) {

@@ -175,7 +175,7 @@ const Dashboard = () => {
                 <CLabel htmlFor="autoFile"></CLabel>
               </CCol>
 
-              {fileDownloadType === 'automatic' ? <CCol md="5"><CInput onChange={(e) => { getTime(e.target.value) }} type="datetime-local" id="autoDownloadTime" name="autoDownloadTime" min="09:00" max="18:00"></CInput></CCol>
+              {fileDownloadType === 'automatic' ? <CCol md="3"><CInput onChange={(e) => { getTime(e.target.value) }} type="time" id="autoDownloadTime" name="autoDownloadTime" min="09:00" max="18:00"></CInput></CCol>
                 : fileDownloadType === 'manual' ? <CCol md="9">
                   <CFormGroup row>
                     <CCol md="7">
