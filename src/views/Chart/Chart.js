@@ -18,9 +18,54 @@ const lodash = require('lodash');
 const moment = require('moment');
 
 const Users = () => {
+  const queryPage = useLocation().search.match(/page=([0-9]+)/, '')
+  const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
+  const [page, setPage] = useState(currentPage)
+  const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
+  const dbChartParams = useSelector((state) => state.excelReducer.chartParams);
+  const chartParams = lodash.get(lodash.last(dbChartParams), 'values');
+  const parentsData = [];
+  const colorChartParams = lodash.get(chartParams, 'colors', {});
+  const lineChartParams = lodash.get(chartParams, 'PERS044', {});
+  if (successforgotmsg) {
+    console.log(successforgotmsg);
+    successforgotmsg.forEach(row => {
+      row.values.forEach(values => {
+        parentsData.push(values);
+      });
+    });
+  }
+
+  const quantityPerBox = 3;   // .per_box_qty_UNITCAIXA_IT
+  const dailyHours = 8; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
+  const pitchPeriod = lodash.get(chartParams, 'pitchTime', 0); //minutes
+  const totalQuantity = lodash.sumBy(parentsData, 'quantity_VHOROQ_AH'); //sum of all quantities
+  const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
+  const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
+  // const quantityPerSecond = quantityPerMinute * 60;   // quanitity per second
+
+  const quantityPerBoxPerMinute = quantityPerBox * quantityPerMinute;  // per box time
+  // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
+
+  const boxesPerPitch = pitchPeriod / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
+  // TODO:: sum of all orders, quantity
+  // TODO:: sum of all orders, quantity
+  // 
+  // const donePieces = 100; //receive from clicking the button double click
+  // const skipBoxes = 3;
+  const kanbanBoxes = (dailyHours * 60) / pitchPeriod;
+  const blueColorChartParams = lodash.get(colorChartParams, 'blue', {});
+  const greenColorChartParams = lodash.get(colorChartParams, 'green', {});
+  const orangeColorChartParams = lodash.get(colorChartParams, 'orange', {});
+  const redColorChartParams = lodash.get(colorChartParams, 'red', {});
+  const blackColorChartParams = lodash.get(colorChartParams, 'black', {});
+
+  const timeRange = lodash.get(lineChartParams, '[1].time', []);
+
   const dispatch = useDispatch()
   // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(0);
+  const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
 
   useEffect(() => {
@@ -36,6 +81,24 @@ const Users = () => {
     //   socket.emit("lightred", Number(this.checked)); //send button status to server (as 1 or 0)
     // });
     // });
+    if (parentsData.length !== 0 && dataGroupByProduct.length == 0) {
+
+      setDataGroupByProduct(lodash.orderBy(lodash.chain(parentsData)
+        // Group the elements of Array based on `color` property
+        .groupBy("part_num_VHPRNO_C")
+        // `key` is group's name (color), `value` is the array of objects
+        .map((value, key) => ({
+          product: key,
+          data: value,
+          color: getRandomColor(),
+          sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
+          productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
+        })).value(), ['sum'], ['desc']).filter(k => k.sum !== null));
+    }
+
+
+    console.log(parentsData, 'parentsData', dataGroupByProduct)
+
     socket.on('lightgreen', function (data) { //get button status from client
       // var count = 0;
       // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
@@ -43,6 +106,33 @@ const Users = () => {
       // setSocketResponse(true);
       // var peices = 1 + donePieces;
       setDonePieces(data);
+
+
+      dataGroupByProduct.map((record, index) => {
+
+
+        // check if sum 0, skip product
+        // if sum of all products in a shift >=boxesPerPitch, skip
+        // dataGroupByProduct.filter(k => k.record === record.product)[0].sum = record.sum - quantityPerBox;
+        // if (index===dataGroupByProduct.)
+        record.sum = record.sum - quantityPerBox;
+        console.log(record.sum, boxesPerPitch, dataGroupByProduct, quantityPerBox, 'productCount')
+        // return {
+        //   record: record, productCount
+        // };
+      });
+
+      // lodash.orderBy(lodash.chain(parentsData)
+      //   // Group the elements of Array based on `color` property
+      //   .groupBy("part_num_VHPRNO_C")
+      //   // `key` is group's name (color), `value` is the array of objects
+      //   .map((value, key) => ({
+      //     product: key,
+      //     data: value,
+      //     color: getRandomColor(),
+      //     sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
+      //     productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
+      //   })).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
 
       Swal.fire(
         {
@@ -73,25 +163,8 @@ const Users = () => {
     //   socket.emit("lightred", Number(Math.random() < 0.5));
     //   socket.emit("lightgreen", Number(Math.random() < 0.5));
     // });
-  }, []);
+  }, [parentsData]);
 
-  const queryPage = useLocation().search.match(/page=([0-9]+)/, '')
-  const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
-  const [page, setPage] = useState(currentPage)
-  const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
-  const dbChartParams = useSelector((state) => state.excelReducer.chartParams);
-  const chartParams = lodash.get(lodash.last(dbChartParams), 'values');
-  const parentsData = [];
-  const colorChartParams = lodash.get(chartParams, 'colors', {});
-  const lineChartParams = lodash.get(chartParams, 'PERS044', {});
-  if (successforgotmsg) {
-    console.log(successforgotmsg);
-    successforgotmsg.forEach(row => {
-      row.values.forEach(values => {
-        parentsData.push(values);
-      });
-    });
-  }
 
   function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -127,44 +200,20 @@ const Users = () => {
   // .groupBy("shift_PPSHFT_IS")
   // .map((value, key) => ({ shiftNumber: key, data: value }))
   // .value();
-  const quantityPerBox = 3;   // .per_box_qty_UNITCAIXA_IT
 
-  const dataGroupByProduct = lodash.orderBy(lodash.chain(parentsData)
-    // Group the elements of Array based on `color` property
-    .groupBy("part_num_VHPRNO_C")
-    // `key` is group's name (color), `value` is the array of objects
-    .map((value, key) => ({
-      product: key,
-      data: value,
-      color: getRandomColor(),
-      sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
-      productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
-    })).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
+  // const dataGroupByProduct = lodash.orderBy(lodash.chain(parentsData)
+  //   // Group the elements of Array based on `color` property
+  //   .groupBy("part_num_VHPRNO_C")
+  //   // `key` is group's name (color), `value` is the array of objects
+  //   .map((value, key) => ({
+  //     product: key,
+  //     data: value,
+  //     color: getRandomColor(),
+  //     sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
+  //     productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
+  //   })).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
 
-  const dailyHours = 8; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
-  const pitchPeriod = lodash.get(chartParams, 'pitchTime', 0); //minutes
-  const totalQuantity = lodash.sumBy(parentsData, 'quantity_VHOROQ_AH'); //sum of all quantities
-  const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
-  const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
-  // const quantityPerSecond = quantityPerMinute * 60;   // quanitity per second
 
-  const quantityPerBoxPerMinute = quantityPerBox * quantityPerMinute;  // per box time
-  // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
-
-  const boxesPerPitch = pitchPeriod / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
-  // TODO:: sum of all orders, quantity
-  // TODO:: sum of all orders, quantity
-  // 
-  // const donePieces = 100; //receive from clicking the button double click
-  // const skipBoxes = 3;
-  const kanbanBoxes = (dailyHours * 60) / pitchPeriod;
-  const blueColorChartParams = lodash.get(colorChartParams, 'blue', {});
-  const greenColorChartParams = lodash.get(colorChartParams, 'green', {});
-  const orangeColorChartParams = lodash.get(colorChartParams, 'orange', {});
-  const redColorChartParams = lodash.get(colorChartParams, 'red', {});
-  const blackColorChartParams = lodash.get(colorChartParams, 'black', {});
-
-  const timeRange = lodash.get(lineChartParams, '[1].time', []);
 
   var format = 'HH:mm'
   // check if currentTime is between the pitchPeriod, add cards to that pitch
@@ -205,20 +254,20 @@ const Users = () => {
       console.log(dataGroupByProduct, 'dataGroupByProduct')
       dataGroupByProductRandom = dataGroupByProduct.map((product, index) => {
 
-        // const singleProduct = Math.floor(product.sum / quantityPerBox); //quantityPerBox
-        const singleProduct = Math.round(product.sum / quantityPerBox / boxesPerPitch);
+        // const productCount = Math.floor(product.sum / quantityPerBox); //quantityPerBox
+        const productCount = Math.round(product.sum / quantityPerBox / boxesPerPitch);
         // check if sum 0, skip product
         // if sum of all products in a shift >=boxesPerPitch, skip
         // 
-        dataGroupByProduct.filter(k => k.product === product.product)[0].sum = product.sum - singleProduct;
-        console.log(product.sum, boxesPerPitch, product.sum / quantityPerBox, singleProduct, 'singleProduct')
+        dataGroupByProduct.filter(k => k.product === product.product)[0].sum = product.sum - productCount;
+        console.log(product.sum, boxesPerPitch, dataGroupByProduct, productCount, 'productCount')
         return {
-          record: product, singleProduct
+          record: product, productCount
         };
       }).filter(k => {
         {
           console.log(k.record.sum, 'all')
-          if (k.record.sum > 45 && k.record.sum < 100 && k.singleProduct < 2) return false;
+          if (k.record.sum > 45 && k.record.sum < 100 && k.productCount < 2) return false;
           return true;
         }
       });
@@ -252,7 +301,7 @@ const Users = () => {
             {/* <span style={{
               padding: '5px'
             }}> */}
-            {product.singleProduct}</span>
+            {product.productCount}</span>
           // </span>
         )
       })
