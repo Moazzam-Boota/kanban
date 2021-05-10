@@ -158,7 +158,7 @@ const Users = () => {
 
 
   useEffect(() => {
-    if (parentsData.length !== 0) {
+    if (parentsData.length !== 0 && dataGroupByProduct.length == 0) {
       var counter = 0;
       const allShiftsData = [];
       const dataGroup = lodash.orderBy(lodash.chain(parentsData)
@@ -172,7 +172,7 @@ const Users = () => {
             product: key,
             data: value,
             color: color,
-            sum: lodash.sumBy(value, 'quantity_VHOROQ_AH') - donePieces,
+            sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
             productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
           }
         }).value(), ['sum'], ['asc']).filter(k => k.sum !== null);
@@ -307,8 +307,8 @@ const Users = () => {
 
     console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
 
-    if (dataGroupByProduct[dataGroupByProduct.length - 1] && donePieces !== 0)
-      dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - 1;
+    // if (dataGroupByProduct[dataGroupByProduct.length - 1] && donePieces !== 0)
+    // dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - donePieces;
 
     // dataGroupByProduct
     cardsData.push(<CWidgetBrand
@@ -317,6 +317,7 @@ const Users = () => {
       shift={dataGroupByProductRandom.length !== 0 ? Math.round(boxesPerPitch) : undefined}
       cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i, []).map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
+        product.productsPerBox = product.productCount - donePieces;
         return (
           <span className="content-center" style={{
             backgroundColor: product.record.color,
