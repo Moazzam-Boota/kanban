@@ -332,66 +332,66 @@ const io = socketIo(server, {
     allowEIO3: true
 });
 
-// let interval;
-// var Gpio = require('onoff').Gpio; //include onoff to interact with the Gpio
-// var LED_RED = new Gpio('21', 'out'); //use Gpio pin 21 as output for LED RED
-// var LED_GREEN = new Gpio('20', 'out'); //use Gpio pin 20 as output for LED GREEN
-// //var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and 'both' button presses, and releases should be handled
-// var pushButton = new Gpio('26', 'in', 'rising', { debounceTimeout: 10 });
+let interval;
+var Gpio = require('onoff').Gpio; //include onoff to interact with the Gpio
+var LED_RED = new Gpio('21', 'out'); //use Gpio pin 21 as output for LED RED
+var LED_GREEN = new Gpio('20', 'out'); //use Gpio pin 20 as output for LED GREEN
+//var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and 'both' button presses, and releases should be handled
+var pushButton = new Gpio('26', 'in', 'rising', { debounceTimeout: 10 });
 
-// io.on("connection", (socket) => {
-//     console.log("New client connected");
-//     // if (interval) {
-//     //     clearInterval(interval);
-//     // }
-//     // interval = setInterval(() => getApiAndEmit(socket), 1000);
-
-
-//     var lightvalue = 0; // get from db
-//     var countValue = 0;
-//     pushButton.watch(function (err, value) { //Watch for hardware interrupts on pushButton
-//         if (err) { //if an error
-//             console.error('There was an error', err); //output error message to console
-//             return;
-//         }
-//         // lightvalue = value;
-
-//         countValue = countValue + 1;
-
-//         if (countValue === 2) {
-//             lightvalue = lightvalue + 1;
-//             socket.emit('lightgreen', lightvalue); //send button status to client
-//             // socket.emit('lightred', lightvalue); //send button status to client
-//             countValue = 0;
-//         }
-//     });
-//     socket.on('lightgreen', function (data) { //get light switch status from client
-//         lightvalue = data;
-//         if (lightvalue != LED_GREEN.readSync()) { //only change LED_GREEN if status has changed
-//             LED_GREEN.writeSync(lightvalue); //turn LED_GREEN on or off
-//         }
-//     });
-//     socket.on('lightred', function (data) { //get light switch status from client
-//         lightvalue = data;
-//         if (lightvalue != LED_RED.readSync()) { //only change LED_RED if status has changed
-//             LED_RED.writeSync(lightvalue); //turn LED_RED on or off
-//         }
-//     });
+io.on("connection", (socket) => {
+    console.log("New client connected");
+    // if (interval) {
+    //     clearInterval(interval);
+    // }
+    // interval = setInterval(() => getApiAndEmit(socket), 1000);
 
 
-//     socket.on("disconnect", () => {
-//         console.log("Client disconnected");
-//         clearInterval(interval);
-//     });
-// });
+    var lightvalue = 0; // get from db
+    var countValue = 0;
+    pushButton.watch(function (err, value) { //Watch for hardware interrupts on pushButton
+        if (err) { //if an error
+            console.error('There was an error', err); //output error message to console
+            return;
+        }
+        // lightvalue = value;
 
-// process.on('SIGINT', function () { //on ctrl+c
-//     LED_RED.writeSync(0); // Turn LED_RED off
-//     LED_RED.unexport(); // Unexport LED_RED Gpio to free resources
-//     LED_GREEN.writeSync(0); // Turn LED_GREEN off
-//     LED_GREEN.unexport(); // Unexport LED_GREEN Gpio to free resources
-//     pushButton.unexport(); // Unexport Button Gpio to free resources
-//     process.exit(); //exit completely
-// });
+        countValue = countValue + 1;
 
-// server.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
+        if (countValue === 2) {
+            lightvalue = lightvalue + 1;
+            socket.emit('lightgreen', lightvalue); //send button status to client
+            // socket.emit('lightred', lightvalue); //send button status to client
+            countValue = 0;
+        }
+    });
+    socket.on('lightgreen', function (data) { //get light switch status from client
+        lightvalue = data;
+        if (lightvalue != LED_GREEN.readSync()) { //only change LED_GREEN if status has changed
+            LED_GREEN.writeSync(lightvalue); //turn LED_GREEN on or off
+        }
+    });
+    socket.on('lightred', function (data) { //get light switch status from client
+        lightvalue = data;
+        if (lightvalue != LED_RED.readSync()) { //only change LED_RED if status has changed
+            LED_RED.writeSync(lightvalue); //turn LED_RED on or off
+        }
+    });
+
+
+    socket.on("disconnect", () => {
+        console.log("Client disconnected");
+        clearInterval(interval);
+    });
+});
+
+process.on('SIGINT', function () { //on ctrl+c
+    LED_RED.writeSync(0); // Turn LED_RED off
+    LED_RED.unexport(); // Unexport LED_RED Gpio to free resources
+    LED_GREEN.writeSync(0); // Turn LED_GREEN off
+    LED_GREEN.unexport(); // Unexport LED_GREEN Gpio to free resources
+    pushButton.unexport(); // Unexport Button Gpio to free resources
+    process.exit(); //exit completely
+});
+
+server.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
