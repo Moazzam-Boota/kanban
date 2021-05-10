@@ -315,7 +315,7 @@ const Users = () => {
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={dataGroupByProductRandom.length !== 0 ? Math.round(boxesPerPitch) : undefined}
-      cardName={i <= activeShiftPeriod ? dataGroupByProduct[i].map((product, index) => {
+      cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i, []).map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
         return (
           <span className="content-center" style={{
