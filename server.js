@@ -10,6 +10,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 const schedule = require("node-schedule");
+const lodash = require('lodash');
 
 app.use(cors());
 app.use(express.json({ limit: '200mb' }));
@@ -86,98 +87,102 @@ schedule.scheduleJob(" * * * * * ", function () {
             return dateA - dateB;
         });
         var reversedsortedShifs = sortedShifts.reverse();
-        var timeString = reversedsortedShifs[0].values.downloadTime;
-        console.log(timeString);
-        var hours = timeString.substr(0, 2);
-        var minutes = timeString.substr(3, 4);
-        var seconds = 5;
-        const time = new Date();
-        var year = time.getFullYear();
-        var month = time.getMonth();
-        var day = time.getDate();
-        console.log(year, month, day, hours, minutes, seconds);
-        const downloadingTime = new Date(year, month, day, hours, minutes, seconds);
-        schedule.scheduleJob(downloadingTime, function () {
-            console.log("Running")
-            var AWS = require('aws-sdk');
-            var fs = require('fs');
-            AWS.config.update(
-                {
-                    accessKeyId: "AKIAQA425EAVAE6OMI76",
-                    secretAccessKey: "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",
-                    region: 'eu-west-1'
-                }
-            );
-            var s3 = new AWS.S3();
-            var options = {
-                Bucket: 'bestplantbucket',
-                Key: 'META_SQL.xlsm',
-            };
-            s3.getObject(options, function (err, data) {
-                if (err) {
-                    throw err
-                }
-                fs.writeFileSync('./aws-files/' + options.Key, data.Body)
-                console.log('file downloaded successfully')
+        var timeString = lodash.get(reversedsortedShifs, '[0].values.downloadTime');
+        if (timeString) {
 
-                var workbook = new Excel.Workbook();
+            console.log(timeString);
+            var hours = timeString.substr(0, 2);
+            var minutes = timeString.substr(3, 4);
+            var seconds = 5;
+            const time = new Date();
+            var year = time.getFullYear();
+            var month = time.getMonth();
+            var day = time.getDate();
+            console.log(year, month, day, hours, minutes, seconds);
+            const downloadingTime = new Date(year, month, day, hours, minutes, seconds);
+            schedule.scheduleJob(downloadingTime, function () {
+                console.log("Running")
+                var AWS = require('aws-sdk');
+                var fs = require('fs');
+                AWS.config.update(
+                    {
+                        accessKeyId: "AKIAQA425EAVAE6OMI76",
+                        secretAccessKey: "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",
+                        region: 'eu-west-1'
+                    }
+                );
+                var s3 = new AWS.S3();
+                var options = {
+                    Bucket: 'bestplantbucket',
+                    Key: 'META_SQL.xlsm',
+                };
+                s3.getObject(options, function (err, data) {
+                    if (err) {
+                        throw err
+                    }
+                    fs.writeFileSync('./aws-files/' + options.Key, data.Body)
+                    console.log('file downloaded successfully')
 
-                workbook.xlsx.readFile('aws-files/META_SQL.xlsm')
-                    .then(function () {
-                        var worksheet = workbook.getWorksheet('Hoja1');
+                    var workbook = new Excel.Workbook();
 
-                        const promises = [];
-                        worksheet.eachRow(function (row, rowNumber) {
+                    workbook.xlsx.readFile('aws-files/META_SQL.xlsm')
+                        .then(function () {
+                            var worksheet = workbook.getWorksheet('Hoja1');
 
-                            var rowsData = [];
+                            const promises = [];
+                            worksheet.eachRow(function (row, rowNumber) {
 
-                            if (row.getCell('EF').value === "PERS044") {
+                                var rowsData = [];
 
-                                rowsData.push({
-                                    row_num: rowNumber,
-                                    'shift_PPSHFT_IS': row.getCell('IS').value,
-                                    'order_num_VHMFNO_D': row.getCell('D').value,
-                                    'part_num_VHPRNO_C': row.getCell('C').value,
-                                    'description_VHTXT1_W': row.getCell('W').value,
-                                    'quantity_VHOROQ_AH': row.getCell('AH').value,
-                                    'line_VOPLGR_EF': row.getCell('EF').value,
-                                    'start_time_VHMSTI_CG': row.getCell('CG').value,
-                                    'end_time_VHMFTI_CH': row.getCell('CH').value,
-                                    'start_date_VHFSTD_Y': row.getCell('Y').value,
-                                    'end_date_VHFFID_Z': row.getCell('Z').value,
-                                    'per_box_qty_UNITCAIXA_IT': row.getCell('IT').value,
-                                    'per_pallet_qty_UNITAPALET_IU': row.getCell('IU').value,
-                                    'per_pack_sec_VOIPITI_FM': row.getCell('FM').value,
-                                });
+                                if (row.getCell('EF').value === "PERS044") {
 
-                                var data = {
-                                    _id: new Date().toISOString().slice(0, 10) + Math.random().toString(36),
-                                    type: 'excel',
-                                    createdAt: moment().seconds(0).milliseconds(0).toISOString(),
-                                    values: rowsData
-                                };
+                                    rowsData.push({
+                                        row_num: rowNumber,
+                                        'shift_PPSHFT_IS': row.getCell('IS').value,
+                                        'order_num_VHMFNO_D': row.getCell('D').value,
+                                        'part_num_VHPRNO_C': row.getCell('C').value,
+                                        'description_VHTXT1_W': row.getCell('W').value,
+                                        'quantity_VHOROQ_AH': row.getCell('AH').value,
+                                        'line_VOPLGR_EF': row.getCell('EF').value,
+                                        'start_time_VHMSTI_CG': row.getCell('CG').value,
+                                        'end_time_VHMFTI_CH': row.getCell('CH').value,
+                                        'start_date_VHFSTD_Y': row.getCell('Y').value,
+                                        'end_date_VHFFID_Z': row.getCell('Z').value,
+                                        'per_box_qty_UNITCAIXA_IT': row.getCell('IT').value,
+                                        'per_pallet_qty_UNITAPALET_IU': row.getCell('IU').value,
+                                        'per_pack_sec_VOIPITI_FM': row.getCell('FM').value,
+                                    });
 
-                                const promise = pouchDBConnection
-                                    .put(data, { force: true }).then(function (response) {
-                                        rowsData = [];
-                                    }).then(function (err) {
+                                    var data = {
+                                        _id: new Date().toISOString().slice(0, 10) + Math.random().toString(36),
+                                        type: 'excel',
+                                        createdAt: moment().seconds(0).milliseconds(0).toISOString(),
+                                        values: rowsData
+                                    };
 
-                                    }); // <-- whatever async operation you have here
-                                promises.push(promise);
+                                    const promise = pouchDBConnection
+                                        .put(data, { force: true }).then(function (response) {
+                                            rowsData = [];
+                                        }).then(function (err) {
 
-                            }
+                                        }); // <-- whatever async operation you have here
+                                    promises.push(promise);
 
+                                }
+
+                            });
+
+                            Promise.all(promises).then(() => {
+                                // pouchDBConnection.sync(remoteDB);
+                                getDocs(res, "excel", true);
+                            }).catch((err) => {
+                            });
                         });
+                })
 
-                        Promise.all(promises).then(() => {
-                            // pouchDBConnection.sync(remoteDB);
-                            getDocs(res, "excel", true);
-                        }).catch((err) => {
-                        });
-                    });
             })
+        }
 
-        })
     });
 });
 app.post('/api/excel-upload', (req, res) => {
