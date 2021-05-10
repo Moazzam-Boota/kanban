@@ -35,20 +35,32 @@ function getDocs(res, type) {
         attachments: true
     }, function (err, response) {
         var filterRows = [];
+        var excelRows = [];
         response.rows.map(i => {
-            if (i.doc.type === type && i.doc.values.createdAt === new Date().toISOString().slice(0, 10)) {
+            if (i.doc.type === 'shifts') {
                 filterRows.push(i.doc);
-            } else if (i.doc.type === type) {
-                let a = i.doc.values
-                a.map(j => {
-                    if (j.createdAt === new Date().toISOString().slice(0, 10)) {
-                        filterRows.push(i.doc);
+            }
+            if (i.doc.type === 'excel') {
+                i.doc.values.map(k => {
+                    if (k.createdAt === new Date().toISOString().slice(0, 10)) {
+                        excelRows.push(i.doc);
                     }
                 })
             }
         });
-        console.log(filterRows);
-        res.send(filterRows)
+        if (type === 'shifts') {
+            var shiftRows = filterRows.sort(function compare(a, b) {
+                var dateA = new Date(a.values.createdAt);
+                var dateB = new Date(b.values.createdAt);
+                return dateA - dateB;
+            });
+            var reversedShiftRows = shiftRows.reverse();
+            res.send([reversedShiftRows[0]]);
+            console.log(reversedShiftRows)
+        }
+        if (type === 'excel') {
+            res.send(excelRows)
+        }
         pouchDBConnection.sync(remoteDB);
 
         if (err) { }
@@ -61,34 +73,57 @@ schedule.scheduleJob(" * * * * * ", function () {
         selector: { type: 'shifts' }
     }).then(function (res) {
         res.docs.map(i => {
-            downloadTime.push(i.values.downloadTime);
-
-            schedule.scheduleJob(i.values.downloadTime, function () {
-
-                var AWS = require('aws-sdk');
-                var fs = require('fs');
-                AWS.config.update(
-                    {
-                        accessKeyId: "AKIAQA425EAVAE6OMI76",
-                        secretAccessKey: "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",
-                        region: 'eu-west-1'
-                    }
-                );
-                var s3 = new AWS.S3();
-                var options = {
-                    Bucket: 'bestplantbucket',
-                    Key: 'META_SQL (1).xlsm',
-                };
-                s3.getObject(options, function (err, data) {
-                    if (err) {
-                        throw err
-                    }
-                    fs.writeFileSync('./aws-files/' + options.Key, data.Body)
-                    console.log('file downloaded successfully')
-                })
-
-            })
+            downloadTime.push(i)
         });
+        var sortedShifts = downloadTime.sort(function compare(a, b) {
+            var dateA = new Date(a.values.createdAt);
+            var dateB = new Date(b.values.createdAt);
+            return dateA - dateB;
+        });
+        var reversedsortedShifs = sortedShifts.reverse();
+        var timeString = reversedsortedShifs[0].values.downloadTime;
+        console.log(timeString);
+        var hours = timeString.substr(0, 2);
+        var minutes = timeString.substr(3, 4);
+        var seconds = 5;
+        const time = new Date();
+        var year = time.getFullYear();
+        var month = time.getMonth();
+        var day = time.getDate();
+        console.log(year, month, day, hours, minutes, seconds);
+        const downloadingTime = new Date(year, month, day, hours, minutes, seconds);
+        schedule.scheduleJob(downloadingTime, function () {
+            console.log("Running")
+            var AWS = require('aws-sdk');
+            var fs = require('fs');
+            AWS.config.update(
+                {
+                    accessKeyId: "AKIAQA425EAVAE6OMI76",
+                    secretAccessKey: "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",
+                    region: 'eu-west-1'
+                }
+            );
+            var s3 = new AWS.S3();
+            var options = {
+                Bucket: 'bestplantbucket',
+                Key: 'META_SQL.xlsm',
+            };
+            s3.getObject(options, function (err, data) {
+                if (err) {
+                    throw err
+                }
+                fs.writeFileSync('./aws-files/' + options.Key, data.Body)
+                console.log('file downloaded successfully')
+            })
+            // var workbook = new Excel.Workbook();
+            // workbook.xlsx.readFile('aws-files/META_SQL.xlsm')
+            //     .then(function () {
+            //         var worksheet = workbook.getWorksheet(sheet);
+            //         worksheet.eachRow({ includeEmpty: true }, function (row, rowNumber) {
+            //             console.log("Row " + rowNumber + " = " + JSON.stringify(row.values));
+            //         });
+            // });
+        })
     });
 });
 app.post('/api/excel-upload', (req, res) => {

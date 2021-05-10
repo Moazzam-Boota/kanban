@@ -93,7 +93,7 @@ const Params = () => {
       PERS044: {  // assembly Line
         ...dataState
       },
-      createdAt: new Date().toISOString().slice(0, 10)
+      createdAt: new Date().toISOString()
     };
     dispatch(pushShiftsData(parameters));
     Swal.fire(
