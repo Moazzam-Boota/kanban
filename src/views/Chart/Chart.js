@@ -96,7 +96,7 @@ const Users = () => {
       console.log(dataGroupByProduct, dataGroupByProduct[dataGroupByProduct.length - 1], 'dataGroupByProduct');
       // TODO:: last.last -1 
       if (dataGroupByProduct[dataGroupByProduct.length - 1])
-        dataGroupByProduct[dataGroupByProduct.length - 1].sum = dataGroupByProduct[dataGroupByProduct.length - 1].sum - quantityPerBox;
+        dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - 1;
       setDonePieces(data);
 
       // const dataGroup = dataGroupByProduct.forEach((record, index) => {
