@@ -95,10 +95,10 @@ const Users = () => {
       // var peices = 1 + donePieces;
       console.log(dataGroupByProduct, dataGroupByProduct[dataGroupByProduct.length - 1], 'dataGroupByProduct');
       // TODO:: last.last -1 
-      if (dataGroupByProduct[dataGroupByProduct.length - 1])
-        dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - 1;
+      // if (dataGroupByProduct[dataGroupByProduct.length - 1])
+      //   dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - 1;
       setDonePieces(data);
-      setDataGroupByProduct(dataGroupByProduct);
+      // setDataGroupByProduct(dataGroupByProduct);
 
       // const dataGroup = dataGroupByProduct.forEach((record, index) => {
       //   // check if sum 0, skip product
@@ -154,7 +154,7 @@ const Users = () => {
     //   socket.emit("lightred", Number(Math.random() < 0.5));
     //   socket.emit("lightgreen", Number(Math.random() < 0.5));
     // });
-  }, [dataGroupByProduct]);
+  }, []);
 
 
   useEffect(() => {
@@ -306,6 +306,10 @@ const Users = () => {
     var currentCardBox = {};
 
     console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
+
+    if (dataGroupByProduct[dataGroupByProduct.length - 1] && donePieces !== 0)
+      dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - donePieces;
+
     // dataGroupByProduct
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
