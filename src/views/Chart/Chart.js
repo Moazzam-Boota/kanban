@@ -172,7 +172,7 @@ const Users = () => {
             product: key,
             data: value,
             color: color,
-            sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
+            sum: lodash.sumBy(value, 'quantity_VHOROQ_AH') - donePieces,
             productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
           }
         }).value(), ['sum'], ['asc']).filter(k => k.sum !== null);
