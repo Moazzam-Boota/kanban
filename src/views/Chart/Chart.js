@@ -306,7 +306,8 @@ const Users = () => {
       if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces > 0))
         product.productCount = product.originalCount - donePieces;
       else if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces <= 0)) {
-        dataGroupByProduct[dataGroupByProduct.length - 1].pop();
+        // dataGroupByProduct[dataGroupByProduct.length - 1].pop();
+        dataGroupByProduct.splice(-1, 1);
       }
 
     });
