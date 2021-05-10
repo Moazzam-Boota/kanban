@@ -303,7 +303,7 @@ const Users = () => {
 
 
     lodash.get(dataGroupByProduct, i, []).map((product, index) => {
-      if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces > 0))
+      if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces >= 0))
         product.productCount = product.originalCount - donePieces;
       // else if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces <= 0)) {
       //   // dataGroupByProduct[dataGroupByProduct.length - 1].pop();
