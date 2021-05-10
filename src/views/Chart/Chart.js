@@ -300,6 +300,11 @@ const Users = () => {
       // console.log(i, activeShiftPeriod, time, beforeTime, afterTime, 'here is')
     }
 
+
+    lodash.get(dataGroupByProduct, i, []).map((product, index) => {
+      if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces > 0))
+        product.productCount = product.originalCount - donePieces;
+    });
     console.log(dataGroupByProduct, i, 'dataGroupByProduct2')
 
     var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i, []);
@@ -317,8 +322,7 @@ const Users = () => {
       shift={dataGroupByProductRandom.length !== 0 ? Math.round(boxesPerPitch) : undefined}
       cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i, []).map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
-        if ((i === 1 && dataGroupByProductRandom.length - 1 === index))
-          product.productCount = product.originalCount - donePieces;
+
         return (
           <span className="content-center" style={{
             backgroundColor: product.record.color,
