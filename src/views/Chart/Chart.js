@@ -153,7 +153,7 @@ const Users = () => {
     //   socket.emit("lightred", Number(Math.random() < 0.5));
     //   socket.emit("lightgreen", Number(Math.random() < 0.5));
     // });
-  }, []);
+  }, [dataGroupByProduct]);
 
 
   useEffect(() => {
