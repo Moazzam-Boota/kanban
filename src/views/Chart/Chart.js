@@ -98,6 +98,7 @@ const Users = () => {
       if (dataGroupByProduct[dataGroupByProduct.length - 1])
         dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - 1;
       setDonePieces(data);
+      setDataGroupByProduct(dataGroupByProduct);
 
       // const dataGroup = dataGroupByProduct.forEach((record, index) => {
       //   // check if sum 0, skip product
