@@ -2,6 +2,7 @@ const express = require('express');
 const PouchDB = require('pouchdb');
 const Excel = require('exceljs');
 PouchDB.plugin(require('pouchdb-find'));
+const moment = require('moment');
 
 var cors = require('cors')
 const fileUpload = require('express-fileupload');
@@ -28,7 +29,7 @@ var remoteURL = 'http://' + dbDetails.user + ':' + dbDetails.pass + '@' + dbDeta
 
 var remoteDB = new PouchDB(`${remoteURL}`);
 
-function getDocs(res, type) {
+function getDocs(res, type, cronjob = false) {
     pouchDBConnection.sync(remoteDB);
     pouchDBConnection.allDocs({
         include_docs: true,
@@ -36,18 +37,21 @@ function getDocs(res, type) {
     }, function (err, response) {
         var filterRows = [];
         var excelRows = [];
+        let filterRowsMaxDate = response.rows.filter(i => i.doc.type === 'excel').map(d => moment(d.doc.createdAt)),
+            singleMaxDate = moment.max(filterRowsMaxDate);
+        console.log(filterRowsMaxDate, 'single', singleMaxDate);
+
+
         response.rows.map(i => {
             if (i.doc.type === 'shifts') {
                 filterRows.push(i.doc);
             }
-            if (i.doc.type === 'excel') {
-                i.doc.values.map(k => {
-                    if (k.createdAt === new Date().toISOString().slice(0, 10)) {
-                        excelRows.push(i.doc);
-                    }
-                })
+            console.log(singleMaxDate.isSame(moment(i.doc.createdAt)), singleMaxDate, moment(i.doc.createdAt), ' singleMaxDate.isSame(i.doc.createdAt)')
+            if (i.doc.type === 'excel' && singleMaxDate.isSame(moment(i.doc.createdAt))) {
+                excelRows.push(i.doc);
             }
         });
+
         if (type === 'shifts') {
             var shiftRows = filterRows.sort(function compare(a, b) {
                 var dateA = new Date(a.values.createdAt);
@@ -59,7 +63,8 @@ function getDocs(res, type) {
             console.log(reversedShiftRows)
         }
         if (type === 'excel') {
-            res.send(excelRows)
+            if (cronjob) console.log('Cron Job Excel Records Saved Successfully!')
+            if (!cronjob) res.send(excelRows)
         }
         pouchDBConnection.sync(remoteDB);
 
@@ -114,15 +119,64 @@ schedule.scheduleJob(" * * * * * ", function () {
                 }
                 fs.writeFileSync('./aws-files/' + options.Key, data.Body)
                 console.log('file downloaded successfully')
+
+                var workbook = new Excel.Workbook();
+
+                workbook.xlsx.readFile('aws-files/META_SQL.xlsm')
+                    .then(function () {
+                        var worksheet = workbook.getWorksheet('Hoja1');
+
+                        const promises = [];
+                        worksheet.eachRow(function (row, rowNumber) {
+
+                            var rowsData = [];
+
+                            if (row.getCell('EF').value === "PERS044") {
+
+                                rowsData.push({
+                                    row_num: rowNumber,
+                                    'shift_PPSHFT_IS': row.getCell('IS').value,
+                                    'order_num_VHMFNO_D': row.getCell('D').value,
+                                    'part_num_VHPRNO_C': row.getCell('C').value,
+                                    'description_VHTXT1_W': row.getCell('W').value,
+                                    'quantity_VHOROQ_AH': row.getCell('AH').value,
+                                    'line_VOPLGR_EF': row.getCell('EF').value,
+                                    'start_time_VHMSTI_CG': row.getCell('CG').value,
+                                    'end_time_VHMFTI_CH': row.getCell('CH').value,
+                                    'start_date_VHFSTD_Y': row.getCell('Y').value,
+                                    'end_date_VHFFID_Z': row.getCell('Z').value,
+                                    'per_box_qty_UNITCAIXA_IT': row.getCell('IT').value,
+                                    'per_pallet_qty_UNITAPALET_IU': row.getCell('IU').value,
+                                    'per_pack_sec_VOIPITI_FM': row.getCell('FM').value,
+                                });
+
+                                var data = {
+                                    _id: new Date().toISOString().slice(0, 10) + Math.random().toString(36),
+                                    type: 'excel',
+                                    createdAt: moment().seconds(0).milliseconds(0).toISOString(),
+                                    values: rowsData
+                                };
+
+                                const promise = pouchDBConnection
+                                    .put(data, { force: true }).then(function (response) {
+                                        rowsData = [];
+                                    }).then(function (err) {
+
+                                    }); // <-- whatever async operation you have here
+                                promises.push(promise);
+
+                            }
+
+                        });
+
+                        Promise.all(promises).then(() => {
+                            // pouchDBConnection.sync(remoteDB);
+                            getDocs(res, "excel", true);
+                        }).catch((err) => {
+                        });
+                    });
             })
-            // var workbook = new Excel.Workbook();
-            // workbook.xlsx.readFile('aws-files/META_SQL.xlsm')
-            //     .then(function () {
-            //         var worksheet = workbook.getWorksheet(sheet);
-            //         worksheet.eachRow({ includeEmpty: true }, function (row, rowNumber) {
-            //             console.log("Row " + rowNumber + " = " + JSON.stringify(row.values));
-            //         });
-            // });
+
         })
     });
 });
@@ -156,13 +210,12 @@ app.post('/api/excel-upload', (req, res) => {
                     'per_box_qty_UNITCAIXA_IT': row.getCell('IT').value,
                     'per_pallet_qty_UNITAPALET_IU': row.getCell('IU').value,
                     'per_pack_sec_VOIPITI_FM': row.getCell('FM').value,
-
-                    "createdAt": new Date().toISOString().slice(0, 10)
                 });
 
                 var data = {
                     _id: new Date().toISOString().slice(0, 10) + Math.random().toString(36),
                     type: 'excel',
+                    createdAt: moment().seconds(0).milliseconds(0).toISOString(),
                     values: rowsData
                 };
 
@@ -279,66 +332,66 @@ const io = socketIo(server, {
     allowEIO3: true
 });
 
-let interval;
-var Gpio = require('onoff').Gpio; //include onoff to interact with the Gpio
-var LED_RED = new Gpio('21', 'out'); //use Gpio pin 21 as output for LED RED
-var LED_GREEN = new Gpio('20', 'out'); //use Gpio pin 20 as output for LED GREEN
-//var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and 'both' button presses, and releases should be handled
-var pushButton = new Gpio('26', 'in', 'rising', { debounceTimeout: 10 });
+// let interval;
+// var Gpio = require('onoff').Gpio; //include onoff to interact with the Gpio
+// var LED_RED = new Gpio('21', 'out'); //use Gpio pin 21 as output for LED RED
+// var LED_GREEN = new Gpio('20', 'out'); //use Gpio pin 20 as output for LED GREEN
+// //var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and 'both' button presses, and releases should be handled
+// var pushButton = new Gpio('26', 'in', 'rising', { debounceTimeout: 10 });
 
-io.on("connection", (socket) => {
-    console.log("New client connected");
-    // if (interval) {
-    //     clearInterval(interval);
-    // }
-    // interval = setInterval(() => getApiAndEmit(socket), 1000);
-
-
-    var lightvalue = 0; // get from db
-    var countValue = 0;
-    pushButton.watch(function (err, value) { //Watch for hardware interrupts on pushButton
-        if (err) { //if an error
-            console.error('There was an error', err); //output error message to console
-            return;
-        }
-        // lightvalue = value;
-
-        countValue = countValue + 1;
-
-        if (countValue === 2) {
-            lightvalue = lightvalue + 1;
-            socket.emit('lightgreen', lightvalue); //send button status to client
-            // socket.emit('lightred', lightvalue); //send button status to client
-            countValue = 0;
-        }
-    });
-    socket.on('lightgreen', function (data) { //get light switch status from client
-        lightvalue = data;
-        if (lightvalue != LED_GREEN.readSync()) { //only change LED_GREEN if status has changed
-            LED_GREEN.writeSync(lightvalue); //turn LED_GREEN on or off
-        }
-    });
-    socket.on('lightred', function (data) { //get light switch status from client
-        lightvalue = data;
-        if (lightvalue != LED_RED.readSync()) { //only change LED_RED if status has changed
-            LED_RED.writeSync(lightvalue); //turn LED_RED on or off
-        }
-    });
+// io.on("connection", (socket) => {
+//     console.log("New client connected");
+//     // if (interval) {
+//     //     clearInterval(interval);
+//     // }
+//     // interval = setInterval(() => getApiAndEmit(socket), 1000);
 
 
-    socket.on("disconnect", () => {
-        console.log("Client disconnected");
-        clearInterval(interval);
-    });
-});
+//     var lightvalue = 0; // get from db
+//     var countValue = 0;
+//     pushButton.watch(function (err, value) { //Watch for hardware interrupts on pushButton
+//         if (err) { //if an error
+//             console.error('There was an error', err); //output error message to console
+//             return;
+//         }
+//         // lightvalue = value;
 
-process.on('SIGINT', function () { //on ctrl+c
-    LED_RED.writeSync(0); // Turn LED_RED off
-    LED_RED.unexport(); // Unexport LED_RED Gpio to free resources
-    LED_GREEN.writeSync(0); // Turn LED_GREEN off
-    LED_GREEN.unexport(); // Unexport LED_GREEN Gpio to free resources
-    pushButton.unexport(); // Unexport Button Gpio to free resources
-    process.exit(); //exit completely
-});
+//         countValue = countValue + 1;
 
-server.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
+//         if (countValue === 2) {
+//             lightvalue = lightvalue + 1;
+//             socket.emit('lightgreen', lightvalue); //send button status to client
+//             // socket.emit('lightred', lightvalue); //send button status to client
+//             countValue = 0;
+//         }
+//     });
+//     socket.on('lightgreen', function (data) { //get light switch status from client
+//         lightvalue = data;
+//         if (lightvalue != LED_GREEN.readSync()) { //only change LED_GREEN if status has changed
+//             LED_GREEN.writeSync(lightvalue); //turn LED_GREEN on or off
+//         }
+//     });
+//     socket.on('lightred', function (data) { //get light switch status from client
+//         lightvalue = data;
+//         if (lightvalue != LED_RED.readSync()) { //only change LED_RED if status has changed
+//             LED_RED.writeSync(lightvalue); //turn LED_RED on or off
+//         }
+//     });
+
+
+//     socket.on("disconnect", () => {
+//         console.log("Client disconnected");
+//         clearInterval(interval);
+//     });
+// });
+
+// process.on('SIGINT', function () { //on ctrl+c
+//     LED_RED.writeSync(0); // Turn LED_RED off
+//     LED_RED.unexport(); // Unexport LED_RED Gpio to free resources
+//     LED_GREEN.writeSync(0); // Turn LED_GREEN off
+//     LED_GREEN.unexport(); // Unexport LED_GREEN Gpio to free resources
+//     pushButton.unexport(); // Unexport Button Gpio to free resources
+//     process.exit(); //exit completely
+// });
+
+// server.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
