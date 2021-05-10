@@ -17,6 +17,9 @@ const ENDPOINT = "http://127.0.0.1:4001";
 const lodash = require('lodash');
 const moment = require('moment');
 
+const colorsPalette = ['#2A2D34', '#009DDC', '#F26430', '#6761A8', '#009B72', '#F6E27F', '#E2C391'];
+
+
 const Users = () => {
   const queryPage = useLocation().search.match(/page=([0-9]+)/, '')
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
@@ -91,6 +94,7 @@ const Users = () => {
       // setSocketResponse(true);
       // var peices = 1 + donePieces;
       console.log(dataGroupByProduct, dataGroupByProduct[dataGroupByProduct.length - 1], 'dataGroupByProduct');
+      // TODO:: last.last -1 
       if (dataGroupByProduct[dataGroupByProduct.length - 1])
         dataGroupByProduct[dataGroupByProduct.length - 1].sum = dataGroupByProduct[dataGroupByProduct.length - 1].sum - quantityPerBox;
       setDonePieces(data);
@@ -154,30 +158,75 @@ const Users = () => {
 
   useEffect(() => {
     if (parentsData.length !== 0 && dataGroupByProduct.length == 0) {
-
-      setDataGroupByProduct(lodash.orderBy(lodash.chain(parentsData)
+      var counter = 0;
+      const allShiftsData = [];
+      const dataGroup = lodash.orderBy(lodash.chain(parentsData)
         // Group the elements of Array based on `color` property
         .groupBy("part_num_VHPRNO_C")
         // `key` is group's name (color), `value` is the array of objects
-        .map((value, key) => ({
-          product: key,
-          data: value,
-          color: getRandomColor(),
-          sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
-          productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
-        })).value(), ['sum'], ['desc']).filter(k => k.sum !== null));
+        .map((value, key) => {
+          const color = colorsPalette[counter];
+          ++counter;
+          return {
+            product: key,
+            data: value,
+            color: color,
+            sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
+            productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
+          }
+        }).value(), ['sum'], ['asc']).filter(k => k.sum !== null);
+      // console.log(dataGroup, 'dataGroup');
+
+      const dataGroupLength = dataGroup.length;
+      const productCount = Math.round(boxesPerPitch / dataGroupLength * 10) / 10;
+      var roundOffSlice = 0;
+      for (var i = blackColorChartParams.max; i >= 1; i--) {
+        // allShiftsData.push(dataGroup.map((product, index) => {
+
+        //   // const productCount = Math.floor(product.sum / quantityPerBox); //quantityPerBox
+        //   // const productCount = Math.round(product.sum / quantityPerBox / boxesPerPitch);
+
+        //   // check if sum 0, skip product
+        //   // if sum of all products in a shift >=boxesPerPitch, skip
+        //   // 
+        //   dataGroup.filter(k => k.product === product.product)[0].sum = product.sum - productCount;
+        //   console.log(product.sum, boxesPerPitch, boxesPerPitch / dataGroup.length, dataGroup, quantityPerBox, productCount, 'productCount')
+        //   return {
+        //     record: product, productCount: productCount
+        //   };
+        // })
+        //   // .filter(k => {
+        //   //   {
+        //   //     console.log(k.record.sum, 'all')
+        //   //     if (k.record.sum > 45 && k.record.sum < 100 && k.productCount < 2) return false;
+        //   //     return true;
+        //   //   }
+        //   // });
+        // );
+
+        roundOffSlice += Math.round(boxesPerPitch) - boxesPerPitch;
+        const lastElement = dataGroup.length - 1;
+        dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum = dataGroup[lastElement].sum - Math.round(boxesPerPitch);
+
+        if (roundOffSlice >= 1) {
+          dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum = dataGroup[lastElement].sum + roundOffSlice;
+          roundOffSlice = 0;
+        }
+
+        console.log(dataGroup, 'dataGroup', roundOffSlice, boxesPerPitch)
+
+        const recordSet = {
+          record: dataGroup[0], productCount: Math.round(boxesPerPitch)
+        };
+        // single product with highest count, 
+        // with lesser counts
+        allShiftsData.push([recordSet])
+      }
+      setDataGroupByProduct(allShiftsData);
     }
   }, [parentsData]);
 
 
-  function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
 
   useEffect(() => {
     dispatch(intialExcelSheet());
@@ -250,44 +299,23 @@ const Users = () => {
       // console.log(i, activeShiftPeriod, time, beforeTime, afterTime, 'here is')
     }
 
-    console.log(beforeTime, afterTime, 'startShiftTime')
+    console.log(dataGroupByProduct, i, 'dataGroupByProduct2')
 
-    var dataGroupByProductRandom = [];
+    var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i, []);
     var currentCardBox = {};
-    if (i <= activeShiftPeriod) {
-      console.log(dataGroupByProduct, 'dataGroupByProduct')
-      dataGroupByProductRandom = dataGroupByProduct.map((product, index) => {
 
-        // const productCount = Math.floor(product.sum / quantityPerBox); //quantityPerBox
-        const productCount = Math.round(product.sum / quantityPerBox / boxesPerPitch);
-        // check if sum 0, skip product
-        // if sum of all products in a shift >=boxesPerPitch, skip
-        // 
-        dataGroupByProduct.filter(k => k.product === product.product)[0].sum = product.sum - productCount;
-        console.log(product.sum, boxesPerPitch, dataGroupByProduct, productCount, 'productCount')
-        return {
-          record: product, productCount
-        };
-      }).filter(k => {
-        {
-          console.log(k.record.sum, 'all')
-          if (k.record.sum > 45 && k.record.sum < 100 && k.productCount < 2) return false;
-          return true;
-        }
-      });
-    }
     console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
     // dataGroupByProduct
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={dataGroupByProductRandom.length !== 0 ? Math.round(boxesPerPitch) : undefined}
-      cardName={dataGroupByProductRandom.map((product, index) => {
+      cardName={i <= activeShiftPeriod ? dataGroupByProductRandom.map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
         return (
           <span className="content-center" style={{
             backgroundColor: product.record.color,
-            padding: '5px',
+            padding: (i === 1 && dataGroupByProductRandom.length - 1 === index) ? '' : '5px',
             // marginLeft: '5px',
             // width: '10px',
             textAlign: 'center',
@@ -308,13 +336,14 @@ const Users = () => {
             {product.productCount}</span>
           // </span>
         )
-      })
+      }) : []
       }
       leftHeader="459"
       leftFooter="feeds"
     >
     </CWidgetBrand >);
   }
+  // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   console.log(currentCardBox, 'currentCardBox')
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
