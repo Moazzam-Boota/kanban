@@ -217,7 +217,7 @@ const Users = () => {
         console.log(dataGroup, 'dataGroup', roundOffSlice, boxesPerPitch)
 
         const recordSet = {
-          record: dataGroup[0], productCount: Math.round(boxesPerPitch)
+          record: dataGroup[0], productCount: Math.round(boxesPerPitch), originalCount: Math.round(boxesPerPitch)
         };
         // single product with highest count, 
         // with lesser counts
@@ -318,7 +318,7 @@ const Users = () => {
       cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i, []).map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
         if ((i === 1 && dataGroupByProductRandom.length - 1 === index))
-          product.productCount = product.productCount - donePieces;
+          product.productCount = product.originalCount - donePieces;
         return (
           <span className="content-center" style={{
             backgroundColor: product.record.color,
