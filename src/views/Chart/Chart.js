@@ -308,14 +308,14 @@ const Users = () => {
     console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
 
     if (dataGroupByProduct[dataGroupByProduct.length - 1] && donePieces !== 0)
-      dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - donePieces;
+      dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - 1;
 
     // dataGroupByProduct
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={dataGroupByProductRandom.length !== 0 ? Math.round(boxesPerPitch) : undefined}
-      cardName={i <= activeShiftPeriod ? dataGroupByProductRandom.map((product, index) => {
+      cardName={i <= activeShiftPeriod ? dataGroupByProduct[i].map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
         return (
           <span className="content-center" style={{
