@@ -158,7 +158,7 @@ const Users = () => {
 
 
   useEffect(() => {
-    if (parentsData.length !== 0 && dataGroupByProduct.length == 0) {
+    if (parentsData.length !== 0) {
       var counter = 0;
       const allShiftsData = [];
       const dataGroup = lodash.orderBy(lodash.chain(parentsData)
