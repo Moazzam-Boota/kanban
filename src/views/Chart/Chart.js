@@ -207,7 +207,7 @@ const Users = () => {
         //   //   }
         //   // });
         // );
-        const numberOfProducts = 4;
+        const numberOfProducts = 2;
 
         // const lastElement = dataGroup.length - 1;
         const lastElement = 0;
@@ -252,15 +252,15 @@ const Users = () => {
     }
   }, [parentsData]);
 
-  var oldShiftsRemainder = 0;
+  // var oldShiftsRemainder = 0;
   useEffect(() => {
     console.log(donePieces, 'donePieces')
     const allShiftsData = [...dataGroupByProduct];
     var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
     var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
-    oldShiftsRemainder += allShiftsDataRemainder;
-    var shiftPieceDoneLimit = donePieces % (oldShiftsRemainder + 1);
-   
+    // oldShiftsRemainder += allShiftsDataRemainder;
+    var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
+
     console.log('updatedShiftData2', counter, shiftPieceDoneLimit, allShiftsDataRemainder)
     if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
