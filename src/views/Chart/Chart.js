@@ -230,6 +230,17 @@ const Users = () => {
 
   useEffect(() => {
     console.log(donePieces, 'donePieces')
+    const allShiftsData = dataGroupByProduct.map((product, index) => {
+      console.log(product, 'product')
+      if ((dataGroupByProduct.length - 1 === index && product.originalCount - donePieces >= 0))
+        product.productCount = product.originalCount - donePieces;
+      // else if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces <= 0)) {
+      //   // dataGroupByProduct[dataGroupByProduct.length - 1].pop();
+      //   dataGroupByProduct.splice(-1, 1);
+      // }
+
+    });
+    setDataGroupByProduct(allShiftsData)
   }, [donePieces]);
 
 
@@ -306,15 +317,7 @@ const Users = () => {
     var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i, []);
 
 
-    lodash.get(dataGroupByProduct, i, []).map((product, index) => {
-      if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces >= 0))
-        product.productCount = product.originalCount - donePieces;
-      // else if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces <= 0)) {
-      //   // dataGroupByProduct[dataGroupByProduct.length - 1].pop();
-      //   dataGroupByProduct.splice(-1, 1);
-      // }
 
-    });
     console.log(dataGroupByProduct, i, 'dataGroupByProduct2')
 
     var currentCardBox = {};
@@ -330,7 +333,7 @@ const Users = () => {
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={dataGroupByProductRandom.length !== 0 ? Math.round(boxesPerPitch) : undefined}
-      cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i, []).filter(k => k.productCount !== 0).map((product, index) => {
+      cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i, []).map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
 
         return (
