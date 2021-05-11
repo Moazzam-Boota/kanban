@@ -231,7 +231,8 @@ const Users = () => {
   useEffect(() => {
     console.log(donePieces, 'donePieces')
     const allShiftsData = dataGroupByProduct;
-    allShiftsData[allShiftsData.length - 1][0].productCount = allShiftsData[allShiftsData.length - 1][0].originalCount - donePieces;
+    if (allShiftsData[allShiftsData.length - 1] && product.originalCount - donePieces >= 0)
+      allShiftsData[allShiftsData.length - 1][0].productCount = allShiftsData[allShiftsData.length - 1][0].originalCount - donePieces;
     // const allShiftsData = dataGroupByProduct.map((product, index) => {
     //   console.log(product, 'product')
     //   if ((dataGroupByProduct.length - 1 === index && product.originalCount - donePieces >= 0))
