@@ -256,13 +256,18 @@ const Users = () => {
   useEffect(() => {
     console.log(donePieces, 'donePieces')
     const allShiftsData = dataGroupByProduct;
-    const allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
-    const allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
-    const shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
+    var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
+    var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
+    var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
 
 
     if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
-      if (allShiftsData[0].length > 1) allShiftsData[0].pop();
+      if (allShiftsData[0].length > 1) {
+        allShiftsData[0].pop();
+        allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
+        allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
+        shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
+      }
       else allShiftsData.splice(0, 1);
     }
     else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
