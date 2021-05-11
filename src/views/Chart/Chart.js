@@ -259,7 +259,7 @@ const Users = () => {
     const shiftPieceDoneLimit = donePieces % 15;
 
     if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0)
-      allShiftsData.splice(0, 1);
+      allShiftsData[0].pop();
     else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0)
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
     console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit)
