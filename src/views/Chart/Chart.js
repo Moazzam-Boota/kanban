@@ -256,7 +256,8 @@ const Users = () => {
   useEffect(() => {
     console.log(donePieces, 'donePieces')
     const allShiftsData = dataGroupByProduct;
-    const shiftPieceDoneLimit = donePieces % (lodash.get(allShiftsData, ['[0]', allShiftsData[0].length - 1, 'originalCount'], 0) + 1);
+    const allShiftsDataLength = lodash.get(allShiftsData, '[0].length - 1', 0);
+    const shiftPieceDoneLimit = donePieces % (lodash.get(allShiftsData, ['[0]', allShiftsDataLength, 'originalCount'], 0) + 1);
 
 
     if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
@@ -266,7 +267,7 @@ const Users = () => {
     else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
     }
-    console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit)
+    console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit, allShiftsDataLength)
     // const allShiftsData = dataGroupByProduct.map((product, index) => {
     //   console.log(product, 'product')
     //   if ((dataGroupByProduct.length - 1 === index && product.originalCount - donePieces >= 0))
