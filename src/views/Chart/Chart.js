@@ -233,7 +233,7 @@ const Users = () => {
     const allShiftsData = dataGroupByProduct;
     console.log(allShiftsData, 'allShiftsData')
     if (allShiftsData[allShiftsData.length - 1] && allShiftsData[allShiftsData.length - 1][0].originalCount - donePieces >= 0)
-      allShiftsData[allShiftsData.length - 1][0].productCount = allShiftsData[allShiftsData.length - 1][0].originalCount - donePieces;
+      allShiftsData[0][0].productCount = allShiftsData[0][0].originalCount - donePieces;
     // const allShiftsData = dataGroupByProduct.map((product, index) => {
     //   console.log(product, 'product')
     //   if ((dataGroupByProduct.length - 1 === index && product.originalCount - donePieces >= 0))
@@ -320,20 +320,10 @@ const Users = () => {
       console.log(i, activeShiftPeriod, time, beforeTime, afterTime, 'here is')
     }
     var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
-
-
-
-    console.log(dataGroupByProduct, i, 'dataGroupByProduct2')
-
     var currentCardBox = {};
 
     console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
-    // console.log(lodash.get(dataGroupByProduct, i, []), 'dataGroupByProductRandom')
 
-    // if (dataGroupByProduct[dataGroupByProduct.length - 1] && donePieces !== 0)
-    // dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - donePieces;
-
-    // dataGroupByProduct
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
