@@ -231,7 +231,7 @@ const Users = () => {
           recordSet.push({
             record: dataGroup[j],
             productCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic,
-            originalCount: Math.round(boxesPerPitch)
+            originalCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic
           });
 
           if (multipleRoundOff >= 1) multipleRoundOff = 0;
