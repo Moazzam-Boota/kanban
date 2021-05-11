@@ -207,7 +207,7 @@ const Users = () => {
         //   //   }
         //   // });
         // );
-        const numberOfProducts = 2;
+        const numberOfProducts = 1;
 
         // const lastElement = dataGroup.length - 1;
         const lastElement = 0;
