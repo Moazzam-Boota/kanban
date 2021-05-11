@@ -284,7 +284,7 @@ const Users = () => {
   // timeRange[0] add pitchPeriod, check if current time is between, old and new+shift time, show boxes
   // var time = moment() gives you current time. no format required.
   var format = 'HH:mm'
-  const [time, setTimeLeft] = useState(moment('08:40', format));
+  const [time, setTimeLeft] = useState(moment('15:40', format));
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -298,7 +298,7 @@ const Users = () => {
   const cardsData = [];
   var activeShiftPeriod = 0;
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
-  for (var i = parseInt(blackColorChartParams.max); i >= 1; i--) {
+  for (var i = 16; i >= 1; i--) {
     var color = '';
 
     var beforeTime = moment(startShiftTime.format('HH:mm'), format);
@@ -310,7 +310,7 @@ const Users = () => {
     else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) { color = 'red'; }
     else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
 
-
+    console.log(time, afterTime, beforeTime, 'hello')
     if (time.isBetween(afterTime, beforeTime)) {
       activeShiftPeriod = i;
       headerWidgetColor = color;
@@ -361,6 +361,8 @@ const Users = () => {
   }
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   console.log(currentCardBox, 'currentCardBox')
+  console.log(cardsData, 'cardsData')
+  cardsData.splice(0, 4);
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
   return (
