@@ -294,11 +294,19 @@ const Users = () => {
     return () => clearTimeout(timer);
   });
 
+
   var startShiftTime = moment(timeRange[1], format);
+  var initialShiftTime = moment(timeRange[0], format);
+
+
+  var duration = moment.duration(startShiftTime.diff(initialShiftTime));
+  // console.log(timeRange, 'timeRange', duration.asMinutes() / pitchPeriod, pitchPeriod)
+  // duration subtract breaks
+
   const cardsData = [];
   var activeShiftPeriod = 0;
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
-  for (var i = 16; i >= 1; i--) {
+  for (var i = duration.asMinutes() / pitchPeriod; i >= 1; i--) {
     var color = '';
 
     var beforeTime = moment(startShiftTime.format('HH:mm'), format);
