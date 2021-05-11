@@ -257,7 +257,8 @@ const Users = () => {
     console.log(donePieces, 'donePieces')
     const allShiftsData = dataGroupByProduct;
     const allShiftsDataLength = lodash.get(allShiftsData, '[0].length - 1', 0);
-    const shiftPieceDoneLimit = donePieces % (lodash.get(allShiftsData, ['[0]', allShiftsDataLength, 'originalCount'], 0) + 1);
+    const allShiftsDataRemainder = lodash.get(allShiftsData, ['[0]', allShiftsDataLength, 'originalCount'], 0);
+    const shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
 
 
     if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
@@ -267,7 +268,7 @@ const Users = () => {
     else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
     }
-    console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit, allShiftsDataLength)
+    console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit, allShiftsDataLength, allShiftsDataRemainder)
     // const allShiftsData = dataGroupByProduct.map((product, index) => {
     //   console.log(product, 'product')
     //   if ((dataGroupByProduct.length - 1 === index && product.originalCount - donePieces >= 0))
