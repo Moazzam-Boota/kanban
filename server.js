@@ -267,7 +267,7 @@ app.get('/api/intial-excel-upload', (req, res) => {
 
 });
 app.get('/api/get-chart-data', (req, res) => {
-    getDocs(res, "excel");
+    getDocs(res, "shifts");
 });
 
 // app.get('/api/excel-upload-auto', (req, res) => {
