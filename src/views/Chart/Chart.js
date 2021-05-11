@@ -240,6 +240,7 @@ const Users = () => {
       // }
 
     });
+    console.log(allShiftsData, 'allShiftsData')
     setDataGroupByProduct(allShiftsData)
   }, [donePieces]);
 
