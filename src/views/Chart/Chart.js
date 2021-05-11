@@ -443,7 +443,7 @@ const Users = () => {
               <p style={kanbanBoxWidgetStyle}>Referencia de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.product')}</span> </p>
               <p style={kanbanBoxWidgetStyle}>Descripció de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.data[0].description_VHTXT1_W')}</span> </p>
               <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.total')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.total') - donePieces * 3}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.total') - donePieces}</span> </p>
               <p style={kanbanBoxWidgetStyle}>Quantitat per caixa: <span style={metricStyle}>{parseFloat(lodash.get(currentCardBox, 'record.productsPerBox')).toFixed(2)}</span> </p>
             </div>
           } />
