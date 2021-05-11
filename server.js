@@ -24,8 +24,8 @@ const dbDetails = {
     db: 'excel_files',
 };
 
-var pouchDBConnection = new PouchDB(dbDetails.db);
-
+var pouchDBConnection = new PouchDB(dbDetails.db, { size: 100 });
+pouchDBConnection.setMaxListeners(50);
 var remoteURL = 'http://' + dbDetails.user + ':' + dbDetails.pass + '@' + dbDetails.url + '/' + dbDetails.db;
 
 var remoteDB = new PouchDB(`${remoteURL}`);
