@@ -261,7 +261,9 @@ const Users = () => {
     var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
     var counter = 0;
     console.log('updatedShiftData2', counter, shiftPieceDoneLimit, allShiftsDataRemainder)
-    if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0 && counter === 0) {
+    if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
+      allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
+    } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0 && counter === 0) {
       if (allShiftsData[0].length > 1) {
         allShiftsData[0].pop();
         allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
@@ -271,9 +273,6 @@ const Users = () => {
       else {
         allShiftsData.splice(0, 1);
       }
-    }
-    else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
-      allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
     }
     ++counter;
     console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit, allShiftsDataRemainder)
