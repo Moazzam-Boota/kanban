@@ -293,13 +293,21 @@ const Users = () => {
 
 
 
-  var format = 'HH:mm'
+
   // check if currentTime is between the pitchPeriod, add cards to that pitch
   // timeRange[0] add pitchPeriod, check if current time is between, old and new+shift time, show boxes
   // var time = moment() gives you current time. no format required.
+  var format = 'HH:mm'
+  const [time, setTimeLeft] = useState(moment('11:40', format));
 
-  console.log(dataGroupByProduct, 'dataGroupByProduct')
-  var time = moment('14:40', format);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(moment());
+    }, 10000);
+    // Clear timeout if the component is unmounted
+    return () => clearTimeout(timer);
+  });
+
   var startShiftTime = moment(timeRange[1], format);
   const cardsData = [];
   var activeShiftPeriod = 0;
@@ -316,9 +324,8 @@ const Users = () => {
     else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) { color = 'red'; }
     else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
 
-    // startShiftTime = startShiftTime.add(pitchPeriod, 'minutes').format('hh:mm');
-    console.log(i, time, afterTime, beforeTime, 'timeRange')
-    if (time.isSameOrAfter(afterTime, beforeTime)) {
+
+    if (time.isBetween(afterTime, beforeTime)) {
       activeShiftPeriod = i;
       headerWidgetColor = color;
       console.log(i, activeShiftPeriod, time, beforeTime, afterTime, 'here is')
