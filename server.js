@@ -29,6 +29,7 @@ pouchDBConnection.setMaxListeners(100);
 var remoteURL = 'http://' + dbDetails.user + ':' + dbDetails.pass + '@' + dbDetails.url + '/' + dbDetails.db;
 
 var remoteDB = new PouchDB(`${remoteURL}`);
+remoteDB.setMaxListeners(100);
 
 function getDocs(res, type, cronjob = false) {
     pouchDBConnection.sync(remoteDB);
