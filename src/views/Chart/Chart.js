@@ -43,6 +43,7 @@ const Users = () => {
   const dailyHours = 8; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
   const pitchPeriod = lodash.get(chartParams, 'pitchTime', 0); //minutes
   const totalQuantity = lodash.sumBy(parentsData, 'quantity_VHOROQ_AH'); //sum of all quantities
+  var totalQuantityDynamic = lodash.sumBy(parentsData, 'quantity_VHOROQ_AH'); //sum of all quantities
   const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
   const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
   // const quantityPerSecond = quantityPerMinute * 60;   // quanitity per second
@@ -172,15 +173,17 @@ const Users = () => {
             product: key,
             data: value,
             color: color,
+            total: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
             sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
             productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
           }
-        }).value(), ['sum'], ['asc']).filter(k => k.sum !== null);
-      // console.log(dataGroup, 'dataGroup');
+        }).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
+      console.log(dataGroup, 'dataGroup');
 
       const dataGroupLength = dataGroup.length;
       const productCount = Math.round(boxesPerPitch / dataGroupLength * 10) / 10;
       var roundOffSlice = 0;
+      // for (var i = blackColorChartParams.max; i >= 1; i--) {
       for (var i = blackColorChartParams.max; i >= 1; i--) {
         // allShiftsData.push(dataGroup.map((product, index) => {
 
@@ -206,16 +209,18 @@ const Users = () => {
         // );
 
         roundOffSlice += Math.round(boxesPerPitch) - boxesPerPitch;
-        const lastElement = dataGroup.length - 1;
+        // const lastElement = dataGroup.length - 1;
+        const lastElement = 0;
         dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum = dataGroup[lastElement].sum - Math.round(boxesPerPitch);
-
+        totalQuantityDynamic = totalQuantityDynamic - Math.round(boxesPerPitch);
         if (roundOffSlice >= 1) {
           dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum = dataGroup[lastElement].sum + roundOffSlice;
           roundOffSlice = 0;
         }
 
-        console.log(dataGroup, 'dataGroup', roundOffSlice, boxesPerPitch)
+        console.log(dataGroup, 'dataGroup', totalQuantityDynamic, roundOffSlice, dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum, boxesPerPitch)
 
+        // set of products
         const recordSet = {
           record: dataGroup[0], productCount: Math.round(boxesPerPitch), originalCount: Math.round(boxesPerPitch)
         };
@@ -274,31 +279,12 @@ const Users = () => {
     .map((value, key) => ({ orderNumber: key, data: value }))
     .value();
 
-  // const dataGroupByShift = lodash.chain(parentsData)
-  // .groupBy("shift_PPSHFT_IS")
-  // .map((value, key) => ({ shiftNumber: key, data: value }))
-  // .value();
-
-  // const dataGroupByProduct = lodash.orderBy(lodash.chain(parentsData)
-  //   // Group the elements of Array based on `color` property
-  //   .groupBy("part_num_VHPRNO_C")
-  //   // `key` is group's name (color), `value` is the array of objects
-  //   .map((value, key) => ({
-  //     product: key,
-  //     data: value,
-  //     color: getRandomColor(),
-  //     sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
-  //     productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
-  //   })).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
-
-
-
 
   // check if currentTime is between the pitchPeriod, add cards to that pitch
   // timeRange[0] add pitchPeriod, check if current time is between, old and new+shift time, show boxes
   // var time = moment() gives you current time. no format required.
   var format = 'HH:mm'
-  const [time, setTimeLeft] = useState(moment('11:40', format));
+  const [time, setTimeLeft] = useState(moment('08:40', format));
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -413,8 +399,8 @@ const Users = () => {
               <p style={kanbanBoxWidgetStyle}>Ordre de fabricació: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.data[0].order_num_VHMFNO_D')}</span> </p>
               <p style={kanbanBoxWidgetStyle}>Referencia de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.product')}</span> </p>
               <p style={kanbanBoxWidgetStyle}>Descripció de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.data[0].description_VHTXT1_W')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.sum')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.sum') - 3}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.total')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.total') - donePieces * 3}</span> </p>
               <p style={kanbanBoxWidgetStyle}>Quantitat per caixa: <span style={metricStyle}>{parseFloat(lodash.get(currentCardBox, 'record.productsPerBox')).toFixed(2)}</span> </p>
             </div>
           } />
