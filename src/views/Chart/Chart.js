@@ -256,7 +256,7 @@ const Users = () => {
   useEffect(() => {
     console.log(donePieces, 'donePieces')
     const allShiftsData = dataGroupByProduct;
-    const shiftPieceDoneLimit = donePieces % (lodash.get(allShiftsData, '[0][allShiftsData[0].length - 1].originalCount', 0) + 1);
+    const shiftPieceDoneLimit = donePieces % (lodash.get(allShiftsData, ['[0]', allShiftsData[0].length - 1, 'originalCount'], 0) + 1);
 
 
     if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
