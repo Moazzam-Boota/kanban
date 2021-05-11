@@ -230,16 +230,18 @@ const Users = () => {
 
   useEffect(() => {
     console.log(donePieces, 'donePieces')
-    const allShiftsData = dataGroupByProduct.map((product, index) => {
-      console.log(product, 'product')
-      if ((dataGroupByProduct.length - 1 === index && product.originalCount - donePieces >= 0))
-        product[0].productCount = product[0].originalCount - donePieces;
-      // else if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces <= 0)) {
-      //   // dataGroupByProduct[dataGroupByProduct.length - 1].pop();
-      //   dataGroupByProduct.splice(-1, 1);
-      // }
+    const allShiftsData = dataGroupByProduct;
+    allShiftsData[allShiftsData.length - 1][0].productCount = allShiftsData[allShiftsData.length - 1][0].originalCount - donePieces;
+    // const allShiftsData = dataGroupByProduct.map((product, index) => {
+    //   console.log(product, 'product')
+    //   if ((dataGroupByProduct.length - 1 === index && product.originalCount - donePieces >= 0))
+    //     product[0].productCount = product[0].originalCount - donePieces;
+    //   // else if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces <= 0)) {
+    //   //   // dataGroupByProduct[dataGroupByProduct.length - 1].pop();
+    //   //   dataGroupByProduct.splice(-1, 1);
+    //   // }
 
-    });
+    // });
     console.log(allShiftsData, 'allShiftsData')
     setDataGroupByProduct(allShiftsData)
   }, [donePieces]);
