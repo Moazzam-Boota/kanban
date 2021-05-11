@@ -232,8 +232,10 @@ const Users = () => {
     console.log(donePieces, 'donePieces')
     const allShiftsData = dataGroupByProduct;
     console.log(allShiftsData, 'allShiftsData')
-    if (allShiftsData[allShiftsData.length - 1] && allShiftsData[allShiftsData.length - 1][0].originalCount - donePieces >= 0)
+    if (allShiftsData[0] && allShiftsData[0][0].originalCount - donePieces >= 0)
       allShiftsData[0][0].productCount = allShiftsData[0][0].originalCount - donePieces;
+    else if (allShiftsData[0] && allShiftsData[0][0].originalCount - donePieces < 0)
+      allShiftsData.splice(0, 1);
     // const allShiftsData = dataGroupByProduct.map((product, index) => {
     //   console.log(product, 'product')
     //   if ((dataGroupByProduct.length - 1 === index && product.originalCount - donePieces >= 0))
