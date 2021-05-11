@@ -25,7 +25,7 @@ const dbDetails = {
 };
 
 var pouchDBConnection = new PouchDB(dbDetails.db, { size: 100 });
-pouchDBConnection.setMaxListeners(20);
+pouchDBConnection.setMaxListeners(100);
 var remoteURL = 'http://' + dbDetails.user + ':' + dbDetails.pass + '@' + dbDetails.url + '/' + dbDetails.db;
 
 var remoteDB = new PouchDB(`${remoteURL}`);
