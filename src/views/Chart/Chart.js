@@ -262,7 +262,7 @@ const Users = () => {
     var counter = 0;
     console.log('updatedShiftData', counter, shiftPieceDoneLimit, allShiftsDataRemainder)
     ++counter;
-    if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
+    if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0 && counter === 0) {
       if (allShiftsData[0].length > 1) {
         allShiftsData[0].pop();
         allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
@@ -331,7 +331,7 @@ const Users = () => {
     }, 1000);
     // Clear timeout if the component is unmounted
     return () => clearTimeout(timer);
-  }, [dataGroupByProduct]);
+  });
 
 
   var startShiftTime = moment(timeRange[1], format);
