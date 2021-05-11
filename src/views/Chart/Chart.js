@@ -31,7 +31,7 @@ const Users = () => {
   const colorChartParams = lodash.get(chartParams, 'colors', {});
   const lineChartParams = lodash.get(chartParams, 'PERS044', {});
   if (successforgotmsg) {
-    console.log(successforgotmsg);
+    // console.log(successforgotmsg);
     successforgotmsg.forEach(row => {
       row.values.forEach(values => {
         parentsData.push(values);
@@ -86,7 +86,7 @@ const Users = () => {
     // });
     // });
 
-    console.log(parentsData, 'parentsData', dataGroupByProduct)
+    // console.log(parentsData, 'parentsData', dataGroupByProduct)
 
     socket.on('lightgreen', function (data) { //get button status from client
       // var count = 0;
@@ -94,7 +94,7 @@ const Users = () => {
       socket.emit("lightgreen", data); //send push button status to back to server
       // setSocketResponse(true);
       // var peices = 1 + donePieces;
-      console.log(dataGroupByProduct, dataGroupByProduct[dataGroupByProduct.length - 1], 'dataGroupByProduct');
+      // console.log(dataGroupByProduct, dataGroupByProduct[dataGroupByProduct.length - 1], 'dataGroupByProduct');
       // TODO:: last.last -1 
       // if (dataGroupByProduct[dataGroupByProduct.length - 1])
       //   dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - 1;
@@ -178,7 +178,7 @@ const Users = () => {
             productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
           }
         }).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
-      console.log(dataGroup, 'dataGroup');
+      // console.log(dataGroup, 'dataGroup');
 
       const dataGroupLength = dataGroup.length;
       const productCount = Math.round(boxesPerPitch / dataGroupLength * 10) / 10;
@@ -226,7 +226,7 @@ const Users = () => {
           multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
 
           var productCountDynamic = Math.round(Math.round(boxesPerPitch) / numberOfProducts);
-          console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
+          // console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
 
           recordSet.push({
             record: dataGroup[j],
@@ -238,14 +238,8 @@ const Users = () => {
 
         }
 
-        console.log(dataGroup, recordSet, 'dataGroup', totalQuantityDynamic, roundOffSlice, dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum, boxesPerPitch)
+        // console.log(dataGroup, recordSet, 'dataGroup', totalQuantityDynamic, roundOffSlice, dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum, boxesPerPitch)
 
-        // set of products
-        // const recordSet = {
-        //   record: dataGroup[0], productCount: Math.round(boxesPerPitch), originalCount: Math.round(boxesPerPitch)
-        // };
-        // single product with highest count, 
-        // with lesser counts
         allShiftsData.push(recordSet)
       }
       setDataGroupByProduct(allShiftsData);
@@ -254,14 +248,14 @@ const Users = () => {
 
   // var oldShiftsRemainder = 0;
   useEffect(() => {
-    console.log(donePieces, 'donePieces')
+    // console.log(donePieces, 'donePieces')
     const allShiftsData = [...dataGroupByProduct];
     var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
     var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
     // oldShiftsRemainder += allShiftsDataRemainder;
     var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
 
-    console.log('updatedShiftData2', shiftPieceDoneLimit, allShiftsDataRemainder)
+    // console.log('updatedShiftData2', shiftPieceDoneLimit, allShiftsDataRemainder)
     if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
     } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
@@ -276,7 +270,7 @@ const Users = () => {
       }
     }
 
-    console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit, allShiftsDataRemainder)
+    // console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit, allShiftsDataRemainder)
     // const allShiftsData = dataGroupByProduct.map((product, index) => {
     //   console.log(product, 'product')
     //   if ((dataGroupByProduct.length - 1 === index && product.originalCount - donePieces >= 0))
@@ -294,7 +288,7 @@ const Users = () => {
   var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
   var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
   var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
-  console.log(allShiftsData, 'updatedShiftData', shiftPieceDoneLimit, allShiftsDataLength, allShiftsDataRemainder)
+  // console.log(allShiftsData, 'updatedShiftData', shiftPieceDoneLimit, allShiftsDataLength, allShiftsDataRemainder)
 
 
   useEffect(() => {
@@ -357,16 +351,16 @@ const Users = () => {
     else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) { color = 'red'; }
     else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
 
-    console.log(time, afterTime, beforeTime, 'hello')
+    // console.log(time, afterTime, beforeTime, 'hello')
     if (time.isBetween(afterTime, beforeTime)) {
       activeShiftPeriod = i;
       headerWidgetColor = color;
-      console.log(i, activeShiftPeriod, time, beforeTime, afterTime, 'here is')
+      // console.log(i, activeShiftPeriod, time, beforeTime, afterTime, 'here is')
     }
     var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
     var currentCardBox = {};
 
-    console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
+    // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
 
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
@@ -407,8 +401,8 @@ const Users = () => {
     </CWidgetBrand >);
   }
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
-  console.log(currentCardBox, 'currentCardBox')
-  console.log(cardsData, 'cardsData')
+  // console.log(currentCardBox, 'currentCardBox')
+  // console.log(cardsData, 'cardsData')
   cardsData.splice(0, 4);
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
