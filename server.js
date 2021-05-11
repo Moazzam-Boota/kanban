@@ -88,10 +88,10 @@ schedule.scheduleJob(" * * * * * ", function () {
         var timeString = lodash.get(reversedsortedShifs, '[0].values.downloadTime', '');
         if (timeString) {
 
-            // var hours = timeString.substr(0, 2);
-            var hours = '14';
-            var minutes = '00';
-            // var minutes = timeString.substr(3, 4);
+            var hours = timeString.substr(0, 2);
+            // var hours = '14';
+            // var minutes = '00';
+            var minutes = timeString.substr(3, 4);
             var seconds = 5;
             const time = new Date();
             var year = time.getFullYear();
