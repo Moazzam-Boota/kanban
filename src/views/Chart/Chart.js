@@ -228,6 +228,10 @@ const Users = () => {
   }, [parentsData]);
 
 
+  useEffect(() => {
+    console.log(donePieces, 'donePieces')
+  }, [donePieces]);
+
 
   useEffect(() => {
     dispatch(intialExcelSheet());
@@ -316,6 +320,7 @@ const Users = () => {
     var currentCardBox = {};
 
     console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
+    console.log(lodash.get(dataGroupByProduct, i, []), 'dataGroupByProductRandom')
 
     // if (dataGroupByProduct[dataGroupByProduct.length - 1] && donePieces !== 0)
     // dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - donePieces;
