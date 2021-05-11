@@ -290,6 +290,11 @@ const Users = () => {
 
     setDataGroupByProduct(allShiftsData)
   }, [donePieces]);
+  const allShiftsData = [...dataGroupByProduct];
+  var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
+  var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
+  var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
+  console.log(allShiftsData, 'updatedShiftData', shiftPieceDoneLimit, allShiftsDataLength, allShiftsDataRemainder)
 
 
   useEffect(() => {
@@ -326,7 +331,7 @@ const Users = () => {
     }, 1000);
     // Clear timeout if the component is unmounted
     return () => clearTimeout(timer);
-  });
+  }, [dataGroupByProduct]);
 
 
   var startShiftTime = moment(timeRange[1], format);
