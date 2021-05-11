@@ -295,7 +295,7 @@ const Users = () => {
   // var time = moment() gives you current time. no format required.
 
   console.log(dataGroupByProduct, 'dataGroupByProduct')
-  var time = moment('11:10', format);
+  var time = moment('07:10', format);
   var startShiftTime = moment(timeRange[1], format);
   const cardsData = [];
   var activeShiftPeriod = 0;
