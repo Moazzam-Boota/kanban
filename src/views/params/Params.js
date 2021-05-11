@@ -43,16 +43,8 @@ const Params = () => {
   const dispatch = useDispatch()
   const response = useSelector((state) => state.excelReducer.apiCalled);
   const parentsData = [];
-  const success = useSelector((state) => state.excelReducer.response);
   const allState = useSelector((state) => state.excelReducer);
 
-  if (success) {
-    Swal.fire(
-      'Uploaded',
-      'File Uploaded Successfully!',
-      'success'
-    )
-  }
   const [selectedFile, setSelectedFile] = useState();
 
   const changeHandler = (event) => {
@@ -112,6 +104,11 @@ const Params = () => {
     formData.append("file", selectedFile);
 
     dispatch(excelSheet(formData))
+    Swal.fire(
+      'Uploaded',
+      'File Uploaded Successfully!',
+      'success'
+    )
   };
 
   var uniqueAssemblyLines = [];

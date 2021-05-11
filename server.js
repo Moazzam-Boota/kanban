@@ -40,14 +40,11 @@ function getDocs(res, type, cronjob = false) {
         var excelRows = [];
         let filterRowsMaxDate = response.rows.filter(i => i.doc.type === 'excel').map(d => moment(d.doc.createdAt)),
             singleMaxDate = moment.max(filterRowsMaxDate);
-        console.log(filterRowsMaxDate, 'single', singleMaxDate);
-
 
         response.rows.map(i => {
             if (i.doc.type === 'shifts') {
                 filterRows.push(i.doc);
             }
-            console.log(singleMaxDate.isSame(moment(i.doc.createdAt)), singleMaxDate, moment(i.doc.createdAt), ' singleMaxDate.isSame(i.doc.createdAt)')
             if (i.doc.type === 'excel' && singleMaxDate.isSame(moment(i.doc.createdAt))) {
                 excelRows.push(i.doc);
             }
@@ -90,7 +87,6 @@ schedule.scheduleJob(" * * * * * ", function () {
         var timeString = lodash.get(reversedsortedShifs, '[0].values.downloadTime');
         if (timeString) {
 
-            console.log(timeString);
             var hours = timeString.substr(0, 2);
             var minutes = timeString.substr(3, 4);
             var seconds = 5;
@@ -98,10 +94,8 @@ schedule.scheduleJob(" * * * * * ", function () {
             var year = time.getFullYear();
             var month = time.getMonth();
             var day = time.getDate();
-            console.log(year, month, day, hours, minutes, seconds);
             const downloadingTime = new Date(year, month, day, hours, minutes, seconds);
             schedule.scheduleJob(downloadingTime, function () {
-                console.log("Running")
                 var AWS = require('aws-sdk');
                 var fs = require('fs');
                 AWS.config.update(
