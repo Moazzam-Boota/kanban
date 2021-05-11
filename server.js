@@ -84,7 +84,7 @@ schedule.scheduleJob(" * * * * * ", function () {
             return dateA - dateB;
         });
         var reversedsortedShifs = sortedShifts.reverse();
-        var timeString = lodash.get(reversedsortedShifs, '[0].values.downloadTime');
+        var timeString = lodash.get(reversedsortedShifs, '[0].values.downloadTime', '');
         if (timeString) {
 
             var hours = timeString.substr(0, 2);
