@@ -259,6 +259,7 @@ const Users = () => {
     var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
     var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
     var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
+    console.log(allShiftsData, 'updatedShiftData', shiftPieceDoneLimit, allShiftsDataLength, allShiftsDataRemainder)
 
 
     if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
