@@ -207,26 +207,46 @@ const Users = () => {
         //   //   }
         //   // });
         // );
+        const numberOfProducts = 4;
 
-        roundOffSlice += Math.round(boxesPerPitch) - boxesPerPitch;
         // const lastElement = dataGroup.length - 1;
         const lastElement = 0;
         dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum = dataGroup[lastElement].sum - Math.round(boxesPerPitch);
-        totalQuantityDynamic = totalQuantityDynamic - Math.round(boxesPerPitch);
+        roundOffSlice += Math.round(boxesPerPitch) - boxesPerPitch;
         if (roundOffSlice >= 1) {
           dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum = dataGroup[lastElement].sum + roundOffSlice;
           roundOffSlice = 0;
         }
 
-        console.log(dataGroup, 'dataGroup', totalQuantityDynamic, roundOffSlice, dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum, boxesPerPitch)
+        totalQuantityDynamic = totalQuantityDynamic - Math.round(boxesPerPitch);
+
+        const recordSet = [];
+        var multipleRoundOff = 0;
+        for (var j = 0; j < numberOfProducts; j++) {
+          multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
+
+          var productCountDynamic = Math.round(Math.round(boxesPerPitch) / numberOfProducts);
+          console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
+
+          recordSet.push({
+            record: dataGroup[j],
+            productCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic,
+            originalCount: Math.round(boxesPerPitch)
+          });
+
+          if (multipleRoundOff >= 1) multipleRoundOff = 0;
+
+        }
+
+        console.log(dataGroup, recordSet, 'dataGroup', totalQuantityDynamic, roundOffSlice, dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum, boxesPerPitch)
 
         // set of products
-        const recordSet = {
-          record: dataGroup[0], productCount: Math.round(boxesPerPitch), originalCount: Math.round(boxesPerPitch)
-        };
+        // const recordSet = {
+        //   record: dataGroup[0], productCount: Math.round(boxesPerPitch), originalCount: Math.round(boxesPerPitch)
+        // };
         // single product with highest count, 
         // with lesser counts
-        allShiftsData.push([recordSet])
+        allShiftsData.push(recordSet)
       }
       setDataGroupByProduct(allShiftsData);
     }
