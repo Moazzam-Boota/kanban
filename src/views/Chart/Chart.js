@@ -320,7 +320,7 @@ const Users = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeLeft(moment());
-    }, 10000);
+    }, 1000);
     // Clear timeout if the component is unmounted
     return () => clearTimeout(timer);
   });
