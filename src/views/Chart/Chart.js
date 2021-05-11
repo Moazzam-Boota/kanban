@@ -295,12 +295,12 @@ const Users = () => {
   // var time = moment() gives you current time. no format required.
 
   console.log(dataGroupByProduct, 'dataGroupByProduct')
-  var time = moment('13:40', format);
+  var time = moment('14:40', format);
   var startShiftTime = moment(timeRange[1], format);
   const cardsData = [];
   var activeShiftPeriod = 0;
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
-  for (var i = blackColorChartParams.max; i >= 1; i--) {
+  for (var i = parseInt(blackColorChartParams.max); i >= 1; i--) {
     var color = '';
 
     var beforeTime = moment(startShiftTime.format('HH:mm'), format);
@@ -313,13 +313,13 @@ const Users = () => {
     else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
 
     // startShiftTime = startShiftTime.add(pitchPeriod, 'minutes').format('hh:mm');
-    // console.log(time, afterTime, beforeTime, 'timeRange')
-    if (time.isBetween(afterTime, beforeTime)) {
+    console.log(i, time, afterTime, beforeTime, 'timeRange')
+    if (time.isSameOrAfter(afterTime, beforeTime)) {
       activeShiftPeriod = i;
       headerWidgetColor = color;
-      // console.log(i, activeShiftPeriod, time, beforeTime, afterTime, 'here is')
+      console.log(i, activeShiftPeriod, time, beforeTime, afterTime, 'here is')
     }
-    var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i, []);
+    var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
 
 
@@ -328,7 +328,7 @@ const Users = () => {
     var currentCardBox = {};
 
     console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
-    console.log(lodash.get(dataGroupByProduct, i, []), 'dataGroupByProductRandom')
+    // console.log(lodash.get(dataGroupByProduct, i, []), 'dataGroupByProductRandom')
 
     // if (dataGroupByProduct[dataGroupByProduct.length - 1] && donePieces !== 0)
     // dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - donePieces;
@@ -338,7 +338,7 @@ const Users = () => {
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={dataGroupByProductRandom.length !== 0 ? Math.round(boxesPerPitch) : undefined}
-      cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i, []).map((product, index) => {
+      cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
 
         return (
