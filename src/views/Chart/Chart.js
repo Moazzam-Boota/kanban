@@ -231,8 +231,8 @@ const Users = () => {
   useEffect(() => {
     console.log(donePieces, 'donePieces')
     const allShiftsData = dataGroupByProduct;
-    console.log(allShiftsData, 'allShiftsData')
     const shiftPieceDoneLimit = donePieces % 14;
+    console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit)
     if (allShiftsData[0] && allShiftsData[0][0].originalCount - shiftPieceDoneLimit > 0)
       allShiftsData[0][0].productCount = allShiftsData[0][0].originalCount - shiftPieceDoneLimit;
     else if (allShiftsData[0] && allShiftsData[0][0].originalCount - shiftPieceDoneLimit <= 0)
