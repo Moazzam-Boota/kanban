@@ -317,7 +317,7 @@ const Users = () => {
   // timeRange[0] add pitchPeriod, check if current time is between, old and new+shift time, show boxes
   // var time = moment() gives you current time. no format required.
   var format = 'HH:mm'
-  const [time, setTimeLeft] = useState(moment('15:40', format));
+  const [time, setTimeLeft] = useState(moment('20:40', format));
 
   useEffect(() => {
     const timer = setTimeout(() => {
