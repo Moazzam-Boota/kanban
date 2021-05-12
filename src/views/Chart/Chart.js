@@ -402,7 +402,7 @@ const Users = () => {
   }
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   // console.log(currentCardBox, 'currentCardBox')
-  // console.log(cardsData, 'cardsData')
+  console.log(cardsData, 'cardsData');
   cardsData.splice(0, 4);
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
