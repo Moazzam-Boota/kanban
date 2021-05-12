@@ -3,9 +3,9 @@ import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 import { useDispatch } from "react-redux";
 import { breakTime, addBreak, deleteBreak } from "../../redux/actions/actions";
 
-const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount }) => {
+const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount, breaksData }) => {
   const dispatch = useDispatch();
-
+  console.log(breaksData)
   return (
     <CFormGroup>
       <CRow>

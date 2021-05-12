@@ -17,8 +17,9 @@ const ShiftTime = ({
   shiftCount,
   totalShifts,
   setShiftCount,
+  shiftsData
 }) => {
-
+  console.log(shiftsData)
   const dispatch = useDispatch();
   // shift breaks, handle here
   var [breakCount, setBreakCount] = useState([1]);
@@ -128,6 +129,7 @@ const ShiftTime = ({
               breakCount={k}
               totalBreaks={breakCount}
               setBreakCount={setBreakCount}
+              breaksData={shiftsData[shiftCount].breaks}
             />
           ))}
         </CCol>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { excelSheet, intialExcelSheet, pushShiftsData } from "../../redux/actions/actions";
+import { excelSheet, getChartData, intialExcelSheet, pushShiftsData } from "../../redux/actions/actions";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -42,6 +42,7 @@ const Params = () => {
   // get data from redux
   const dispatch = useDispatch()
   const response = useSelector((state) => state.excelReducer.apiCalled);
+  const chartData = useSelector((state) => state.excelReducer.chartParams);
   const parentsData = [];
   const allState = useSelector((state) => state.excelReducer);
 
@@ -53,46 +54,60 @@ const Params = () => {
   };
 
   const saveParametersData = () => {
-    // pass data to database 
-    const dataState = { ...allState };
-    delete dataState.apiCalled;
-
-    const parameters = {
-      pitchTime: pitchTime,
-      fileDownloadType: fileDownloadType,
-      downloadTime: downloadTime, // in case of manual, undefined
-      colors: {
-        blue: {
-          min: blueColor
-        },
-        green: {
-          min: greenMinColor,
-          max: greenMaxColor
-        },
-        orange: {
-          min: orangeMinColor,
-          max: orangeMaxColor
-        },
-        red: {
-          min: redMinColor,
-          max: redMaxColor
-        },
-        black: {
-          min: blackMinColor,
-          max: blackMaxColor
+    let autoDownloadTime = document.getElementById("autoDownloadTime");
+    if (autoDownloadTime == null || autoDownloadTime.value === "") {
+      Swal.fire(
+        {
+          icon: "error",
+          title: "Error",
+          text: "Please enter automatic time"
         }
-      },
-      PERS044: {  // assembly Line
-        ...dataState
-      },
-      createdAt: new Date().toISOString()
-    };
-    dispatch(pushShiftsData(parameters));
-    Swal.fire(
-      'Saved',
-      'Shift data is saved!',
-      'success'
-    )
+      )
+    } else {
+      // pass data to database 
+    // pass data to database 
+      // pass data to database 
+      const dataState = { ...allState };
+      delete dataState.apiCalled;
+      delete dataState.chartParams;
+
+      const parameters = {
+        pitchTime: pitchTime,
+        fileDownloadType: fileDownloadType,
+        downloadTime: downloadTime, // in case of manual, undefined
+        colors: {
+          blue: {
+            min: blueColor
+          },
+          green: {
+            min: greenMinColor,
+            max: greenMaxColor
+          },
+          orange: {
+            min: orangeMinColor,
+            max: orangeMaxColor
+          },
+          red: {
+            min: redMinColor,
+            max: redMaxColor
+          },
+          black: {
+            min: blackMinColor,
+            max: blackMaxColor
+          }
+        },
+        PERS044: {  // assembly Line
+          ...dataState
+        },
+        createdAt: new Date().toISOString()
+      };
+      dispatch(pushShiftsData(parameters));
+      Swal.fire(
+        'Saved',
+        'Shift data is saved!',
+        'success'
+      )
+    }
   }
   const getTime = (value) => {
     //set file download time
@@ -122,9 +137,30 @@ const Params = () => {
     uniqueAssemblyLines = parentsData.filter(onlyUnique);
   }
 
+
   useEffect(() => {
+    dispatch(getChartData());
     dispatch(intialExcelSheet());
   }, [dispatch]);
+  useEffect(() => {
+    if (chartData) {
+      let data = chartData[0].values;
+      setPitchTime(data.pitchTime)
+      setFileDownloadType(data.fileDownloadType)
+      setDownloadTime(data.downloadTime)
+      setBlueColor(data.colors.blue.min)
+      setGreenMinColor(data.colors.green.min)
+      setGreenMaxColor(data.colors.green.max)
+      setOrangeMinColor(data.colors.orange.min)
+      setOrangeMaxColor(data.colors.orange.max)
+      setRedMinColor(data.colors.red.min)
+      setRedMaxColor(data.colors.red.max)
+      setBlackMinColor(data.colors.black.min)
+      setBlackMinColor(data.colors.black.max)
+      let shiftsData = data.PERS044;
+      console.log(shiftsData)
+    }
+  }, [chartData])
 
   return (
     <CCard>
@@ -313,7 +349,8 @@ const Params = () => {
                       assemblyLine={assemblyLine}
                       totalShifts={shiftCount}
                       shiftCount={k}
-                      setShiftCount={setShiftCount} />
+                      setShiftCount={setShiftCount}
+                      shiftsData={chartData[0].values.PERS044} />
                   )}
                 </CCol>
               )
