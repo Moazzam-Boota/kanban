@@ -129,7 +129,7 @@ const ShiftTime = ({
               breakCount={k}
               totalBreaks={breakCount}
               setBreakCount={setBreakCount}
-              breaksData={shiftsData[shiftCount].breaks}
+              // breaksData={shiftsData[shiftCount].breaks}
             />
           ))}
         </CCol>

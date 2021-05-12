@@ -65,7 +65,7 @@ const Params = () => {
       )
     } else {
       // pass data to database 
-    // pass data to database 
+      // pass data to database 
       // pass data to database 
       const dataState = { ...allState };
       delete dataState.apiCalled;
@@ -142,25 +142,25 @@ const Params = () => {
     dispatch(getChartData());
     dispatch(intialExcelSheet());
   }, [dispatch]);
-  useEffect(() => {
-    if (chartData) {
-      let data = chartData[0].values;
-      setPitchTime(data.pitchTime)
-      setFileDownloadType(data.fileDownloadType)
-      setDownloadTime(data.downloadTime)
-      setBlueColor(data.colors.blue.min)
-      setGreenMinColor(data.colors.green.min)
-      setGreenMaxColor(data.colors.green.max)
-      setOrangeMinColor(data.colors.orange.min)
-      setOrangeMaxColor(data.colors.orange.max)
-      setRedMinColor(data.colors.red.min)
-      setRedMaxColor(data.colors.red.max)
-      setBlackMinColor(data.colors.black.min)
-      setBlackMinColor(data.colors.black.max)
-      let shiftsData = data.PERS044;
-      console.log(shiftsData)
-    }
-  }, [chartData])
+  // useEffect(() => {
+  //   if (chartData) {
+  //     let data = chartData[0].values;
+  //     setPitchTime(data.pitchTime)
+  //     setFileDownloadType(data.fileDownloadType)
+  //     setDownloadTime(data.downloadTime)
+  //     setBlueColor(data.colors.blue.min)
+  //     setGreenMinColor(data.colors.green.min)
+  //     setGreenMaxColor(data.colors.green.max)
+  //     setOrangeMinColor(data.colors.orange.min)
+  //     setOrangeMaxColor(data.colors.orange.max)
+  //     setRedMinColor(data.colors.red.min)
+  //     setRedMaxColor(data.colors.red.max)
+  //     setBlackMinColor(data.colors.black.min)
+  //     setBlackMinColor(data.colors.black.max)
+  //     let shiftsData = data.PERS044;
+  //     console.log(shiftsData)
+  //   }
+  // }, [chartData])
 
   return (
     <CCard>
@@ -350,7 +350,8 @@ const Params = () => {
                       totalShifts={shiftCount}
                       shiftCount={k}
                       setShiftCount={setShiftCount}
-                      shiftsData={chartData[0].values.PERS044} />
+                    // shiftsData={chartData[0].values.PERS044}
+                    />
                   )}
                 </CCol>
               )

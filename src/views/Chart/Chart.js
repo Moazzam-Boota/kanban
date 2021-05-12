@@ -319,13 +319,13 @@ const Users = () => {
   var format = 'HH:mm'
   const [time, setTimeLeft] = useState(moment('20:40', format));
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setTimeLeft(moment());
-    }, 1000);
-    // Clear timeout if the component is unmounted
-    return () => clearTimeout(timer);
-  });
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setTimeLeft(moment());
+  //   }, 1000);
+  //   // Clear timeout if the component is unmounted
+  //   return () => clearTimeout(timer);
+  // });
 
 
   var startShiftTime = moment(timeRange[1], format);
@@ -360,7 +360,7 @@ const Users = () => {
     var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
     var currentCardBox = {};
 
-    // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
+    console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
 
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
@@ -401,9 +401,9 @@ const Users = () => {
     </CWidgetBrand >);
   }
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
-  // console.log(currentCardBox, 'currentCardBox')
+  console.log(currentCardBox, 'currentCardBox')
   console.log(cardsData, 'cardsData');
-  cardsData.splice(0, 4);
+  // cardsData.splice(0, 4);
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
   return (
