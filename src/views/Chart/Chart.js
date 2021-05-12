@@ -317,7 +317,7 @@ const Users = () => {
   // timeRange[0] add pitchPeriod, check if current time is between, old and new+shift time, show boxes
   // var time = moment() gives you current time. no format required.
   var format = 'HH:mm'
-  const [time, setTimeLeft] = useState(moment('20:40', format));
+  const [time, setTimeLeft] = useState(moment('18:40', format));
 
   // useEffect(() => {
   //   const timer = setTimeout(() => {
@@ -333,7 +333,7 @@ const Users = () => {
 
 
   var duration = moment.duration(startShiftTime.diff(initialShiftTime));
-  // console.log(timeRange, 'timeRange', duration.asMinutes() / pitchPeriod, pitchPeriod)
+  console.log(timeRange, 'timeRange', duration.asMinutes(), duration.asMinutes() / pitchPeriod, pitchPeriod)
   // duration subtract breaks
 
   const cardsData = [];
@@ -351,11 +351,11 @@ const Users = () => {
     else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) { color = 'red'; }
     else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
 
-    // console.log(time, afterTime, beforeTime, 'hello')
+    console.log(time, afterTime, beforeTime, 'hello')
     if (time.isBetween(afterTime, beforeTime)) {
       activeShiftPeriod = i;
       headerWidgetColor = color;
-      // console.log(i, activeShiftPeriod, time, beforeTime, afterTime, 'here is')
+      console.log(i, activeShiftPeriod, headerWidgetColor, time, beforeTime, afterTime, 'here is')
     }
     var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
     var currentCardBox = {};
@@ -401,9 +401,9 @@ const Users = () => {
     </CWidgetBrand >);
   }
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
-  console.log(currentCardBox, 'currentCardBox')
+  console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
   console.log(cardsData, 'cardsData');
-  // cardsData.splice(0, 4);
+  cardsData.splice(0, 6);
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
   return (
