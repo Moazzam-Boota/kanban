@@ -17,7 +17,7 @@ const ENDPOINT = "http://127.0.0.1:4001";
 const lodash = require('lodash');
 const moment = require('moment');
 
-const colorsPalette = ['#2A2D34', '#009DDC', '#F26430', '#6761A8', '#009B72', '#F6E27F', '#E2C391'];
+const colorsPalette = ['#F26430', '#009B72', '#F6E27F', '#E2C391', '#2A2D34', '#6761A8', '#009DDC'];
 
 
 const Users = () => {
@@ -74,6 +74,31 @@ const Users = () => {
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
 
+  var format = 'HH:mm'
+  const [time, setTimeLeft] = useState(moment('18:40', format));
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setTimeLeft(moment());
+  //   }, 1000);
+  //   // Clear timeout if the component is unmounted
+  //   return () => clearTimeout(timer);
+  // });
+
+
+  var startShiftTime = moment(timeRange[1], format);
+  var initialShiftTime = moment(timeRange[0], format);
+
+
+  var duration = moment.duration(startShiftTime.diff(initialShiftTime));
+  // console.log(timeRange, 'timeRange', duration.asMinutes(), duration.asMinutes() / pitchPeriod, pitchPeriod)
+  // duration subtract breaks
+
+  const cardsData = [];
+  var activeShiftPeriod = 0;
+  const totalPitchesLength = duration.asMinutes() / pitchPeriod;
+
+
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
     // var socket = io(); //load socket.io-client and connect to the host that serves the page
@@ -91,42 +116,10 @@ const Users = () => {
     // console.log(parentsData, 'parentsData', dataGroupByProduct)
 
     socket.on('lightgreen', function (data) { //get button status from client
-      // var count = 0;
       // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
       socket.emit("lightgreen", data); //send push button status to back to server
       // setSocketResponse(true);
-      // var peices = 1 + donePieces;
-      // console.log(dataGroupByProduct, dataGroupByProduct[dataGroupByProduct.length - 1], 'dataGroupByProduct');
-      // TODO:: last.last -1 
-      // if (dataGroupByProduct[dataGroupByProduct.length - 1])
-      //   dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount = dataGroupByProduct[dataGroupByProduct.length - 1][0].productCount - 1;
       setDonePieces(data);
-      // setDataGroupByProduct(dataGroupByProduct);
-
-      // const dataGroup = dataGroupByProduct.forEach((record, index) => {
-      //   // check if sum 0, skip product
-      //   // if sum of all products in a shift >=boxesPerPitch, skip
-      //   // dataGroupByProduct.filter(k => k.record === record.product)[0].sum = record.sum - quantityPerBox;
-      //   if (index === dataGroupByProduct.length - 1)
-      //     record.sum = record.sum - quantityPerBox;
-      //   console.log(record.sum, boxesPerPitch, dataGroupByProduct, quantityPerBox, 'productCount')
-      //   // return {
-      //   //   record: record, productCount
-      //   // };
-      // });
-      // setDataGroupByProduct(dataGroupByProduct);
-
-      // lodash.orderBy(lodash.chain(parentsData)
-      //   // Group the elements of Array based on `color` property
-      //   .groupBy("part_num_VHPRNO_C")
-      //   // `key` is group's name (color), `value` is the array of objects
-      //   .map((value, key) => ({
-      //     product: key,
-      //     data: value,
-      //     color: getRandomColor(),
-      //     sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
-      //     productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
-      //   })).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
 
       Swal.fire(
         {
@@ -164,86 +157,116 @@ const Users = () => {
     if (parentsData.length !== 0 && dataGroupByProduct.length == 0) {
       var counter = 0;
       const allShiftsData = [];
-      const dataGroup = lodash.orderBy(lodash.chain(parentsData)
+
+
+      const dataGroupColors = lodash.orderBy(lodash.chain(parentsData)
         // Group the elements of Array based on `color` property
         .groupBy("part_num_VHPRNO_C")
         // `key` is group's name (color), `value` is the array of objects
         .map((value, key) => {
+          // console.log(value, 'product')
           const color = colorsPalette[counter];
           ++counter;
           return {
             product: key,
             data: value,
             color: color,
+            sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
+          }
+        }).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
+      console.log(dataGroupColors, 'dataGroupColors')
+      const dataGroup = lodash.orderBy(lodash.chain(parentsData)
+        // Group the elements of Array based on `color` property
+        .groupBy("order_num_VHMFNO_D")
+        // `key` is group's name (color), `value` is the array of objects
+        .map((value, key) => {
+          console.log(value, lodash.get(dataGroupColors.filter(q => q.product === value[0].part_num_VHPRNO_C), [0, 'color']), 'order')
+          const color = lodash.get(dataGroupColors.filter(q => q.product === value[0].part_num_VHPRNO_C), [0, 'color']);
+          // ++counter;
+
+          return {
+            product: key,
+            totalProducts: value.length,
+            // data: value.map(k => {
+            //   const productColor = lodash.get(dataGroupColors.filter(q => q.product === k.part_num_VHPRNO_C), [0, 'color']);
+            //   // console.log(k.part_num_VHPRNO_C, lodash.get(dataGroupColors.filter(q => q.product === k.part_num_VHPRNO_C), [0, 'color']), 'pp1')
+            //   return { ...k, productColor: productColor };
+            // }),
+            data: value,
+            color: color,
+            // color: lodash.get(dataGroupColors.filter(q => q.product === value[0].part_num_VHPRNO_C), [0, 'color']),
+            row_num: value[0].row_num,
             total: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
             sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
             productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
           }
-        }).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
-      // console.log(dataGroup, 'dataGroup');
+        }).value(), ['row_num'], ['asc']).filter(k => k.sum !== null);
+
+      // const dataGroupOriginal = lodash.orderBy(parentsData, ['row_num'], ['asc']).filter(k => k.quantity_VHOROQ_AH !== null);
+
+      console.log(dataGroup, 'dataGroup');
 
       const dataGroupLength = dataGroup.length;
       const productCount = Math.round(boxesPerPitch / dataGroupLength * 10) / 10;
       var roundOffSlice = 0;
       // for (var i = blackColorChartParams.max; i >= 1; i--) {
-      for (var i = blackColorChartParams.max; i >= 1; i--) {
-        // allShiftsData.push(dataGroup.map((product, index) => {
+      // for (var i = totalPitchesLength; i >= 1; i--) {
+      //   console.log(dataGroup, 'dataGroup2', i)
 
-        //   // const productCount = Math.floor(product.sum / quantityPerBox); //quantityPerBox
-        //   // const productCount = Math.round(product.sum / quantityPerBox / boxesPerPitch);
+      // }
+      var currentElement = 0;
+      // for (var i = blackColorChartParams.max; i >= 1; i--) {
+      for (var i = totalPitchesLength; i >= 1; i--) {
 
-        //   // check if sum 0, skip product
-        //   // if sum of all products in a shift >=boxesPerPitch, skip
-        //   // 
-        //   dataGroup.filter(k => k.product === product.product)[0].sum = product.sum - productCount;
-        //   console.log(product.sum, boxesPerPitch, boxesPerPitch / dataGroup.length, dataGroup, quantityPerBox, productCount, 'productCount')
-        //   return {
-        //     record: product, productCount: productCount
-        //   };
-        // })
-        //   // .filter(k => {
-        //   //   {
-        //   //     console.log(k.record.sum, 'all')
-        //   //     if (k.record.sum > 45 && k.record.sum < 100 && k.productCount < 2) return false;
-        //   //     return true;
-        //   //   }
-        //   // });
-        // );
-        const numberOfProducts = 4;
 
-        // const lastElement = dataGroup.length - 1;
-        const lastElement = 0;
-        dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum = dataGroup[lastElement].sum - Math.round(boxesPerPitch);
+        // const currentElement = dataGroup.length - 1;
+
+        // currentElement = dataGroup[currentElement].sum - Math.round(boxesPerPitch) >= 0 ? currentElement : currentElement + 1;
+        if (dataGroup[currentElement].sum - Math.round(boxesPerPitch) <= 0) currentElement = currentElement + 1;
+        // Difference of order from 0, 9 - 14 -> -5
+        // foreach pitch, subtract the boxesPerPitch
+        // if sum - boxesPerPitch !<= 0, then subtract, else move to next order
+        console.log(dataGroup, 'dataGroup2', i, currentElement, dataGroup[currentElement])
+
+
+
         roundOffSlice += Math.round(boxesPerPitch) - boxesPerPitch;
+
         if (roundOffSlice >= 1) {
-          dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum = dataGroup[lastElement].sum + roundOffSlice;
+          dataGroup[currentElement].sum = dataGroup[currentElement].sum + roundOffSlice;  //add roundoff value into the sum
           roundOffSlice = 0;
         }
 
+        dataGroup[currentElement].sum = dataGroup[currentElement].sum - Math.round(boxesPerPitch);
         totalQuantityDynamic = totalQuantityDynamic - Math.round(boxesPerPitch);
 
         const recordSet = [];
         var multipleRoundOff = 0;
+        const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
+
         for (var j = 0; j < numberOfProducts; j++) {
           multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
-
+          console.log(j, dataGroup, 'dataGroupLoop')
           var productCountDynamic = Math.round(Math.round(boxesPerPitch) / numberOfProducts);
           // console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
 
           recordSet.push({
-            record: dataGroup[j],
-            productCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic,
-            originalCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic
+            ...dataGroup[currentElement],
+            record: dataGroup[currentElement].data[j], //check sum, dataGroup[currentElement].data[j]
+            productCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic, //for changing dynamic, on button push
+            originalCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic //comparing with originalCount
           });
 
           if (multipleRoundOff >= 1) multipleRoundOff = 0;
 
         }
 
-        // console.log(dataGroup, recordSet, 'dataGroup', totalQuantityDynamic, roundOffSlice, dataGroup.filter(k => k.product === dataGroup[lastElement].product)[0].sum, boxesPerPitch)
+        // console.log(dataGroup, recordSet, 'dataGroup', totalQuantityDynamic, roundOffSlice, dataGroup.filter(k => k.product === dataGroup[currentElement].product)[0].sum, boxesPerPitch)
 
         allShiftsData.push(recordSet)
       }
+
+      console.log(allShiftsData, 'allShiftsData')
       setDataGroupByProduct(allShiftsData);
     }
   }, [parentsData]);
@@ -306,29 +329,7 @@ const Users = () => {
   // check if currentTime is between the pitchPeriod, add cards to that pitch
   // timeRange[0] add pitchPeriod, check if current time is between, old and new+shift time, show boxes
   // var time = moment() gives you current time. no format required.
-  var format = 'HH:mm'
-  const [time, setTimeLeft] = useState(moment('18:40', format));
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setTimeLeft(moment());
-  //   }, 1000);
-  //   // Clear timeout if the component is unmounted
-  //   return () => clearTimeout(timer);
-  // });
-
-
-  var startShiftTime = moment(timeRange[1], format);
-  var initialShiftTime = moment(timeRange[0], format);
-
-
-  var duration = moment.duration(startShiftTime.diff(initialShiftTime));
-  console.log(timeRange, 'timeRange', duration.asMinutes(), duration.asMinutes() / pitchPeriod, pitchPeriod)
-  // duration subtract breaks
-
-  const cardsData = [];
-  var activeShiftPeriod = 0;
-  const totalPitchesLength = duration.asMinutes() / pitchPeriod;
   console.log(totalPitchesLength, 'totalPitchesLength', dataGroupByProduct)
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
   for (var i = totalPitchesLength; i >= 1; i--) {
@@ -353,7 +354,7 @@ const Users = () => {
     var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
     var currentCardBox = {};
 
-    console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
+    // console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
 
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
@@ -361,10 +362,10 @@ const Users = () => {
       shift={i <= activeShiftPeriod ? dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0) : undefined}
       cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
-
+        console.log(product, 'product')
         return (
           <span className="content-center" style={{
-            backgroundColor: product.record.color,
+            backgroundColor: product.color,
             padding: (i === 1 && dataGroupByProductRandom.length - 1 === index) ? '' : '5px',
             // marginLeft: '5px',
             // width: '10px',
@@ -430,14 +431,14 @@ const Users = () => {
       </CRow>
       <CRow>
         <CCol xs={{ offset: 9, size: 3 }} >
-          <CWidgetSimple style={{ backgroundColor: lodash.get(currentCardBox, 'record.color'), color: 'white' }} className='widgetBackground' header="Kanban en curs" text={
+          <CWidgetSimple style={{ backgroundColor: lodash.get(currentCardBox, 'color'), color: 'white' }} className='widgetBackground' header="Kanban en curs" text={
             <div style={{ textAlign: 'left' }}>
-              <p style={kanbanBoxWidgetStyle}>Ordre de fabricació: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.data[0].order_num_VHMFNO_D')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Referencia de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.product')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Descripció de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.data[0].description_VHTXT1_W')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.total')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.total') - donePieces}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat per caixa: <span style={metricStyle}>{parseFloat(lodash.get(currentCardBox, 'record.productsPerBox')).toFixed(2)}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Ordre de fabricació: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.order_num_VHMFNO_D')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Referencia de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.part_num_VHPRNO_C')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Descripció de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.description_VHTXT1_W')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(currentCardBox, 'total')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(currentCardBox, 'total') - donePieces}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat per caixa: <span style={metricStyle}>{parseFloat(lodash.get(currentCardBox, 'productsPerBox')).toFixed(2)}</span> </p>
             </div>
           } />
         </CCol>
