@@ -242,7 +242,8 @@ const Users = () => {
 
         const recordSet = [];
         var multipleRoundOff = 0;
-        const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
+        // const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
+        const numberOfProducts = 4; //number of Products in current order
 
         for (var j = 0; j < numberOfProducts; j++) {
           multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
@@ -365,7 +366,7 @@ const Users = () => {
         console.log(product, 'product')
         return (
           <span className="content-center" style={{
-            backgroundColor: product.color,
+            backgroundColor: colorsPalette[index],
             padding: (i === 1 && dataGroupByProductRandom.length - 1 === index) ? '' : '5px',
             // marginLeft: '5px',
             // width: '10px',
