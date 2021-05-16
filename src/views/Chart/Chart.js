@@ -259,10 +259,7 @@ const Users = () => {
 
     console.log('updatedShiftData2', shiftPieceDoneLimit, allShiftsDataRemainder)
     // if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
-    if (allShiftsData[0] && localDonePieces > 0) {
-      // if (localDonePieces > 0) {
-      allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
-    } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0 && localDonePieces !== 0) {
+    if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0 && localDonePieces !== 0) {
       // } else if (localDonePieces !== 0) {
       localDonePieces = 0;
       if (allShiftsData[0].length > 1) {
@@ -274,6 +271,10 @@ const Users = () => {
       else {
         allShiftsData.splice(0, 1);
       }
+    } else if (allShiftsData[0] && localDonePieces > 0) {
+
+      // if (localDonePieces > 0) {
+      allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
     }
 
     console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit, allShiftsDataRemainder)
