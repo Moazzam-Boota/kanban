@@ -255,12 +255,12 @@ const Users = () => {
     var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
     // oldShiftsRemainder += allShiftsDataRemainder;
     ++localDonePieces;
-    var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
+    var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder - 1);
 
     console.log('updatedShiftData2', shiftPieceDoneLimit, allShiftsDataRemainder)
     if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
-    } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0 && localDonePieces === 0) {
+    } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0 && localDonePieces !== 0) {
       localDonePieces = 0;
       if (allShiftsData[0].length > 1) {
         allShiftsData[0].pop();
