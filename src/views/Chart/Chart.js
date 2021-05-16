@@ -255,10 +255,11 @@ const Users = () => {
     const limitShift = 14;
     const allShiftsData = [...dataGroupByProduct];
     var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
-    var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0) + localDonePieces;
+    var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
+    var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
     // oldShiftsRemainder += allShiftsDataRemainder;
     // var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
-    var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder);
+    var shiftPieceDoneLimit = donePieces % (currentShiftOriginalCount);
 
     console.log('updatedShiftData2', limitShift - donePieces, limitShift - allShiftsDataRemainder, shiftPieceDoneLimit, allShiftsDataRemainder, localDonePieces)
     // if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
