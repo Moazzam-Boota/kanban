@@ -260,10 +260,10 @@ const Users = () => {
 
     console.log('updatedShiftData2', shiftPieceDoneLimit, allShiftsDataRemainder)
     // if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
-    if (limitShift - donePieces > limitShift - allShiftsDataRemainder) {
+    if (allShiftsData[0] && limitShift - donePieces > limitShift - allShiftsDataRemainder) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
       // } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
-    } else if (limitShift - donePieces <= limitShift - allShiftsDataRemainder) {
+    } else if (allShiftsData[0] && limitShift - donePieces <= limitShift - allShiftsDataRemainder) {
       if (allShiftsData[0].length > 1) {
         allShiftsData[0].pop();
         // allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
