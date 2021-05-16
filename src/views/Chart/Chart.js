@@ -266,6 +266,7 @@ const Users = () => {
       // } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
     } else if (allShiftsData[0] && limitShift - donePieces <= limitShift - allShiftsDataRemainder) {
       localDonePieces += allShiftsDataRemainder;
+      console.log(localDonePieces, 'localDonePieces')
       if (allShiftsData[0].length > 1) {
         allShiftsData[0].pop();
         // allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
