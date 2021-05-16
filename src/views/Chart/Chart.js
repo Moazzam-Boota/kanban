@@ -259,7 +259,7 @@ const Users = () => {
     // var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
     var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder);
 
-    console.log('updatedShiftData2', allShiftsData[0] && limitShift, limitShift - allShiftsDataRemainder, shiftPieceDoneLimit, allShiftsDataRemainder)
+    console.log('updatedShiftData2', limitShift - donePieces, limitShift - allShiftsDataRemainder, shiftPieceDoneLimit, allShiftsDataRemainder)
     // if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
     if (allShiftsData[0] && limitShift - donePieces > limitShift - allShiftsDataRemainder) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
