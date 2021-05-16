@@ -248,12 +248,13 @@ const Users = () => {
 
   // var oldShiftsRemainder = 0;
   var localDonePieces = 0;
+  // oldShiftsRemainder += allShiftsDataRemainder;
   useEffect(() => {
     // console.log(donePieces, 'donePieces')
     const limitShift = 14;
     const allShiftsData = [...dataGroupByProduct];
     var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
-    var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
+    var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0) + localDonePieces;
     // oldShiftsRemainder += allShiftsDataRemainder;
     // var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
     var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder);
@@ -265,6 +266,7 @@ const Users = () => {
       // } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
     } else if (allShiftsData[0] && limitShift - donePieces <= limitShift - allShiftsDataRemainder) {
       if (allShiftsData[0].length > 1) {
+        localDonePieces = allShiftsDataRemainder;
         allShiftsData[0].pop();
         // allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
         // allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
