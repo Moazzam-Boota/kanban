@@ -256,7 +256,7 @@ const Users = () => {
     var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
     var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
 
-    console.log('updatedShiftData', remainderDonePieces)
+    console.log('updatedShiftData', limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
     if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
     } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) {
@@ -268,8 +268,6 @@ const Users = () => {
         allShiftsData.splice(0, 1);
       }
     }
-
-    console.log(allShiftsData, 'allShiftsData', allShiftsDataRemainder)
 
     setDataGroupByProduct(allShiftsData)
   }, [donePieces]);
