@@ -70,6 +70,7 @@ const Users = () => {
   // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(0);
   const [localDonePieces, setLocalDonePieces] = useState(0);
+  const [trackShiftsDone, setTrackShiftsDone] = useState(0);
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
 
@@ -263,7 +264,11 @@ const Users = () => {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
     } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) {
       setLocalDonePieces(allShiftsDataRemainder);
-      if (remainderDonePieces === 14) setLocalDonePieces(0);
+      if (remainderDonePieces === 14) {
+        setLocalDonePieces(0);
+        setTrackShiftsDone(trackShiftsDone + 1);
+      }
+
       if (allShiftsData[0].length > 1) {
         allShiftsData[0].pop();
       }
@@ -323,8 +328,10 @@ const Users = () => {
 
   const cardsData = [];
   var activeShiftPeriod = 0;
+  const totalPitchesLength = duration.asMinutes() / pitchPeriod;
+  console.log(totalPitchesLength, 'totalPitchesLength', dataGroupByProduct)
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
-  for (var i = duration.asMinutes() / pitchPeriod; i >= 1; i--) {
+  for (var i = totalPitchesLength; i >= 1; i--) {
     var color = '';
 
     var beforeTime = moment(startShiftTime.format('HH:mm'), format);
@@ -343,7 +350,7 @@ const Users = () => {
       headerWidgetColor = color;
       console.log(i, activeShiftPeriod, headerWidgetColor, time, beforeTime, afterTime, 'here is')
     }
-    var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
+    var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1 - trackShiftsDone, []);
     var currentCardBox = {};
 
     console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
@@ -352,7 +359,7 @@ const Users = () => {
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={i <= activeShiftPeriod ? Math.round(boxesPerPitch) : undefined}
-      cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
+      cardName={i <= activeShiftPeriod ? dataGroupByProductRandom.map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
 
         return (
