@@ -353,13 +353,13 @@ const Users = () => {
     var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1 - trackShiftsDone, []);
     var currentCardBox = {};
 
-    console.log(dataGroupByProductRandom, 'dataGroupByProductRandom')
+    console.log(dataGroupByProduct, 'dataGroupByProductRandom')
 
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={i <= activeShiftPeriod ? Math.round(boxesPerPitch) : undefined}
-      cardName={i <= activeShiftPeriod ? dataGroupByProductRandom.map((product, index) => {
+      cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1 - trackShiftsDone, []).map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
 
         return (
