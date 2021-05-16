@@ -256,7 +256,7 @@ const Users = () => {
     var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
     var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
 
-    if (remainderDonePieces === 14) setLocalDonePieces(0);
+    if (donePieces % limitShift === 0) setLocalDonePieces(0);
 
     console.log('updatedShiftData', limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
     if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) {
