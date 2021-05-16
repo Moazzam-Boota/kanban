@@ -69,6 +69,7 @@ const Users = () => {
   const dispatch = useDispatch()
   // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(0);
+  const [localDonePieces, setLocalDonePieces] = useState(0);
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
 
@@ -247,7 +248,7 @@ const Users = () => {
   }, [parentsData]);
 
   // var oldShiftsRemainder = 0;
-  var localDonePieces = 0;
+  // var localDonePieces = 0;
   // oldShiftsRemainder += allShiftsDataRemainder;
   useEffect(() => {
     // console.log(donePieces, 'donePieces')
@@ -265,7 +266,8 @@ const Users = () => {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
       // } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
     } else if (allShiftsData[0] && limitShift - donePieces <= limitShift - allShiftsDataRemainder) {
-      localDonePieces += allShiftsDataRemainder;
+      // localDonePieces += allShiftsDataRemainder;
+      setLocalDonePieces(allShiftsDataRemainder);
       console.log(localDonePieces, 'localDonePieces')
       if (allShiftsData[0].length > 1) {
         allShiftsData[0].pop();
