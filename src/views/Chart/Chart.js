@@ -346,20 +346,20 @@ const Users = () => {
     console.log(time, afterTime, beforeTime, 'hello')
     if (time.isBetween(afterTime, beforeTime)) {
       // also check for length of allShiftsData
-      activeShiftPeriod = i;
+      activeShiftPeriod = i - trackShiftsDone;
       headerWidgetColor = color;
       console.log(i, activeShiftPeriod, headerWidgetColor, time, beforeTime, afterTime, 'here is')
     }
-    var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1 + trackShiftsDone, []);
+    var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
     var currentCardBox = {};
 
-    console.log(dataGroupByProduct, 'dataGroupByProductRandom')
+    console.log(dataGroupByProduct, 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
 
     cardsData.push(<CWidgetBrand
       style={{ marginLeft: '5px', width: '150px' }}
       color={color}
       shift={i <= activeShiftPeriod ? Math.round(boxesPerPitch) : undefined}
-      cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1 + trackShiftsDone, []).map((product, index) => {
+      cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
 
         return (
