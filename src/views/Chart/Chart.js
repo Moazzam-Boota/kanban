@@ -250,18 +250,20 @@ const Users = () => {
   var localDonePieces = 0;
   useEffect(() => {
     // console.log(donePieces, 'donePieces')
+    const limitShift = 14;
     const allShiftsData = [...dataGroupByProduct];
     var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
     var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
     // oldShiftsRemainder += allShiftsDataRemainder;
-    ++localDonePieces;
-    var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
+    // var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
+    var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder);
 
     console.log('updatedShiftData2', shiftPieceDoneLimit, allShiftsDataRemainder)
     // if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
-    if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0 && localDonePieces !== 0) {
-      // } else if (localDonePieces !== 0) {
-      localDonePieces = 0;
+    if (limitShift - donePieces > limitShift - allShiftsDataRemainder) {
+      allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
+      // } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
+    } else if (limitShift - donePieces <= limitShift - allShiftsDataRemainder) {
       if (allShiftsData[0].length > 1) {
         allShiftsData[0].pop();
         // allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
@@ -271,10 +273,6 @@ const Users = () => {
       else {
         allShiftsData.splice(0, 1);
       }
-    } else if (allShiftsData[0] && localDonePieces > 0) {
-
-      // if (localDonePieces > 0) {
-      allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
     }
 
     console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit, allShiftsDataRemainder)
