@@ -70,7 +70,7 @@ const Users = () => {
   // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(0);
   const [localDonePieces, setLocalDonePieces] = useState(0);
-  const [shiftPieceDoneLimit, setShiftPieceDoneLimit] = useState(0);
+  var [shiftPieceDoneLimit, setShiftPieceDoneLimit] = useState(0);
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
 
