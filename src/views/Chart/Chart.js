@@ -70,6 +70,7 @@ const Users = () => {
   // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(0);
   const [localDonePieces, setLocalDonePieces] = useState(0);
+  const [shiftPieceDoneLimit, setShiftPieceDoneLimit] = useState(0);
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
 
@@ -259,7 +260,8 @@ const Users = () => {
     var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
     // oldShiftsRemainder += allShiftsDataRemainder;
     // var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
-    var shiftPieceDoneLimit = donePieces % (currentShiftOriginalCount);
+    // var shiftPieceDoneLimit = donePieces % (currentShiftOriginalCount);
+    ++shiftPieceDoneLimit;
 
     console.log('updatedShiftData2', limitShift - donePieces, limitShift - allShiftsDataRemainder, shiftPieceDoneLimit, allShiftsDataRemainder, localDonePieces)
     // if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
@@ -269,6 +271,7 @@ const Users = () => {
     } else if (allShiftsData[0] && limitShift - donePieces <= limitShift - allShiftsDataRemainder) {
       // localDonePieces += allShiftsDataRemainder;
       setLocalDonePieces(allShiftsDataRemainder);
+      setShiftPieceDoneLimit(0);
       console.log(localDonePieces, 'localDonePieces')
       if (allShiftsData[0].length > 1) {
         allShiftsData[0].pop();
