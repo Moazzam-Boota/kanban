@@ -250,13 +250,13 @@ const Users = () => {
   useEffect(() => {
     // console.log(donePieces, 'donePieces')
     const limitShift = 14;
-    const remainderDonePieces = donePieces % limitShift;
+    const remainderDonePieces = donePieces % limitShift === 0 ? 1 : donePieces % limitShift + 1;
     const allShiftsData = [...dataGroupByProduct];
     var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
     var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
     var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
 
-    console.log('updatedShiftData2', limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, allShiftsDataRemainder, localDonePieces)
+    console.log('updatedShiftData', remainderDonePieces)
     if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
     } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) {
