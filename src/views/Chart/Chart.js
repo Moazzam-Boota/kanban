@@ -260,10 +260,11 @@ const Users = () => {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
     } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
       if (allShiftsData[0].length > 1) {
+        donePieces = 0;
         allShiftsData[0].pop();
-        allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
-        allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
-        shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
+        // allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
+        // allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
+        // shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
       }
       else {
         allShiftsData.splice(0, 1);
