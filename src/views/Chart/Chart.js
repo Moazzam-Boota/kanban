@@ -70,7 +70,6 @@ const Users = () => {
   // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(0);
   const [localDonePieces, setLocalDonePieces] = useState(0);
-  var [shiftPieceDoneLimit, setShiftPieceDoneLimit] = useState(0);
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
 
@@ -248,34 +247,22 @@ const Users = () => {
     }
   }, [parentsData]);
 
-  // var oldShiftsRemainder = 0;
-  // var localDonePieces = 0;
-  // oldShiftsRemainder += allShiftsDataRemainder;
   useEffect(() => {
     // console.log(donePieces, 'donePieces')
     const limitShift = 14;
+    const remainderDonePieces = donePieces % limitShift;
     const allShiftsData = [...dataGroupByProduct];
     var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
     var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
     var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
-    // oldShiftsRemainder += allShiftsDataRemainder;
-    // var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
-    // var shiftPieceDoneLimit = donePieces % (currentShiftOriginalCount);
-    // ++shiftPieceDoneLimit;
 
-    console.log('updatedShiftData2', limitShift - donePieces, limitShift - allShiftsDataRemainder, shiftPieceDoneLimit, allShiftsDataRemainder, localDonePieces)
-    // if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
-    if (allShiftsData[0] && limitShift - donePieces > limitShift - allShiftsDataRemainder) {
+    console.log('updatedShiftData2', limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, shiftPieceDoneLimit, allShiftsDataRemainder, localDonePieces)
+    if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
-      // } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
-    } else if (allShiftsData[0] && limitShift - donePieces <= limitShift - allShiftsDataRemainder) {
+    } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) {
       setLocalDonePieces(allShiftsDataRemainder);
-      // setShiftPieceDoneLimit(0);
       if (allShiftsData[0].length > 1) {
         allShiftsData[0].pop();
-        // allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
-        // allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
-        // shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
       }
       else {
         allShiftsData.splice(0, 1);
@@ -283,25 +270,9 @@ const Users = () => {
     }
 
     console.log(allShiftsData, 'allShiftsData', shiftPieceDoneLimit, allShiftsDataRemainder)
-    // const allShiftsData = dataGroupByProduct.map((product, index) => {
-    //   console.log(product, 'product')
-    //   if ((dataGroupByProduct.length - 1 === index && product.originalCount - donePieces >= 0))
-    //     product[0].productCount = product[0].originalCount - donePieces;
-    //   // else if ((i === 1 && dataGroupByProductRandom.length - 1 === index && product.originalCount - donePieces <= 0)) {
-    //   //   // dataGroupByProduct[dataGroupByProduct.length - 1].pop();
-    //   //   dataGroupByProduct.splice(-1, 1);
-    //   // }
-
-    // });
 
     setDataGroupByProduct(allShiftsData)
   }, [donePieces]);
-  // const allShiftsData = [...dataGroupByProduct];
-  // var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
-  // var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
-  // var shiftPieceDoneLimit = donePieces % (allShiftsDataRemainder + 1);
-  // console.log(allShiftsData, 'updatedShiftData', shiftPieceDoneLimit, allShiftsDataLength, allShiftsDataRemainder)
-
 
   useEffect(() => {
     dispatch(intialExcelSheet());
