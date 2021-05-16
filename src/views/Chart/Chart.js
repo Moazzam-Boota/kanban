@@ -247,9 +247,10 @@ const Users = () => {
   }, [parentsData]);
 
   // var oldShiftsRemainder = 0;
+  var localDonePieces = 0;
   useEffect(() => {
     // console.log(donePieces, 'donePieces')
-    var localDonePieces = donePieces;
+
     const allShiftsData = [...dataGroupByProduct];
     var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
     var allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
@@ -259,9 +260,10 @@ const Users = () => {
     console.log('updatedShiftData2', shiftPieceDoneLimit, allShiftsDataRemainder)
     if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit > 0) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit;
+      ++localDonePieces;
     } else if (allShiftsData[0] && allShiftsData[0][allShiftsData[0].length - 1].originalCount - shiftPieceDoneLimit <= 0) {
+      localDonePieces = 0;
       if (allShiftsData[0].length > 1) {
-        localDonePieces = 0;
         allShiftsData[0].pop();
         // allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
         // allShiftsDataRemainder = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
