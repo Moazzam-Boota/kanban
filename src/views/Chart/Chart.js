@@ -270,7 +270,7 @@ const Users = () => {
         allShiftsData.splice(0, 1);
       }
     }
-    console.log('updatedShiftData', allShiftsData)
+    // console.log('updatedShiftData', allShiftsData)
 
     setDataGroupByProduct(allShiftsData)
   }, [donePieces]);
@@ -337,6 +337,7 @@ const Users = () => {
 
     console.log(time, afterTime, beforeTime, 'hello')
     if (time.isBetween(afterTime, beforeTime)) {
+      // also check for length of allShiftsData
       activeShiftPeriod = i;
       headerWidgetColor = color;
       console.log(i, activeShiftPeriod, headerWidgetColor, time, beforeTime, afterTime, 'here is')
