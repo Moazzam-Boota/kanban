@@ -370,7 +370,7 @@ const Users = () => {
       shift={i <= activeShiftPeriod ? dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0) : undefined}
       cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
-        console.log(product, 'product')
+        console.log(product, 'singleProduct')
         return (
           <span className="content-center" style={{
             backgroundColor: product.color,
@@ -404,7 +404,6 @@ const Users = () => {
   }
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
-  console.log(totalPitchesLength + (12 - totalPitchesLength), cardsData.length, 'cardsData');
   cardsData.splice(0, totalPitchesLength - 12);
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
