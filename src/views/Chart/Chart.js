@@ -343,26 +343,29 @@ const Users = () => {
 
   // console.log(totalPitchesLength, 'totalPitchesLength', dataGroupByProduct)
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
+
+  function filterColor(currentPointer) {
+    if (currentPointer <= parseInt(blueColorChartParams.min)) return 'blue';
+    else if (currentPointer >= parseInt(greenColorChartParams.min) && currentPointer <= parseInt(greenColorChartParams.max)) return 'green';
+    else if (currentPointer >= parseInt(orangeColorChartParams.min) && currentPointer <= parseInt(orangeColorChartParams.max)) return 'orange';
+    else if (currentPointer >= parseInt(redColorChartParams.min) && currentPointer <= parseInt(redColorChartParams.max)) return 'red';
+    else if (currentPointer >= parseInt(blackColorChartParams.min) && currentPointer <= parseInt(blackColorChartParams.max)) return 'black';
+
+  }
+
   var currentCardBox = {};
   var cardsData = [];
   function renderCards() {
     for (var i = totalPitchesLength; i >= 1; i--) {
-      var color = '';
+      var color = filterColor(i);
 
       var beforeTime = moment(startShiftTime.format('HH:mm'), format);
       var afterTime = moment(startShiftTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
-      const currentPointer = i;
-      if (currentPointer <= parseInt(blueColorChartParams.min)) { color = 'blue'; }
-      else if (currentPointer >= parseInt(greenColorChartParams.min) && currentPointer <= parseInt(greenColorChartParams.max)) { color = 'green'; }
-      else if (currentPointer >= parseInt(orangeColorChartParams.min) && currentPointer <= parseInt(orangeColorChartParams.max)) { color = 'orange'; }
-      else if (currentPointer >= parseInt(redColorChartParams.min) && currentPointer <= parseInt(redColorChartParams.max)) { color = 'red'; }
-      else if (currentPointer >= parseInt(blackColorChartParams.min) && currentPointer <= parseInt(blackColorChartParams.max)) { color = 'black'; }
-
       // console.log(currentTime, afterTime, beforeTime, 'hello')
       if (currentTime.isBetween(afterTime, beforeTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
-        headerWidgetColor = color;
+        headerWidgetColor = filterColor(i - trackShiftsDone);
         console.log(i - trackShiftsDone, 'here is')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
