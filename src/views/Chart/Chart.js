@@ -90,7 +90,7 @@ const Users = () => {
       setTrackShiftsDone(trackShiftsDone - 1);
       cardsData = [];
       activeShiftPeriod = 0;
-      // renderCards();
+      renderCards();
       // }, pitchTime * 60 * 1000);
     }, 1 * 60 * 1000);
     // }, 1000);
