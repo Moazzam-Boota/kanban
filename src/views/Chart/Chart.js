@@ -83,7 +83,7 @@ const Users = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeLeft(moment());
-      setTrackShiftsDone(trackShiftsDone - 1);
+      // setTrackShiftsDone(trackShiftsDone - 1);
       cardsData = [];
       renderCards();
       // }, pitchTime * 60 * 1000);
