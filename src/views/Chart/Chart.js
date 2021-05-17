@@ -75,19 +75,22 @@ const Users = () => {
   var headerWidgetColor = '';
 
   var format = 'HH:mm'
-  // const [currentTime, setTimeLeft] = useState(moment('18:40', format));
-  const [currentTime, setTimeLeft] = useState(moment());
+  var currentHour = 16;
+  var currentMinute = 40;
+  const [currentTime, setTimeLeft] = useState(moment('16:40', format));
+  // const [currentTime, setTimeLeft] = useState(moment());
 
-  // console.log(currentTime, 'time-current')
+  console.log(moment().set({ hour: currentHour, minute: currentMinute, second: 0, millisecond: 0 }).add(30, 'minutes'), 'time-current')
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setTimeLeft(moment());
-      console.log(trackShiftsDone - 1, 'trackshift')
+      // setTimeLeft(moment());
+      setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
+      // console.log(trackShiftsDone - 1, 'trackshift')
       setTrackShiftsDone(trackShiftsDone - 1);
       cardsData = [];
       activeShiftPeriod = 0;
-      renderCards();
+      // renderCards();
       // }, pitchTime * 60 * 1000);
     }, 1 * 60 * 1000);
     // }, 1000);
@@ -261,7 +264,7 @@ const Users = () => {
           // console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
           const singleProductColor = lodash.get(dataGroupColors.filter(q => q.product === lodash.get(dataGroup[currentElement].data[j], 'part_num_VHPRNO_C')), [0, 'color']);
 
-          console.log(multipleRoundOff >= 1, productCountDynamic, productCountDynamic, 'singleProductColor')
+          // console.log(multipleRoundOff >= 1, productCountDynamic, productCountDynamic, 'singleProductColor')
           recordSet.push({
             ...dataGroup[currentElement],
             color: singleProductColor ? singleProductColor : colorsPalette[j + 1],
@@ -347,12 +350,13 @@ const Users = () => {
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
 
   function filterColor(currentPointer) {
+    console.log('currentPointer', currentPointer)
     if (currentPointer <= parseInt(blueColorChartParams.min)) return 'blue';
     else if (currentPointer >= parseInt(greenColorChartParams.min) && currentPointer <= parseInt(greenColorChartParams.max)) return 'green';
     else if (currentPointer >= parseInt(orangeColorChartParams.min) && currentPointer <= parseInt(orangeColorChartParams.max)) return 'orange';
     else if (currentPointer >= parseInt(redColorChartParams.min) && currentPointer <= parseInt(redColorChartParams.max)) return 'red';
-    else if (currentPointer >= parseInt(blackColorChartParams.min) && currentPointer <= parseInt(blackColorChartParams.max)) return 'black';
-
+    // else if (currentPointer >= parseInt(blackColorChartParams.min) && currentPointer <= parseInt(blackColorChartParams.max)) return 'black';
+    else if (currentPointer >= parseInt(blackColorChartParams.min)) return 'black';
   }
 
   var currentCardBox = {};
@@ -367,12 +371,12 @@ const Users = () => {
       if (currentTime.isBetween(afterTime, beforeTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
-        headerWidgetColor = filterColor(i - trackShiftsDone);
-        console.log(i, activeShiftPeriod, 'here is')
+        headerWidgetColor = filterColor(i);
+        console.log(currentTime, i, activeShiftPeriod, i - trackShiftsDone, 'here is active')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
-      // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
+      console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
       // console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
       console.log(i, activeShiftPeriod, 'here is 2')
       cardsData.push(<CWidgetBrand
@@ -381,7 +385,7 @@ const Users = () => {
         shift={i <= activeShiftPeriod ? dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0) : undefined}
         cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
           currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
-          console.log(product.productCount, 'singleProduct')
+          console.log(product, 'singleProduct')
           return (
             <span className="content-center" style={{
               backgroundColor: product.color,
