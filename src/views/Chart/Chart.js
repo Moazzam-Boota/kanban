@@ -78,7 +78,7 @@ const Users = () => {
   // const [time, setTimeLeft] = useState(moment('18:40', format));
   const [time, setTimeLeft] = useState(moment());
 
-  console.log(time, 'time-current')
+  // console.log(time, 'time-current')
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -178,13 +178,13 @@ const Users = () => {
             sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
           }
         }).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
-      console.log(dataGroupColors, 'dataGroupColors')
+      // console.log(dataGroupColors, 'dataGroupColors')
       const dataGroup = lodash.orderBy(lodash.chain(parentsData)
         // Group the elements of Array based on `color` property
         .groupBy("order_num_VHMFNO_D")
         // `key` is group's name (color), `value` is the array of objects
         .map((value, key) => {
-          console.log(value, lodash.get(dataGroupColors.filter(q => q.product === value[0].part_num_VHPRNO_C), [0, 'color']), 'order')
+          // console.log(value, lodash.get(dataGroupColors.filter(q => q.product === value[0].part_num_VHPRNO_C), [0, 'color']), 'order')
           const color = lodash.get(dataGroupColors.filter(q => q.product === value[0].part_num_VHPRNO_C), [0, 'color']);
           // ++counter;
 
@@ -208,7 +208,7 @@ const Users = () => {
 
       // const dataGroupOriginal = lodash.orderBy(parentsData, ['row_num'], ['asc']).filter(k => k.quantity_VHOROQ_AH !== null);
 
-      console.log(dataGroup, 'dataGroup');
+      // console.log(dataGroup, 'dataGroup');
 
       const dataGroupLength = dataGroup.length;
       const productCount = Math.round(boxesPerPitch / dataGroupLength * 10) / 10;
@@ -230,7 +230,7 @@ const Users = () => {
         // Difference of order from 0, 9 - 14 -> -5
         // foreach pitch, subtract the boxesPerPitch
         // if sum - boxesPerPitch !<= 0, then subtract, else move to next order
-        console.log(dataGroup, 'dataGroup2', i, currentElement, dataGroup[currentElement])
+        // console.log(dataGroup, 'dataGroup2', i, currentElement, dataGroup[currentElement])
 
 
 
@@ -251,7 +251,7 @@ const Users = () => {
 
         for (var j = 0; j < numberOfProducts; j++) {
           multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
-          console.log(j, dataGroup[currentElement].data[j], 'dataGroupLoop')
+          // console.log(j, dataGroup[currentElement].data[j], 'dataGroupLoop')
           var productCountDynamic = Math.round(Math.round(boxesPerPitch) / numberOfProducts);
           // console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
           const singleProductColor = lodash.get(dataGroupColors.filter(q => q.product === lodash.get(dataGroup[currentElement].data[j], 'part_num_VHPRNO_C')), [0, 'color']);
@@ -274,7 +274,7 @@ const Users = () => {
         allShiftsData.push(recordSet)
       }
 
-      console.log(allShiftsData, 'allShiftsData')
+      // console.log(allShiftsData, 'allShiftsData')
       setDataGroupByProduct(allShiftsData);
     }
   }, [parentsData]);
@@ -290,7 +290,7 @@ const Users = () => {
 
 
 
-    console.log('updatedShiftData', limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
+    // console.log('updatedShiftData', limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
     if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
     } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) {
@@ -338,7 +338,7 @@ const Users = () => {
   // timeRange[0] add pitchTime, check if current time is between, old and new+shift time, show boxes
   // var time = moment() gives you current time. no format required.
 
-  console.log(totalPitchesLength, 'totalPitchesLength', dataGroupByProduct)
+  // console.log(totalPitchesLength, 'totalPitchesLength', dataGroupByProduct)
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
   for (var i = totalPitchesLength; i >= 1; i--) {
     var color = '';
@@ -352,16 +352,16 @@ const Users = () => {
     else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) { color = 'red'; }
     else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
 
-    console.log(time, afterTime, beforeTime, 'hello')
+    // console.log(time, afterTime, beforeTime, 'hello')
     if (time.isBetween(afterTime, beforeTime)) {
       // also check for length of allShiftsData
       activeShiftPeriod = i - trackShiftsDone;
       headerWidgetColor = color;
-      console.log(i, activeShiftPeriod, headerWidgetColor, time, beforeTime, afterTime, 'here is')
+      // console.log(i, activeShiftPeriod, headerWidgetColor, time, beforeTime, afterTime, 'here is')
     }
     var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
     var currentCardBox = {};
-    console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
+    // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
     // console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
 
     cardsData.push(<CWidgetBrand
@@ -370,7 +370,7 @@ const Users = () => {
       shift={i <= activeShiftPeriod ? dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0) : undefined}
       cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
         currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
-        console.log(product, 'singleProduct')
+        console.log(product.productCount, 'singleProduct')
         return (
           <span className="content-center" style={{
             backgroundColor: product.color,
@@ -403,7 +403,7 @@ const Users = () => {
     </CWidgetBrand >);
   }
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
-  console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
+  // console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
   cardsData.splice(0, totalPitchesLength - 12);
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
