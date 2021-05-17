@@ -315,6 +315,7 @@ const Users = () => {
       setLocalDonePieces(allShiftsDataRemainder);
       if (remainderDonePieces === 14) {
         setLocalDonePieces(0);
+        console.log(trackShiftsDone, 'trackShiftsDoneFinal')
         setTrackShiftsDone(trackShiftsDone + 1);
       }
 
