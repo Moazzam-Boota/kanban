@@ -83,8 +83,10 @@ const Users = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeLeft(moment());
+      console.log(trackShiftsDone - 1, 'trackshift')
       setTrackShiftsDone(trackShiftsDone - 1);
       cardsData = [];
+      activeShiftPeriod = 0;
       renderCards();
       // }, pitchTime * 60 * 1000);
     }, 1 * 60 * 1000);
@@ -366,13 +368,13 @@ const Users = () => {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
         headerWidgetColor = filterColor(i - trackShiftsDone);
-        console.log(i - trackShiftsDone, 'here is')
+        console.log(i, activeShiftPeriod, 'here is')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
       // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
       // console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
-
+      console.log(i, activeShiftPeriod, 'here is 2')
       cardsData.push(<CWidgetBrand
         style={{ marginLeft: '5px', width: '150px' }}
         color={color}
