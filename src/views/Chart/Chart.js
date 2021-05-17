@@ -83,6 +83,7 @@ const Users = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeLeft(moment());
+      setTrackShiftsDone(trackShiftsDone - 1);
       // }, pitchTime * 60 * 1000);
     }, 1 * 60 * 1000);
     // }, 1000);
