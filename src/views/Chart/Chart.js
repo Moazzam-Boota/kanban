@@ -41,7 +41,7 @@ const Users = () => {
 
   const quantityPerBox = 3;   // .per_box_qty_UNITCAIXA_IT
   const dailyHours = 8; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
-  const pitchPeriod = lodash.get(chartParams, 'pitchTime', 0); //minutes
+  const pitchTime = lodash.get(chartParams, 'pitchTime', 0); //minutes
   const totalQuantity = lodash.sumBy(parentsData, 'quantity_VHOROQ_AH'); //sum of all quantities
   var totalQuantityDynamic = lodash.sumBy(parentsData, 'quantity_VHOROQ_AH'); //sum of all quantities
   const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
@@ -51,13 +51,13 @@ const Users = () => {
   const quantityPerBoxPerMinute = quantityPerBox * quantityPerMinute;  // per box time
   // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
 
-  const boxesPerPitch = pitchPeriod / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
+  const boxesPerPitch = pitchTime / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
   // TODO:: sum of all orders, quantity
   // TODO:: sum of all orders, quantity
   // 
   // const donePieces = 100; //receive from clicking the button double click
   // const skipBoxes = 3;
-  const kanbanBoxes = (dailyHours * 60) / pitchPeriod;
+  const kanbanBoxes = (dailyHours * 60) / pitchTime;
   const blueColorChartParams = lodash.get(colorChartParams, 'blue', {});
   const greenColorChartParams = lodash.get(colorChartParams, 'green', {});
   const orangeColorChartParams = lodash.get(colorChartParams, 'orange', {});
@@ -75,15 +75,19 @@ const Users = () => {
   var headerWidgetColor = '';
 
   var format = 'HH:mm'
-  const [time, setTimeLeft] = useState(moment('18:40', format));
+  // const [time, setTimeLeft] = useState(moment('18:40', format));
+  const [time, setTimeLeft] = useState(moment());
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setTimeLeft(moment());
-  //   }, 1000);
-  //   // Clear timeout if the component is unmounted
-  //   return () => clearTimeout(timer);
-  // });
+  console.log(time, 'time-current')
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(moment());
+    }, pitchTime * 60 * 1000);
+    // }, 1000);
+    // Clear timeout if the component is unmounted
+    return () => clearTimeout(timer);
+  });
 
 
   var startShiftTime = moment(timeRange[1], format);
@@ -91,12 +95,12 @@ const Users = () => {
 
 
   var duration = moment.duration(startShiftTime.diff(initialShiftTime));
-  // console.log(timeRange, 'timeRange', duration.asMinutes(), duration.asMinutes() / pitchPeriod, pitchPeriod)
+  // console.log(timeRange, 'timeRange', duration.asMinutes(), duration.asMinutes() / pitchTime, pitchTime)
   // duration subtract breaks
 
   const cardsData = [];
   var activeShiftPeriod = 0;
-  const totalPitchesLength = duration.asMinutes() / pitchPeriod;
+  const totalPitchesLength = duration.asMinutes() / pitchTime;
 
 
   useEffect(() => {
@@ -330,8 +334,8 @@ const Users = () => {
     .value();
 
 
-  // check if currentTime is between the pitchPeriod, add cards to that pitch
-  // timeRange[0] add pitchPeriod, check if current time is between, old and new+shift time, show boxes
+  // check if currentTime is between the pitchTime, add cards to that pitch
+  // timeRange[0] add pitchTime, check if current time is between, old and new+shift time, show boxes
   // var time = moment() gives you current time. no format required.
 
   console.log(totalPitchesLength, 'totalPitchesLength', dataGroupByProduct)
@@ -340,7 +344,7 @@ const Users = () => {
     var color = '';
 
     var beforeTime = moment(startShiftTime.format('HH:mm'), format);
-    var afterTime = moment(startShiftTime.subtract(pitchPeriod, 'minutes').format('HH:mm'), format);
+    var afterTime = moment(startShiftTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
 
     if (i <= parseInt(blueColorChartParams.min)) { color = 'blue'; }
     else if (i >= parseInt(greenColorChartParams.min) && i <= parseInt(greenColorChartParams.max)) { color = 'green'; }
@@ -401,7 +405,7 @@ const Users = () => {
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
   console.log(cardsData, 'cardsData');
-  cardsData.splice(0, 6);
+  cardsData.splice(0, totalPitchesLength - 10);
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
   return (
