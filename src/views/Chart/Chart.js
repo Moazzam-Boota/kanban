@@ -351,19 +351,19 @@ const Users = () => {
 
       var beforeTime = moment(startShiftTime.format('HH:mm'), format);
       var afterTime = moment(startShiftTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
-
-      if (i <= parseInt(blueColorChartParams.min)) { color = 'blue'; }
-      else if (i >= parseInt(greenColorChartParams.min) && i <= parseInt(greenColorChartParams.max)) { color = 'green'; }
-      else if (i >= parseInt(orangeColorChartParams.min) && i <= parseInt(orangeColorChartParams.max)) { color = 'orange'; }
-      else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) { color = 'red'; }
-      else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
+      const currentPointer = i - trackShiftsDone;
+      if (currentPointer <= parseInt(blueColorChartParams.min)) { color = 'blue'; }
+      else if (currentPointer >= parseInt(greenColorChartParams.min) && currentPointer <= parseInt(greenColorChartParams.max)) { color = 'green'; }
+      else if (currentPointer >= parseInt(orangeColorChartParams.min) && currentPointer <= parseInt(orangeColorChartParams.max)) { color = 'orange'; }
+      else if (currentPointer >= parseInt(redColorChartParams.min) && currentPointer <= parseInt(redColorChartParams.max)) { color = 'red'; }
+      else if (currentPointer >= parseInt(blackColorChartParams.min) && currentPointer <= parseInt(blackColorChartParams.max)) { color = 'black'; }
 
       // console.log(currentTime, afterTime, beforeTime, 'hello')
       if (currentTime.isBetween(afterTime, beforeTime)) {
         // also check for length of allShiftsData
-        activeShiftPeriod = i - trackShiftsDone;
+        activeShiftPeriod = currentPointer;
         headerWidgetColor = color;
-        // console.log(i, activeShiftPeriod, headerWidgetColor, currentTime, beforeTime, afterTime, 'here is')
+        console.log(i - trackShiftsDone, 'here is')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
