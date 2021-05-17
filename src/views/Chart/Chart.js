@@ -251,8 +251,8 @@ const Users = () => {
 
         const recordSet = [];
         var multipleRoundOff = 0;
-        // const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
-        const numberOfProducts = 4; //number of Products in current order
+        const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
+        // const numberOfProducts = 4; //number of Products in current order
 
         for (var j = 0; j < numberOfProducts; j++) {
           multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
