@@ -83,7 +83,8 @@ const Users = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeLeft(moment());
-    }, pitchTime * 60 * 1000);
+      // }, pitchTime * 60 * 1000);
+    }, 1 * 60 * 1000);
     // }, 1000);
     // Clear timeout if the component is unmounted
     return () => clearTimeout(timer);
@@ -256,7 +257,7 @@ const Users = () => {
           // console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
           const singleProductColor = lodash.get(dataGroupColors.filter(q => q.product === lodash.get(dataGroup[currentElement].data[j], 'part_num_VHPRNO_C')), [0, 'color']);
 
-          // console.log(singleProductColor, 'singleProductColor')
+          console.log(multipleRoundOff >= 1, productCountDynamic, productCountDynamic, 'singleProductColor')
           recordSet.push({
             ...dataGroup[currentElement],
             color: singleProductColor ? singleProductColor : colorsPalette[j + 1],
