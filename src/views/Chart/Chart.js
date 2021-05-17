@@ -242,16 +242,20 @@ const Users = () => {
 
         const recordSet = [];
         var multipleRoundOff = 0;
-        const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
+        // const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
+        const numberOfProducts = 4; //number of Products in current order
 
         for (var j = 0; j < numberOfProducts; j++) {
           multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
-          console.log(j, dataGroup, 'dataGroupLoop')
+          console.log(j, dataGroup[currentElement].data[j], 'dataGroupLoop')
           var productCountDynamic = Math.round(Math.round(boxesPerPitch) / numberOfProducts);
           // console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
+          const singleProductColor = lodash.get(dataGroupColors.filter(q => q.product === lodash.get(dataGroup[currentElement].data[j], 'part_num_VHPRNO_C')), [0, 'color']);
 
+          // console.log(singleProductColor, 'singleProductColor')
           recordSet.push({
             ...dataGroup[currentElement],
+            color: singleProductColor ? singleProductColor : colorsPalette[j + 1],
             record: dataGroup[currentElement].data[j], //check sum, dataGroup[currentElement].data[j]
             productCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic, //for changing dynamic, on button push
             originalCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic //comparing with originalCount
@@ -353,7 +357,7 @@ const Users = () => {
     }
     var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
     var currentCardBox = {};
-
+    console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
     // console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
 
     cardsData.push(<CWidgetBrand
