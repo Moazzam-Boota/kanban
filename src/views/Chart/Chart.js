@@ -404,8 +404,8 @@ const Users = () => {
   }
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
-  console.log(cardsData, 'cardsData');
-  cardsData.splice(0, totalPitchesLength - 10);
+  console.log(totalPitchesLength + (12 - totalPitchesLength), cardsData.length, 'cardsData');
+  cardsData.splice(0, totalPitchesLength - 12);
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
   return (
