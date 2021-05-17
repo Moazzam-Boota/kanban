@@ -75,15 +75,17 @@ const Users = () => {
   var headerWidgetColor = '';
 
   var format = 'HH:mm'
-  // const [time, setTimeLeft] = useState(moment('18:40', format));
-  const [time, setTimeLeft] = useState(moment());
+  // const [currentTime, setTimeLeft] = useState(moment('18:40', format));
+  const [currentTime, setTimeLeft] = useState(moment());
 
-  // console.log(time, 'time-current')
+  // console.log(currentTime, 'time-current')
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimeLeft(moment());
       setTrackShiftsDone(trackShiftsDone - 1);
+      cardsData = [];
+      renderCards();
       // }, pitchTime * 60 * 1000);
     }, 1 * 60 * 1000);
     // }, 1000);
@@ -100,7 +102,6 @@ const Users = () => {
   // console.log(timeRange, 'timeRange', duration.asMinutes(), duration.asMinutes() / pitchTime, pitchTime)
   // duration subtract breaks
 
-  const cardsData = [];
   var activeShiftPeriod = 0;
   const totalPitchesLength = duration.asMinutes() / pitchTime;
 
@@ -342,71 +343,77 @@ const Users = () => {
 
   // console.log(totalPitchesLength, 'totalPitchesLength', dataGroupByProduct)
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
-  for (var i = totalPitchesLength; i >= 1; i--) {
-    var color = '';
+  var currentCardBox = {};
+  var cardsData = [];
+  function renderCards() {
+    for (var i = totalPitchesLength; i >= 1; i--) {
+      var color = '';
 
-    var beforeTime = moment(startShiftTime.format('HH:mm'), format);
-    var afterTime = moment(startShiftTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
+      var beforeTime = moment(startShiftTime.format('HH:mm'), format);
+      var afterTime = moment(startShiftTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
 
-    if (i <= parseInt(blueColorChartParams.min)) { color = 'blue'; }
-    else if (i >= parseInt(greenColorChartParams.min) && i <= parseInt(greenColorChartParams.max)) { color = 'green'; }
-    else if (i >= parseInt(orangeColorChartParams.min) && i <= parseInt(orangeColorChartParams.max)) { color = 'orange'; }
-    else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) { color = 'red'; }
-    else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
+      if (i <= parseInt(blueColorChartParams.min)) { color = 'blue'; }
+      else if (i >= parseInt(greenColorChartParams.min) && i <= parseInt(greenColorChartParams.max)) { color = 'green'; }
+      else if (i >= parseInt(orangeColorChartParams.min) && i <= parseInt(orangeColorChartParams.max)) { color = 'orange'; }
+      else if (i >= parseInt(redColorChartParams.min) && i <= parseInt(redColorChartParams.max)) { color = 'red'; }
+      else if (i >= parseInt(blackColorChartParams.min) && i <= parseInt(blackColorChartParams.max)) { color = 'black'; }
 
-    // console.log(time, afterTime, beforeTime, 'hello')
-    if (time.isBetween(afterTime, beforeTime)) {
-      // also check for length of allShiftsData
-      activeShiftPeriod = i - trackShiftsDone;
-      headerWidgetColor = color;
-      // console.log(i, activeShiftPeriod, headerWidgetColor, time, beforeTime, afterTime, 'here is')
-    }
-    var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
-    var currentCardBox = {};
-    // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
-    // console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
+      // console.log(currentTime, afterTime, beforeTime, 'hello')
+      if (currentTime.isBetween(afterTime, beforeTime)) {
+        // also check for length of allShiftsData
+        activeShiftPeriod = i - trackShiftsDone;
+        headerWidgetColor = color;
+        // console.log(i, activeShiftPeriod, headerWidgetColor, currentTime, beforeTime, afterTime, 'here is')
+      }
+      var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
-    cardsData.push(<CWidgetBrand
-      style={{ marginLeft: '5px', width: '150px' }}
-      color={color}
-      shift={i <= activeShiftPeriod ? dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0) : undefined}
-      cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
-        currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
-        console.log(product.productCount, 'singleProduct')
-        return (
-          <span className="content-center" style={{
-            backgroundColor: product.color,
-            padding: (i === 1 && dataGroupByProductRandom.length - 1 === index) ? '' : '5px',
-            // marginLeft: '5px',
-            // width: '10px',
-            textAlign: 'center',
-            textWeight: 'bold',
-            fontSize: '24px',
-            color: 'white',
-            // display: 'flex',
-            // flexDirection: 'column',
-            display: 'inline-block',
-            width: '40px',
-            // fontSize: '30px',
-            margin: '5px',
-            border: (i === 1 && dataGroupByProductRandom.length - 1 === index) ? '5px solid black' : 'inherit'
-          }}>
-            {/* <span style={{
+      // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
+      // console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
+
+      cardsData.push(<CWidgetBrand
+        style={{ marginLeft: '5px', width: '150px' }}
+        color={color}
+        shift={i <= activeShiftPeriod ? dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0) : undefined}
+        cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
+          currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
+          console.log(product.productCount, 'singleProduct')
+          return (
+            <span className="content-center" style={{
+              backgroundColor: product.color,
+              padding: (i === 1 && dataGroupByProductRandom.length - 1 === index) ? '' : '5px',
+              // marginLeft: '5px',
+              // width: '10px',
+              textAlign: 'center',
+              textWeight: 'bold',
+              fontSize: '24px',
+              color: 'white',
+              // display: 'flex',
+              // flexDirection: 'column',
+              display: 'inline-block',
+              width: '40px',
+              // fontSize: '30px',
+              margin: '5px',
+              border: (i === 1 && dataGroupByProductRandom.length - 1 === index) ? '5px solid black' : 'inherit'
+            }}>
+              {/* <span style={{
               padding: '5px'
             }}> */}
-            {product.productCount}</span>
-          // </span>
-        )
-      }) : []
-      }
-      leftHeader="459"
-      leftFooter="feeds"
-    >
-    </CWidgetBrand >);
+              {product.productCount}</span>
+            // </span>
+          )
+        }) : []
+        }
+        leftHeader="459"
+        leftFooter="feeds"
+      >
+      </CWidgetBrand >);
+    }
   }
+
+  renderCards();
+  cardsData.splice(0, totalPitchesLength - 12);
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   // console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
-  cardsData.splice(0, totalPitchesLength - 12);
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
   return (
