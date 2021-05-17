@@ -85,7 +85,8 @@ const Users = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       // setTimeLeft(moment());
-      setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
+      if (trackShiftsDone <= 0)
+        setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
       // console.log(trackShiftsDone - 1, 'trackshift')
       setTrackShiftsDone(trackShiftsDone - 1);
       cardsData = [];
