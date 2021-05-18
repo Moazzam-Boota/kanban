@@ -17,9 +17,11 @@ const ShiftTime = ({
   shiftCount,
   totalShifts,
   setShiftCount,
-  shiftsData
+  shiftsData,
+  shiftInitialTime,
+  shiftInitialBreakTime,
 }) => {
-  console.log(shiftsData)
+  console.log(shiftsData);
   const dispatch = useDispatch();
   // shift breaks, handle here
   var [breakCount, setBreakCount] = useState([1]);
@@ -64,11 +66,9 @@ const ShiftTime = ({
             key={`shiftTimePicker_${shiftCount}`}
             onChange={(value) => {
               // set time for a shift in redux
-              dispatch(
-                shiftTime({ shiftTime: value, shiftCount: shiftCount })
-              );
+              dispatch(shiftTime({ shiftTime: value, shiftCount: shiftCount }));
             }}
-            value={["08:00", "14:00"]}
+            value={shiftInitialTime}
           />
         </CCol>
         <CCol xs="1">
@@ -129,6 +129,7 @@ const ShiftTime = ({
               breakCount={k}
               totalBreaks={breakCount}
               setBreakCount={setBreakCount}
+              shiftInitialBreakTime={shiftInitialBreakTime}
               // breaksData={shiftsData[shiftCount].breaks}
             />
           ))}

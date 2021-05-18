@@ -24,6 +24,8 @@ import CIcon from '@coreui/icons-react'
 
 import ShiftTime from './Shift';
 
+const lodash = require('lodash');
+
 const Params = () => {
   var [shiftCount, setShiftCount] = useState([1]);
   var [pitchTime, setPitchTime] = useState(30);
@@ -36,6 +38,8 @@ const Params = () => {
   var [redMaxColor, setRedMaxColor] = useState(11);
   var [blackMinColor, setBlackMinColor] = useState(12);
   var [blackMaxColor, setBlackMaxColor] = useState(13);
+  var [shiftInitialTime, setShiftInitialTime] = useState(["08:00", "14:00"]);
+  var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState(["11:00", "11:15"]);
   var [fileDownloadType, setFileDownloadType] = useState('');
   var [downloadTime, setDownloadTime] = useState([]);
 
@@ -70,7 +74,7 @@ const Params = () => {
       const dataState = { ...allState };
       delete dataState.apiCalled;
       delete dataState.chartParams;
-
+      console.log(dataState, 'dataState')
       const parameters = {
         pitchTime: pitchTime,
         fileDownloadType: fileDownloadType,
@@ -110,6 +114,7 @@ const Params = () => {
     }
   }
   const getTime = (value) => {
+    console.log(value, 'value')
     //set file download time
     setDownloadTime(value);
   }
@@ -142,26 +147,31 @@ const Params = () => {
     dispatch(getChartData());
     dispatch(intialExcelSheet());
   }, [dispatch]);
-  // useEffect(() => {
-  //   if (chartData) {
-  //     let data = chartData[0].values;
-  //     setPitchTime(data.pitchTime)
-  //     setFileDownloadType(data.fileDownloadType)
-  //     setDownloadTime(data.downloadTime)
-  //     setBlueColor(data.colors.blue.min)
-  //     setGreenMinColor(data.colors.green.min)
-  //     setGreenMaxColor(data.colors.green.max)
-  //     setOrangeMinColor(data.colors.orange.min)
-  //     setOrangeMaxColor(data.colors.orange.max)
-  //     setRedMinColor(data.colors.red.min)
-  //     setRedMaxColor(data.colors.red.max)
-  //     setBlackMinColor(data.colors.black.min)
-  //     setBlackMinColor(data.colors.black.max)
-  //     let shiftsData = data.PERS044;
-  //     console.log(shiftsData)
-  //   }
-  // }, [chartData])
+  useEffect(() => {
 
+    const chartParamsData = lodash.get(chartData, [0, 'values']);
+    console.log(chartParamsData, 'chartData')
+    if (chartParamsData) {
+      setPitchTime(chartParamsData.pitchTime)
+      setFileDownloadType(chartParamsData.fileDownloadType)
+      setDownloadTime(chartParamsData.downloadTime)
+      setBlueColor(chartParamsData.colors.blue.min)
+      setGreenMinColor(chartParamsData.colors.green.min)
+      setGreenMaxColor(chartParamsData.colors.green.max)
+      setOrangeMinColor(chartParamsData.colors.orange.min)
+      setOrangeMaxColor(chartParamsData.colors.orange.max)
+      setRedMinColor(chartParamsData.colors.red.min)
+      setRedMaxColor(chartParamsData.colors.red.max)
+      setBlackMinColor(chartParamsData.colors.black.min)
+      // setBlackMinColor(chartParamsData.colors.black.max)
+      let shiftsData = chartParamsData.PERS044;
+      setShiftInitialTime(shiftsData[1].time);
+      setShiftInitialBreakTime(shiftsData[1].breaks[1].time);
+      console.log(shiftsData[1].breaks[1].time)
+    }
+  }, [chartData]);
+
+  console.log(shiftInitialTime, 'shiftInitialTime')
   return (
     <CCard>
       <CCardHeader>
@@ -194,11 +204,11 @@ const Params = () => {
               </CCol>
               <CCol md="9">
                 <CFormGroup variant="custom-radio" inline>
-                  <CInputRadio onClick={(e) => { setFileDownloadType('automatic'); }} custom id="inline-radio1" name="fileDownloadCheck" value="automatic" />
+                  <CInputRadio checked={fileDownloadType === 'automatic' ? true : false} onClick={(e) => { setFileDownloadType('automatic'); }} custom id="inline-radio1" name="fileDownloadCheck" value="automatic" />
                   <CLabel variant="custom-checkbox" htmlFor="inline-radio1">Automatic</CLabel>
                 </CFormGroup>
                 <CFormGroup variant="custom-radio" inline>
-                  <CInputRadio onClick={(e) => { setFileDownloadType('manual'); }} custom id="inline-radio2" name="fileDownloadCheck" value="manual" />
+                  <CInputRadio checked={fileDownloadType === 'manual' ? true : false} onClick={(e) => { setFileDownloadType('manual'); }} custom id="inline-radio2" name="fileDownloadCheck" value="manual" />
                   <CLabel variant="custom-checkbox" htmlFor="inline-radio2">Manual</CLabel>
                 </CFormGroup>
               </CCol>
@@ -208,7 +218,7 @@ const Params = () => {
                 <CLabel htmlFor="autoFile"></CLabel>
               </CCol>
 
-              {fileDownloadType === 'automatic' ? <CCol md="3"><CInput onChange={(e) => { getTime(e.target.value) }} type="time" id="autoDownloadTime" name="autoDownloadTime" min="09:00" max="18:00"></CInput></CCol>
+              {fileDownloadType === 'automatic' ? <CCol md="3"><CInput value={downloadTime} onChange={(e) => { getTime(e.target.value) }} type="time" id="autoDownloadTime" name="autoDownloadTime" min="09:00" max="18:00"></CInput></CCol>
                 : fileDownloadType === 'manual' ? <CCol md="9">
                   <CFormGroup row>
                     <CCol md="7">
@@ -318,18 +328,18 @@ const Params = () => {
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
                         <CLabel htmlFor="exampleInputName2" className="pr-1"><span><b>negre</b> </span> <span style={{ marginLeft: '28px' }}>{'>'}</span></CLabel>
-                        <CInput type="number" id="blackMinColor" name="blackMinColor" min={0} max={13} step={1} value={blackMinColor}
+                        <CInput type="number" id="blackMinColor" name="blackMinColor" min={0} max={13} step={1} value={parseInt(blackMinColor)}
                           onChange={(e) => {
                             setBlackMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
                           }}
                         />
-                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel>
-                        <CInput type="number" id="blackMaxColor" name="blackMaxColor" min={0} max={13} step={1} value={blackMaxColor}
+                        {/* <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel> */}
+                        {/* <CInput type="number" id="blackMaxColor" name="blackMaxColor" min={0} max={13} step={1} value={blackMaxColor}
                           onChange={(e) => {
                             setBlackMaxColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
                           }}
                         />
-                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ paddingLeft: '5px' }}>{`   pitch`}</CLabel>
+                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ paddingLeft: '5px' }}>{`   pitch`}</CLabel> */}
 
                       </CFormGroup>
                     </CForm>
@@ -350,7 +360,9 @@ const Params = () => {
                       totalShifts={shiftCount}
                       shiftCount={k}
                       setShiftCount={setShiftCount}
-                    // shiftsData={chartData[0].values.PERS044}
+                      shiftInitialTime={shiftInitialTime}
+                      shiftInitialBreakTime={shiftInitialBreakTime}
+                    // shiftsData={chartParamsData.values.PERS044}
                     />
                   )}
                 </CCol>

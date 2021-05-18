@@ -87,7 +87,7 @@ const Users = () => {
       // setTimeLeft(moment());
       if (trackShiftsDone <= 0)
         setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
-      // console.log(trackShiftsDone - 1, 'trackshift')
+      console.log(trackShiftsDone - 1, 'trackshift')
       Swal.fire(
         {
           position: 'top-end',

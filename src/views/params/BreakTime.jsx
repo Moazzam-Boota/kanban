@@ -3,9 +3,16 @@ import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 import { useDispatch } from "react-redux";
 import { breakTime, addBreak, deleteBreak } from "../../redux/actions/actions";
 
-const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount, breaksData }) => {
+const BreakTime = ({
+  shiftKey,
+  breakCount,
+  totalBreaks,
+  setBreakCount,
+  breaksData,
+  shiftInitialBreakTime,
+}) => {
   const dispatch = useDispatch();
-  console.log(breaksData)
+  console.log(breaksData);
   return (
     <CFormGroup>
       <CRow>
@@ -25,7 +32,7 @@ const BreakTime = ({ shiftKey, breakCount, totalBreaks, setBreakCount, breaksDat
                 })
               );
             }}
-            value={["08:00", "14:00"]}
+            value={shiftInitialBreakTime}
           />
         </CCol>
         <CCol xs="1">
