@@ -22,6 +22,11 @@ const lodash = require('lodash');
 export default function excelReducer(state = initialState, action) {
   switch (action.type) {
 
+    case types.START_APP: {
+      console.log(lodash.isEmpty(action.data), state, 'startApp')
+      return !lodash.isEmpty(action.data) ? action.data : { ...state }
+    }
+
     case types.EXCEL: {
 
       return {
@@ -107,6 +112,7 @@ export default function excelReducer(state = initialState, action) {
     }
 
     case types.BREAK_TIME: {
+      console.log(action.data.breakValue, 'action.data.breakValue');
       return {
         ...state,
         [action.data.shiftCount]: {

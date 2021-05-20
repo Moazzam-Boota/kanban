@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { excelSheet, getChartData, intialExcelSheet, pushShiftsData } from "../../redux/actions/actions";
+import { excelSheet, getChartData, intialExcelSheet, pushShiftsData, startApp } from "../../redux/actions/actions";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -38,17 +38,18 @@ const Params = () => {
   var [redMaxColor, setRedMaxColor] = useState(11);
   var [blackMinColor, setBlackMinColor] = useState(12);
   var [blackMaxColor, setBlackMaxColor] = useState(13);
-  var [shiftInitialTime, setShiftInitialTime] = useState(["08:00", "14:00"]);
+  var [shiftInitialTime, setShiftInitialTime] = useState(["09:00", "12:00"]);
   var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState(["11:00", "11:15"]);
   var [fileDownloadType, setFileDownloadType] = useState('');
   var [downloadTime, setDownloadTime] = useState([]);
 
   // get data from redux
   const dispatch = useDispatch()
-  const response = useSelector((state) => state.excelReducer.apiCalled);
-  const chartData = useSelector((state) => state.excelReducer.chartParams);
-  const parentsData = [];
+  // const response = useSelector((state) => state.excelReducer.apiCalled);
+  const dbChartParams = useSelector((state) => state.excelReducer.chartParams);
   const allState = useSelector((state) => state.excelReducer);
+
+  // console.log(response, 'response');
 
   const [selectedFile, setSelectedFile] = useState();
 
@@ -56,6 +57,40 @@ const Params = () => {
     setSelectedFile(event.target.files[0]);
     // setIsSelected(true);
   };
+
+  const getParameters = (lineData) => {
+    return {
+      pitchTime: pitchTime,
+      fileDownloadType: fileDownloadType,
+      downloadTime: downloadTime, // in case of manual, undefined
+      colors: {
+        blue: {
+          min: blueColor
+        },
+        green: {
+          min: greenMinColor,
+          max: greenMaxColor
+        },
+        orange: {
+          min: orangeMinColor,
+          max: orangeMaxColor
+        },
+        red: {
+          min: redMinColor,
+          max: redMaxColor
+        },
+        black: {
+          min: blackMinColor,
+          max: blackMaxColor
+        }
+      },
+      PERS044: {  // assembly Line
+        ...lineData
+      },
+      createdAt: new Date().toISOString()
+    }
+  }
+
 
   const saveParametersData = () => {
     let autoDownloadTime = document.getElementById("autoDownloadTime");
@@ -75,37 +110,8 @@ const Params = () => {
       delete dataState.apiCalled;
       delete dataState.chartParams;
       console.log(dataState, 'dataState')
-      const parameters = {
-        pitchTime: pitchTime,
-        fileDownloadType: fileDownloadType,
-        downloadTime: downloadTime, // in case of manual, undefined
-        colors: {
-          blue: {
-            min: blueColor
-          },
-          green: {
-            min: greenMinColor,
-            max: greenMaxColor
-          },
-          orange: {
-            min: orangeMinColor,
-            max: orangeMaxColor
-          },
-          red: {
-            min: redMinColor,
-            max: redMaxColor
-          },
-          black: {
-            min: blackMinColor,
-            max: blackMaxColor
-          }
-        },
-        PERS044: {  // assembly Line
-          ...dataState
-        },
-        createdAt: new Date().toISOString()
-      };
-      dispatch(pushShiftsData(parameters));
+
+      dispatch(pushShiftsData(getParameters(dataState)));
       Swal.fire(
         'Saved',
         'Shift data is saved!',
@@ -131,26 +137,25 @@ const Params = () => {
     )
   };
 
-  var uniqueAssemblyLines = [];
-  function onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
-  }
-  if (response) {
-    response.forEach(row => {
-      parentsData.push(row.line_VOPLGR_EF);
-    });
-    uniqueAssemblyLines = parentsData.filter(onlyUnique);
-  }
+  // var uniqueAssemblyLines = [];
+  // function onlyUnique(value, index, self) {
+  //   return self.indexOf(value) === index;
+  // }
+  // if (response) {
+  //   response.forEach(row => {
+  //     parentsData.push(row.values[0].line_VOPLGR_EF);
+  //   });
+  //   uniqueAssemblyLines = parentsData.filter(onlyUnique);
+  // }
 
 
   useEffect(() => {
     dispatch(getChartData());
-    dispatch(intialExcelSheet());
-  }, [dispatch]);
+  }, []);
   useEffect(() => {
 
-    const chartParamsData = lodash.get(chartData, [0, 'values']);
-    console.log(chartParamsData, 'chartData')
+    const chartParamsData = lodash.get(dbChartParams, [0, 'values']);
+    console.log(chartParamsData, 'dbChartParams')
     if (chartParamsData) {
       setPitchTime(chartParamsData.pitchTime)
       setFileDownloadType(chartParamsData.fileDownloadType)
@@ -167,11 +172,13 @@ const Params = () => {
       let shiftsData = chartParamsData.PERS044;
       setShiftInitialTime(shiftsData[1].time);
       setShiftInitialBreakTime(shiftsData[1].breaks[1].time);
-      console.log(shiftsData[1].breaks[1].time)
-    }
-  }, [chartData]);
+      console.log(shiftsData[1].breaks[1].time);
 
-  console.log(shiftInitialTime, 'shiftInitialTime')
+
+      dispatch(startApp(shiftsData));
+    }
+  }, [dbChartParams]);
+
   return (
     <CCard>
       <CCardHeader>
@@ -349,25 +356,25 @@ const Params = () => {
             </CFormGroup>
           </CCol>
           <CCol xs="6" sm="6" md="6" lg="6">
-            {uniqueAssemblyLines.map(assemblyLine => {
-              return (
-                <CCol xs="12">
-                  <h3 style={{ textDecoration: 'underline' }}>{assemblyLine}</h3>
-                  <br></br>
-                  {shiftCount.map(k =>
-                    <ShiftTime
-                      assemblyLine={assemblyLine}
-                      totalShifts={shiftCount}
-                      shiftCount={k}
-                      setShiftCount={setShiftCount}
-                      shiftInitialTime={shiftInitialTime}
-                      shiftInitialBreakTime={shiftInitialBreakTime}
-                    // shiftsData={chartParamsData.values.PERS044}
-                    />
-                  )}
-                </CCol>
-              )
-            })}
+            {/* {uniqueAssemblyLines.map(assemblyLine => { */}
+            {/* return ( */}
+            <CCol xs="12">
+              <h3 style={{ textDecoration: 'underline' }}>PERS044</h3>
+              <br></br>
+              {shiftCount.map(k =>
+                <ShiftTime
+                  // assemblyLine={assemblyLine}
+                  totalShifts={shiftCount}
+                  shiftCount={k}
+                  setShiftCount={setShiftCount}
+                  shiftInitialTime={shiftInitialTime}
+                  shiftInitialBreakTime={shiftInitialBreakTime}
+                // shiftsData={chartParamsData.values.PERS044}
+                />
+              )}
+            </CCol>
+            {/* )
+            })} */}
           </CCol>
         </CRow>
 

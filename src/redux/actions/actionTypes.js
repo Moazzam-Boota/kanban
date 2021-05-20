@@ -1,3 +1,4 @@
+export const START_APP = "START_APP";
 export const EXCEL = "EXCEL";
 export const GET_CHART_DATA = "GET_CHART_DATA";
 export const PITCH_TIME = "PITCH_TIME";

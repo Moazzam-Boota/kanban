@@ -32,6 +32,15 @@ const BreakTime = ({
                 })
               );
             }}
+            // onClockClose={(value) => {
+            //   dispatch(
+            //     breakTime({
+            //       shiftCount: shiftKey,
+            //       breakCount: breakCount,
+            //       breakValue: value,
+            //     })
+            //   );
+            // }}
             value={shiftInitialBreakTime}
           />
         </CCol>

@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as types from "./actionTypes";
 
-export function excelSheet(data) { 
+export function excelSheet(data) {
   return function (dispatch) {
     return axios
       .post(process.env.REACT_APP_BASE_URL + "api/excel-upload", data, {})
@@ -18,7 +18,7 @@ export function excelSheet(data) {
       });
   };
 }
-export function pushShiftsData(data) { 
+export function pushShiftsData(data) {
   return function (dispatch) {
     return axios
       .post(process.env.REACT_APP_BASE_URL + "api/push-shifts-data", data, {})
@@ -60,6 +60,17 @@ export function getChartData() {
       });
   };
 }
+
+export function startApp(data) {
+  return function (dispatch) {
+    console.log('data', data)
+    dispatch({
+      type: types.START_APP,
+      data: data,
+    });
+  }
+}
+
 export function pitchTime(data) {
   return function (dispatch) {
 
