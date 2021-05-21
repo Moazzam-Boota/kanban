@@ -388,7 +388,7 @@ io.on("connection", (socket) => {
         } else if (diffInSeconds > 5) {
             countValue = 1;
             startPressButton = moment();
-            socket.emit('singleClick', 1);
+            // socket.emit('singleClick', 1);
         } else {
             startPressButton = moment();
             socket.emit('singleClick', 0);
