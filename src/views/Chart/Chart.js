@@ -103,8 +103,8 @@ const Users = () => {
       cardsData = [];
       activeShiftPeriod = 0;
       renderCards();
-    }, pitchTime * 60 * 1000);
-    // }, 1 * 60 * 1000);
+      // }, pitchTime * 60 * 1000);
+    }, 1 * 60 * 1000);
     // }, 1000);
     // Clear timeout if the component is unmounted
     return () => clearTimeout(timer);
@@ -434,6 +434,7 @@ const Users = () => {
 
   renderCards();
   cardsData.splice(0, totalPitchesLength - 12);
+  // console.log(totalPitchesLength, cardsData.length, 'cardsData')
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   // console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
