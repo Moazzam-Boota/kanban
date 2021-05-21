@@ -367,13 +367,17 @@ io.on("connection", (socket) => {
 
     var lightvalue = 0; // get from db
     var countValue = 0;
+
     pushButton.watch(function (err, value) { //Watch for hardware interrupts on pushButton
         if (err) { //if an error
             console.error('There was an error', err); //output error message to console
             return;
         }
         // lightvalue = value;
-
+        var startPressButton = '';
+        var endPressButton = moment();
+        var diffInSeconds = moment.duration(endPressButton.diff(startPressButton)).asSeconds();
+        console.log(diffInSeconds, 'diffInSeconds')
         countValue = countValue + 1;
 
         if (countValue === 2) {
@@ -382,6 +386,7 @@ io.on("connection", (socket) => {
             // socket.emit('lightred', lightvalue); //send button status to client
             countValue = 0;
         } else {
+            startPressButton = moment();
             socket.emit('singleClick', 0);
         }
     });
