@@ -52,7 +52,7 @@ const Users = () => {
   // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
 
   const boxesPerPitch = pitchTime / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
-  console.log(boxesPerPitch, 'boxesPerPitch');
+  // console.log(boxesPerPitch, 'boxesPerPitch');
 
   // TODO:: sum of all orders, quantity
   // TODO:: sum of all orders, quantity
@@ -89,7 +89,7 @@ const Users = () => {
       if (trackShiftsDone <= 0)
         setTimeLeft(moment());
       // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
-      console.log(trackShiftsDone - 1, 'trackshift')
+      // console.log(trackShiftsDone - 1, 'trackshift')
       Swal.fire(
         {
           position: 'top-end',
@@ -310,7 +310,7 @@ const Users = () => {
 
 
 
-    // console.log('updatedShiftData', limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
+    console.log('updatedShiftData', limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
     if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
     } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) {
@@ -371,7 +371,7 @@ const Users = () => {
     else if (currentPointer > parseInt(blackColorChartParams.min) && parseInt(blackColorChartParams.min) !== 0) return 'black';
   }
 
-  console.log(totalPitchesLength, 'totalPitchesLength')
+  // console.log(totalPitchesLength, 'totalPitchesLength')
   var currentCardBox = {};
   var cardsData = [];
   function renderCards() {
@@ -380,25 +380,25 @@ const Users = () => {
 
       var beforeTime = moment(startShiftTime.format('HH:mm'), format);
       var afterTime = moment(startShiftTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
-      console.log(currentTime, afterTime, beforeTime, 'hello')
+      // console.log(currentTime, afterTime, beforeTime, 'hello')
       if (currentTime.isBetween(afterTime, beforeTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
         headerWidgetColor = filterColor(i);
-        console.log(currentTime, i, activeShiftPeriod, i - trackShiftsDone, 'here is active')
+        // console.log(currentTime, i, activeShiftPeriod, i - trackShiftsDone, 'here is active')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
-      console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
+      // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
       // console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
-      console.log(i, activeShiftPeriod, 'here is 2')
+      // console.log(i, activeShiftPeriod, 'here is 2')
       cardsData.push(<CWidgetBrand
         style={{ marginLeft: '5px', width: '150px' }}
         color={color}
         shift={i <= activeShiftPeriod ? dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0) : undefined}
         cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
           currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
-          console.log(product, 'singleProduct')
+          // console.log(product, 'singleProduct')
           return (
             <span className="content-center" style={{
               backgroundColor: product.color,
