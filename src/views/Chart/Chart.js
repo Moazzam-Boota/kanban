@@ -139,6 +139,25 @@ const Users = () => {
 
     // console.log(parentsData, 'parentsData', dataGroupByProduct)
 
+
+    socket.on('singleClick', function (data) { //get button status from client
+      // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
+      // socket.emit("singleClick", data); //send push button status to back to server
+      // setSocketResponse(true);
+      // setDonePieces(data);
+
+      console.log(data, 'data')
+      Swal.fire(
+        {
+          position: 'top-end',
+          icon: 'success',
+          title: 'Single Click, Press Button Again!',
+          showConfirmButton: false,
+          timer: 1500
+        }
+      )
+    });
+
     socket.on('lightgreen', function (data) { //get button status from client
       // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
       socket.emit("lightgreen", data); //send push button status to back to server

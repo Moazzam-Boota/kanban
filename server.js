@@ -381,6 +381,8 @@ io.on("connection", (socket) => {
             socket.emit('lightgreen', lightvalue); //send button status to client
             // socket.emit('lightred', lightvalue); //send button status to client
             countValue = 0;
+        } else {
+            socket.emit('singleClick', 0);
         }
     });
     socket.on('lightgreen', function (data) { //get light switch status from client
