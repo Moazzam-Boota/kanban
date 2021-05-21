@@ -378,7 +378,7 @@ io.on("connection", (socket) => {
         var endPressButton = moment();
         var diffInSeconds = moment.duration(endPressButton.diff(startPressButton)).asSeconds();
         countValue = countValue + 1;
-        console.log(countValue === 2 ? diffInSeconds : '', 'diffInSeconds')
+        console.log(countValue === 2 ? diffInSeconds : '', countValue, 'diffInSeconds')
 
         if (countValue === 2 && diffInSeconds < 5) {
             lightvalue = lightvalue + 1;
