@@ -147,8 +147,7 @@ const Users = () => {
       // setDonePieces(data);
 
       console.log(data, 'data')
-      // const message = data === 0 ? '' : ' in 5 Seconds';
-      const message = ' in 5 Seconds';
+      const message = data === 0 ? '' : ' in 5 Seconds';
       Swal.fire(
         {
           position: 'top-end',
