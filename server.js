@@ -380,7 +380,7 @@ io.on("connection", (socket) => {
         countValue = countValue + 1;
         console.log(countValue === 2 ? diffInSeconds : '', 'diffInSeconds')
 
-        if (countValue === 2) {
+        if (countValue === 2 && diffInSeconds < 5) {
             lightvalue = lightvalue + 1;
             socket.emit('lightgreen', lightvalue); //send button status to client
             // socket.emit('lightred', lightvalue); //send button status to client

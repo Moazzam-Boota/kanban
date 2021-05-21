@@ -151,7 +151,7 @@ const Users = () => {
         {
           position: 'top-end',
           icon: 'success',
-          title: 'Single Click, Press Button Again!',
+          title: 'Single Click, Press Button Again in 5 Seconds!',
           showConfirmButton: false,
           timer: 1500
         }
