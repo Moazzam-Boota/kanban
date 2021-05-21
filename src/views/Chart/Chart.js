@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { intialExcelSheet, getChartData } from "../../redux/actions/actions";
@@ -82,10 +82,20 @@ const Users = () => {
   // const [currentTime, setTimeLeft] = useState(moment('16:40', format));
   const [currentTime, setTimeLeft] = useState(moment());
 
-  // console.log(moment().set({ hour: currentHour, minute: currentMinute, second: 0, millisecond: 0 }).add(30, 'minutes'), 'time-current')
+  function useFirstRender() {
+    const firstRender = useRef(true);
 
+    useEffect(() => {
+      firstRender.current = false;
+    }, []);
+
+    return firstRender.current;
+  }
+
+  // console.log(moment().set({ hour: currentHour, minute: currentMinute, second: 0, millisecond: 0 }).add(30, 'minutes'), 'time-current')
   useEffect(() => {
-    if (donePieces > 0) {
+    if (!useFirstRender) {
+
       const timer = setTimeout(() => {
         if (trackShiftsDone <= 0)
           setTimeLeft(moment());
@@ -110,6 +120,7 @@ const Users = () => {
       // Clear timeout if the component is unmounted
       return () => clearTimeout(timer);
     }
+
   });
 
 
