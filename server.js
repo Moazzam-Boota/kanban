@@ -385,6 +385,10 @@ io.on("connection", (socket) => {
             socket.emit('lightgreen', lightvalue); //send button status to client
             // socket.emit('lightred', lightvalue); //send button status to client
             countValue = 0;
+        } else if (diffInSeconds > 5) {
+            countValue = 0;
+            startPressButton = moment();
+            socket.emit('singleClick', 1);
         } else {
             startPressButton = moment();
             socket.emit('singleClick', 0);

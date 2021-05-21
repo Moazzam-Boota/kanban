@@ -147,11 +147,12 @@ const Users = () => {
       // setDonePieces(data);
 
       console.log(data, 'data')
+      const message = data === 0 ? '' : ' in 5 Seconds';
       Swal.fire(
         {
           position: 'top-end',
           icon: 'success',
-          title: 'Single Click, Press Button Again in 5 Seconds!',
+          title: 'Single Click, Press Button Again' + message,
           showConfirmButton: false,
           timer: 1500
         }
