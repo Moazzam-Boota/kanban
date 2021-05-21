@@ -52,6 +52,8 @@ const Users = () => {
   // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
 
   const boxesPerPitch = pitchTime / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
+  console.log(boxesPerPitch, 'boxesPerPitch');
+
   // TODO:: sum of all orders, quantity
   // TODO:: sum of all orders, quantity
   // 
@@ -75,18 +77,18 @@ const Users = () => {
   var headerWidgetColor = '';
 
   var format = 'HH:mm'
-  var currentHour = 16;
-  var currentMinute = 40;
-  const [currentTime, setTimeLeft] = useState(moment('16:40', format));
-  // const [currentTime, setTimeLeft] = useState(moment());
+  // var currentHour = 16;
+  // var currentMinute = 40;
+  // const [currentTime, setTimeLeft] = useState(moment('16:40', format));
+  const [currentTime, setTimeLeft] = useState(moment());
 
-  console.log(moment().set({ hour: currentHour, minute: currentMinute, second: 0, millisecond: 0 }).add(30, 'minutes'), 'time-current')
+  // console.log(moment().set({ hour: currentHour, minute: currentMinute, second: 0, millisecond: 0 }).add(30, 'minutes'), 'time-current')
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // setTimeLeft(moment());
       if (trackShiftsDone <= 0)
-        setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
+        setTimeLeft(moment());
+      // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
       console.log(trackShiftsDone - 1, 'trackshift')
       Swal.fire(
         {
@@ -101,8 +103,8 @@ const Users = () => {
       cardsData = [];
       activeShiftPeriod = 0;
       renderCards();
-      // }, pitchTime * 60 * 1000);
-    }, 1 * 60 * 1000);
+    }, pitchTime * 60 * 1000);
+    // }, 1 * 60 * 1000);
     // }, 1000);
     // Clear timeout if the component is unmounted
     return () => clearTimeout(timer);
@@ -361,15 +363,15 @@ const Users = () => {
   // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
 
   function filterColor(currentPointer) {
-    console.log('currentPointer', currentPointer)
-    if (currentPointer <= parseInt(blueColorChartParams.min)) return 'blue';
-    else if (currentPointer >= parseInt(greenColorChartParams.min) && currentPointer <= parseInt(greenColorChartParams.max)) return 'green';
-    else if (currentPointer >= parseInt(orangeColorChartParams.min) && currentPointer <= parseInt(orangeColorChartParams.max)) return 'orange';
-    else if (currentPointer >= parseInt(redColorChartParams.min) && currentPointer <= parseInt(redColorChartParams.max)) return 'red';
+    if (currentPointer <= parseInt(blueColorChartParams.min) && parseInt(blueColorChartParams.min) !== 0) return 'blue';
+    else if (currentPointer >= parseInt(greenColorChartParams.min) && currentPointer <= parseInt(greenColorChartParams.max) && parseInt(greenColorChartParams.min) !== 0 && parseInt(greenColorChartParams.max) !== 0) return 'green';
+    else if (currentPointer >= parseInt(orangeColorChartParams.min) && currentPointer <= parseInt(orangeColorChartParams.max) && parseInt(orangeColorChartParams.min) !== 0 && parseInt(orangeColorChartParams.max) !== 0) return 'orange';
+    else if (currentPointer >= parseInt(redColorChartParams.min) && currentPointer <= parseInt(redColorChartParams.max) && parseInt(redColorChartParams.min) !== 0 && parseInt(redColorChartParams.max) !== 0) return 'red';
     // else if (currentPointer >= parseInt(blackColorChartParams.min) && currentPointer <= parseInt(blackColorChartParams.max)) return 'black';
-    else if (currentPointer >= parseInt(blackColorChartParams.min)) return 'black';
+    else if (currentPointer > parseInt(blackColorChartParams.min) && parseInt(blackColorChartParams.min) !== 0) return 'black';
   }
 
+  console.log(totalPitchesLength, 'totalPitchesLength')
   var currentCardBox = {};
   var cardsData = [];
   function renderCards() {
@@ -378,7 +380,7 @@ const Users = () => {
 
       var beforeTime = moment(startShiftTime.format('HH:mm'), format);
       var afterTime = moment(startShiftTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
-      // console.log(currentTime, afterTime, beforeTime, 'hello')
+      console.log(currentTime, afterTime, beforeTime, 'hello')
       if (currentTime.isBetween(afterTime, beforeTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
