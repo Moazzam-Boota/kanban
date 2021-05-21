@@ -312,7 +312,7 @@ const Users = () => {
 
 
 
-    console.log('updatedShiftData', allShiftsData, limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
+    console.log('updatedShiftData', limitShift, allShiftsData, limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
     if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) {
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
     } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) {
