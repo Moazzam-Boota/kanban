@@ -301,11 +301,13 @@ const Users = () => {
 
   useEffect(() => {
     // console.log(donePieces, 'donePieces')
-    const limitShift = 14;
-    const remainderDonePieces = donePieces % limitShift === 0 ? 14 : donePieces % limitShift;
-    const allShiftsData = [...dataGroupByProduct];
     var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
     var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
+
+    const limitShift = currentShiftOriginalCount;
+    const remainderDonePieces = donePieces % limitShift === 0 ? 14 : donePieces % limitShift;
+    const allShiftsData = [...dataGroupByProduct];
+
     var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
 
 
