@@ -306,27 +306,27 @@ const Users = () => {
     var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
 
     const limitShift = currentShiftOriginalCount;
-    const remainderDonePieces = donePieces % limitShift === 0 ? 14 : donePieces % limitShift;
+    const remainderDonePieces = donePieces % limitShift === 0 ? limitShift : donePieces % limitShift;
 
     var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
 
 
 
     console.log('updatedShiftData', limitShift, allShiftsData, limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
-    if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) {
+    if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) { //subtract on every button press
       allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
-    } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) {
+    } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
       setLocalDonePieces(allShiftsDataRemainder);
-      if (remainderDonePieces === 14) {
+      if (remainderDonePieces === limitShift) {
         setLocalDonePieces(0);
         console.log(trackShiftsDone, 'trackShiftsDoneFinal')
         setTrackShiftsDone(trackShiftsDone + 1);
       }
 
-      if (allShiftsData[0].length > 1) {
+      if (allShiftsData[0].length > 1) { //remove product
         allShiftsData[0].pop();
       }
-      else {
+      else { //remove shift
         allShiftsData.splice(0, 1);
       }
     }
