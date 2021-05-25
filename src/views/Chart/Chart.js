@@ -84,36 +84,37 @@ const Users = () => {
   // console.log(moment().set({ hour: currentHour, minute: currentMinute, second: 0, millisecond: 0 }).add(30, 'minutes'), 'time-current')
   const firstUpdate = useRef(true);
   useEffect(() => {
-    console.log(firstUpdate, 'firstUpdate')
-    // if (firstUpdate.current) {
-    //   firstUpdate.current = false;
-    //   return;
-    // }
+    console.log(firstUpdate, pitchTime, 'firstUpdate')
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
 
-
-    const timer = setTimeout(() => {
-      if (trackShiftsDone <= 0)
-        setTimeLeft(moment());
-      // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
-      console.log(trackShiftsDone - 1, 'trackshift')
-      Swal.fire(
-        {
-          position: 'top-end',
-          icon: 'warning',
-          title: 'Shift Updated!',
-          showConfirmButton: false,
-          timer: 1500
-        }
-      )
-      setTrackShiftsDone(trackShiftsDone - 1);
-      cardsData = [];
-      activeShiftPeriod = 0;
-      renderCards();
-    }, pitchTime * 60 * 1000);
-    // }, 1 * 60 * 1000);
-    // }, 1000);
-    // Clear timeout if the component is unmounted
-    return () => clearTimeout(timer);
+    if (pitchTime !== 0) {
+      const timer = setTimeout(() => {
+        if (trackShiftsDone <= 0)
+          setTimeLeft(moment());
+        // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
+        console.log(trackShiftsDone - 1, 'trackshift')
+        Swal.fire(
+          {
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Shift Updated!',
+            showConfirmButton: false,
+            timer: 1500
+          }
+        )
+        setTrackShiftsDone(trackShiftsDone - 1);
+        cardsData = [];
+        activeShiftPeriod = 0;
+        renderCards();
+      }, pitchTime * 60 * 1000);
+      // }, 1 * 60 * 1000);
+      // }, 1000);
+      // Clear timeout if the component is unmounted
+      return () => clearTimeout(timer);
+    }
   });
   var startShiftTime = moment(timeRange[1], format);
   var initialShiftTime = moment(timeRange[0], format);
