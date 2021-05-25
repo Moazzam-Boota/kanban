@@ -31,14 +31,14 @@ const Users = () => {
   const colorChartParams = lodash.get(chartParams, 'colors', {});
   const lineChartParams = lodash.get(chartParams, 'PERS044', {});
   if (excelFileBackendResponse) {
-    console.log(excelFileBackendResponse, 'excelFileBackendResponse');
+    // console.log(excelFileBackendResponse, 'excelFileBackendResponse');
     excelFileBackendResponse.forEach(row => {
       row.values.forEach(values => {
         excelFileData.push(values);
       });
     });
   }
-  console.log(lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT'), 'excelFileData')
+  // console.log(lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT'), 'excelFileData')
   var format = 'HH:mm';
   const pitchTime = lodash.get(chartParams, 'pitchTime', 0); //minutes
   // *************************** One Shift ***************************
@@ -68,11 +68,11 @@ const Users = () => {
 
   const checkCurrentDayShiftSelected = shiftDaysRange.includes(moment().format('ddd'));
   // console.log(chartParams, 'chartParams', Math.round((shiftDuration / 60) * 100) / 100, sumOfBreaks, shiftDaysRange);
-  console.log('Day', shiftDaysRange, checkCurrentDayShiftSelected, moment().format('ddd'));
+  // console.log('Day', shiftDaysRange, checkCurrentDayShiftSelected, moment().format('ddd'));
 
   const quantityPerBox = 3;   // .per_box_qty_UNITCAIXA_IT
   // const quantityPerBox = lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT');   // .per_box_qty_UNITCAIXA_IT
-  console.log(quantityPerBox, 'quantityPerBox');
+  // console.log(quantityPerBox, 'quantityPerBox');
   const dailyHours = Math.round((shiftDuration / 60) * 100) / 100; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
   const totalQuantity = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
   var totalQuantityDynamic = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
@@ -85,7 +85,7 @@ const Users = () => {
 
   // const boxesPerPitch = pitchTime / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
   const boxesPerPitch = pitchTime / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
-  console.log(boxesPerPitch, 'boxesPerPitch');
+  // console.log(boxesPerPitch, 'boxesPerPitch');
 
   // TODO:: sum of all orders, quantity
   // TODO:: sum of all orders, quantity
@@ -114,7 +114,7 @@ const Users = () => {
   // console.log(moment().set({ hour: currentHour, minute: currentMinute, second: 0, millisecond: 0 }).add(30, 'minutes'), 'time-current')
   const firstUpdate = useRef(true);
   useEffect(() => {
-    console.log(firstUpdate, pitchTime, 'firstUpdate')
+    // console.log(firstUpdate, pitchTime, 'firstUpdate')
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
@@ -125,7 +125,7 @@ const Users = () => {
         if (trackShiftsDone <= 0)
           setTimeLeft(moment());
         // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
-        console.log(trackShiftsDone - 1, 'trackshift')
+        // console.log(trackShiftsDone - 1, 'trackshift')
         Swal.fire(
           {
             position: 'top-end',
@@ -160,13 +160,13 @@ const Users = () => {
     var breakEndTime = moment(value.time[1], format);
     var beforeTime = moment(breakEndTime.format('HH:mm'), format);
     var afterTime = moment(breakStartTime.format('HH:mm'), format);
-    console.log(afterTime, beforeTime, 'hello')
+    // console.log(afterTime, beforeTime, 'hello')
     if (moment().isBetween(afterTime, beforeTime)) {
       inBetweenBreaks = true;
       // console.log('inBetweenBreaks ')
     }
   }
-  console.log(inBetweenBreaks, 'inBetweenBreaks')
+  // console.log(inBetweenBreaks, 'inBetweenBreaks')
   var activeShiftPeriod = 0;
 
   useEffect(() => {
@@ -192,7 +192,7 @@ const Users = () => {
       // setSocketResponse(true);
       // setDonePieces(data);
 
-      console.log(data, 'data')
+      // console.log(data, 'data')
       const message = data === 0 ? '' : ' in 5 Seconds';
       Swal.fire(
         {
@@ -293,7 +293,7 @@ const Users = () => {
 
       // const dataGroupOriginal = lodash.orderBy(excelFileData, ['row_num'], ['asc']).filter(k => k.quantity_VHOROQ_AH !== null);
 
-      console.log(dataGroup, 'dataGroup');
+      // console.log(dataGroup, 'dataGroup');
 
       const dataGroupLength = dataGroup.length;
       // const productCount = Math.round(boxesPerPitch / dataGroupLength * 10) / 10;
@@ -318,7 +318,7 @@ const Users = () => {
         // if sum - boxesPerPitch !<= 0, then subtract, else move to next order
         // console.log(dataGroup, 'dataGroup2', i, currentElement, dataGroup[currentElement])
 
-        console.log(currentElement, 'currentElement', Math.round(boxesPerPitch))
+        // console.log(currentElement, 'currentElement', Math.round(boxesPerPitch))
 
         roundOffSlice += Math.round(boxesPerPitch) - boxesPerPitch;
 
@@ -357,7 +357,7 @@ const Users = () => {
           const singleProductColor = lodash.get(dataGroupColors.filter(q => q.product === lodash.get(dataGroup[currentElement].data[j], 'part_num_VHPRNO_C')), [0, 'color']);
 
           // console.log(multipleRoundOff >= 1, productCountDynamic, productCountDynamic, 'singleProductColor')
-          console.log(productCountDynamic, boxesPerPitch / numberOfProducts, multipleRoundOff, dynamicProductRoundOff, 'singleProductColor')
+          // console.log(productCountDynamic, boxesPerPitch / numberOfProducts, multipleRoundOff, dynamicProductRoundOff, 'singleProductColor')
 
           // const productCountCalculation = dynamicProductRoundOff >= 1 ? Math.round(dynamicProductRoundOff) : 0;
           recordSet.push({
