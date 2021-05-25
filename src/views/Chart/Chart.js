@@ -63,7 +63,8 @@ const Users = () => {
   var shiftStartTime = moment(shiftTimeRange[0], format);
   var shiftEndTime = moment(shiftTimeRange[1], format);
 
-  var shiftDuration = moment.duration(shiftEndTime.diff(shiftStartTime)).asMinutes() - sumOfBreaks;
+  // var shiftDuration = moment.duration(shiftEndTime.diff(shiftStartTime)).asMinutes() - sumOfBreaks;
+  var shiftDuration = moment.duration(shiftEndTime.diff(shiftStartTime)).asMinutes();
   const totalPitchesLength = Math.round(shiftDuration / pitchTime);
 
   const checkCurrentDayShiftSelected = shiftDaysRange.includes(moment().format('ddd'));
