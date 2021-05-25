@@ -255,7 +255,7 @@ const Users = () => {
       // console.log(dataGroup, 'dataGroup');
 
       const dataGroupLength = dataGroup.length;
-      const productCount = Math.round(boxesPerPitch / dataGroupLength * 10) / 10;
+      // const productCount = Math.round(boxesPerPitch / dataGroupLength * 10) / 10;
       var roundOffSlice = 0;
       // for (var i = blackColorChartParams.max; i >= 1; i--) {
       // for (var i = totalPitchesLength; i >= 1; i--) {
@@ -263,6 +263,7 @@ const Users = () => {
 
       // }
       var currentElement = 0;
+      var dynamicProductRoundOff = 0;
       // for (var i = blackColorChartParams.max; i >= 1; i--) {
       for (var i = totalPitchesLength; i >= 1; i--) {
 
@@ -294,13 +295,30 @@ const Users = () => {
         // const numberOfProducts = 4; //number of Products in current order
 
         for (var j = 0; j < numberOfProducts; j++) {
-          multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
-          // console.log(j, dataGroup[currentElement].data[j], 'dataGroupLoop')
           var productCountDynamic = Math.round(Math.round(boxesPerPitch) / numberOfProducts);
+
+          if (productCountDynamic === 0) {
+            productCountDynamic = Math.round(boxesPerPitch / numberOfProducts * 2) / 2;
+            multipleRoundOff += Math.ceil(boxesPerPitch / numberOfProducts) - boxesPerPitch / numberOfProducts;
+            dynamicProductRoundOff += Math.ceil(boxesPerPitch / numberOfProducts) - boxesPerPitch / numberOfProducts;
+            if (dynamicProductRoundOff >= 1) {
+              productCountDynamic = Math.round(dynamicProductRoundOff);
+              dynamicProductRoundOff = 0;
+            } else {
+              productCountDynamic = 0;
+            }
+            console.log('Hello world');
+          } else {
+            multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
+          }
+          // console.log(j, dataGroup[currentElement].data[j], 'dataGroupLoop')
           // console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
           const singleProductColor = lodash.get(dataGroupColors.filter(q => q.product === lodash.get(dataGroup[currentElement].data[j], 'part_num_VHPRNO_C')), [0, 'color']);
 
           // console.log(multipleRoundOff >= 1, productCountDynamic, productCountDynamic, 'singleProductColor')
+          console.log(productCountDynamic, boxesPerPitch / numberOfProducts, multipleRoundOff, dynamicProductRoundOff, 'singleProductColor')
+
+          // const productCountCalculation = dynamicProductRoundOff >= 1 ? Math.round(dynamicProductRoundOff) : 0;
           recordSet.push({
             ...dataGroup[currentElement],
             color: singleProductColor ? singleProductColor : colorsPalette[j + 1],
