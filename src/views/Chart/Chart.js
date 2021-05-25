@@ -527,7 +527,6 @@ const Users = () => {
   if (inBetweenBreaks) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>System in Break, Don't push the button.</h1></div>)
   // if (!checkCurrentDayShiftSelected) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>No Shift for Today.</h1></div>)
   return (
-    <div>
       <CFormGroup>
         <CRow>
           <CCol xs="2">
@@ -557,22 +556,21 @@ const Users = () => {
 
           {/* </CCol> */}
         </CRow>
+        <CRow>
+          <CCol xs={{ offset: 9, size: 3 }} >
+            <CWidgetSimple style={{ backgroundColor: lodash.get(currentCardBox, 'color'), color: 'white' }} className='widgetBackground' header="Kanban en curs" text={
+              <div style={{ textAlign: 'left' }}>
+                <p style={kanbanBoxWidgetStyle}>Ordre de fabricació: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.order_num_VHMFNO_D')}</span> </p>
+                <p style={kanbanBoxWidgetStyle}>Referencia de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.part_num_VHPRNO_C')}</span> </p>
+                <p style={kanbanBoxWidgetStyle}>Descripció de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.description_VHTXT1_W')}</span> </p>
+                <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(currentCardBox, 'total')}</span> </p>
+                <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(currentCardBox, 'total') - donePieces}</span> </p>
+                <p style={kanbanBoxWidgetStyle}>Quantitat per caixa: <span style={metricStyle}>{parseFloat(lodash.get(currentCardBox, 'productsPerBox')).toFixed(2)}</span> </p>
+              </div>
+            } />
+          </CCol>
+        </CRow>
       </CFormGroup>
-      <CRow>
-        <CCol xs={{ offset: 9, size: 3 }} >
-          <CWidgetSimple style={{ backgroundColor: lodash.get(currentCardBox, 'color'), color: 'white' }} className='widgetBackground' header="Kanban en curs" text={
-            <div style={{ textAlign: 'left' }}>
-              <p style={kanbanBoxWidgetStyle}>Ordre de fabricació: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.order_num_VHMFNO_D')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Referencia de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.part_num_VHPRNO_C')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Descripció de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.description_VHTXT1_W')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(currentCardBox, 'total')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(currentCardBox, 'total') - donePieces}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat per caixa: <span style={metricStyle}>{parseFloat(lodash.get(currentCardBox, 'productsPerBox')).toFixed(2)}</span> </p>
-            </div>
-          } />
-        </CCol>
-      </CRow>
-    </div>
   )
 }
 
