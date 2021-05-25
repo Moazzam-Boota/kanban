@@ -125,7 +125,7 @@ const Users = () => {
   // duration subtract breaks
 
   var activeShiftPeriod = 0;
-  const totalPitchesLength = duration.asMinutes() / pitchTime;
+  const totalPitchesLength = Math.round(duration.asMinutes() / pitchTime);
 
 
   useEffect(() => {
@@ -479,7 +479,7 @@ const Users = () => {
 
   renderCards();
   cardsData.splice(0, totalPitchesLength - 12);
-  // console.log(totalPitchesLength, cardsData.length, 'cardsData')
+  console.log(totalPitchesLength, cardsData.length, 'cardsData')
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   // console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
