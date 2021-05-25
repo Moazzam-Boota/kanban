@@ -23,7 +23,7 @@ export default function excelReducer(state = initialState, action) {
   switch (action.type) {
 
     case types.START_APP: {
-      console.log(lodash.isEmpty(action.data), state, 'startApp')
+      console.log(lodash.isEmpty(action.data), action.data, state, 'startApp')
       return !lodash.isEmpty(action.data) ? action.data : { ...state }
     }
 
@@ -138,6 +138,17 @@ export default function excelReducer(state = initialState, action) {
           ...state[action.data.shiftCount],
           days: action.data.shiftDays
         }
+      };
+    }
+
+    case types.GET_SHIFT_DATA: {
+      console.log(state[action.data])
+      return {
+        // ...state,
+        // [action.data.shiftCount]: {
+        shiftData: state[action.data]
+        // days: action.data.shiftDays
+        // }
       };
     }
 

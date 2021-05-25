@@ -98,6 +98,16 @@ export function shiftDays(data) {
     });
   }
 }
+
+export function getShiftData(data) {
+  return function (dispatch) {
+
+    dispatch({
+      type: types.GET_SHIFT_DATA,
+      data: data,
+    });
+  }
+}
 export function shiftTime(data) {
   return function (dispatch) {
 

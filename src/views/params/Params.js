@@ -39,16 +39,20 @@ const Params = () => {
   var [blackMinColor, setBlackMinColor] = useState(12);
   var [blackMaxColor, setBlackMaxColor] = useState(13);
   var [shiftInitialTime, setShiftInitialTime] = useState(["09:00", "12:00"]);
+  var [shiftDaysValues, setshiftDaysValues] = useState([]);
   var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState(["11:00", "11:15"]);
   var [fileDownloadType, setFileDownloadType] = useState('');
   var [downloadTime, setDownloadTime] = useState([]);
 
   // get data from redux
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getChartData());
+  }, []);
   // const response = useSelector((state) => state.excelReducer.apiCalled);
   const dbChartParams = useSelector((state) => state.excelReducer.chartParams);
   const allState = useSelector((state) => state.excelReducer);
-
+  console.log(dbChartParams, 'dbChartParams')
   // console.log(response, 'response');
 
   const [selectedFile, setSelectedFile] = useState();
@@ -149,9 +153,7 @@ const Params = () => {
   // }
 
 
-  useEffect(() => {
-    dispatch(getChartData());
-  }, []);
+
   useEffect(() => {
 
     const chartParamsData = lodash.get(dbChartParams, [0, 'values']);
@@ -172,7 +174,8 @@ const Params = () => {
       let shiftsData = chartParamsData.PERS044;
       setShiftInitialTime(shiftsData[1].time);
       setShiftInitialBreakTime(shiftsData[1].breaks[1].time);
-      console.log(shiftsData[1].breaks[1].time);
+      setshiftDaysValues(shiftsData[1].days);
+      console.log('shift', shiftsData[1].days);
 
 
       dispatch(startApp(shiftsData));
@@ -368,6 +371,7 @@ const Params = () => {
                   shiftCount={k}
                   setShiftCount={setShiftCount}
                   shiftInitialTime={shiftInitialTime}
+                  shiftDaysValues={shiftDaysValues}
                   shiftInitialBreakTime={shiftInitialBreakTime}
                 // shiftsData={chartParamsData.values.PERS044}
                 />

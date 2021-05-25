@@ -1,28 +1,39 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { CFormGroup, CButton, CCol, CRow } from "@coreui/react";
 import BreakTime from "./BreakTime";
 import Select from "react-select";
-import { SortableContainer } from "react-sortable-hoc";
+// import { SortableContainer } from "react-sortable-hoc";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 import {
   shiftDays,
   shiftTime,
   addShift,
   deleteShift,
+  getShiftData,
 } from "../../redux/actions/actions";
 
-const SortableSelect = SortableContainer(Select);
+// const SortableSelect = SortableContainer(Select);
 const ShiftTime = ({
   shiftCount,
   totalShifts,
   setShiftCount,
   shiftsData,
   shiftInitialTime,
+  shiftDaysValues,
   shiftInitialBreakTime,
 }) => {
-  console.log(shiftsData);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getShiftData(shiftCount));
+  }, []);
+
+  const singleShiftData = useSelector(
+    (state) => state.excelReducer.chartParams
+  );
+
+  console.log(singleShiftData, shiftDaysValues, "singleShiftData");
   // shift breaks, handle here
   var [breakCount, setBreakCount] = useState([1]);
 
@@ -33,24 +44,28 @@ const ShiftTime = ({
       <br />
       <CRow>
         <CCol xs="3">
-          <SortableSelect
+          <Select
             key={`weekDays_${shiftCount}`}
             axis="xy"
             distance={4}
             hideSelectedOptions={false}
             isMulti
+            value={shiftDaysValues.map((k) => {
+              return { value: k, label: k };
+            })}
             // required
             options={[
               { value: "Mon", label: "Mon" },
               { value: "Tue", label: "Tue" },
               { value: "Wed", label: "Wed" },
-              { value: "Thur", label: "Thur" },
+              { value: "Thu", label: "Thu" },
               { value: "Fri", label: "Fri" },
               { value: "Sat", label: "Sat" },
               { value: "Sun", label: "Sun" },
             ]}
             closeMenuOnSelect={false}
             onChange={(selectedOptions) => {
+              console.log(selectedOptions, "selectedOptions");
               // set week_days in redux for a assemblyLine
               dispatch(
                 shiftDays({

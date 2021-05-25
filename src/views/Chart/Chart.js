@@ -24,26 +24,58 @@ const Users = () => {
   const queryPage = useLocation().search.match(/page=([0-9]+)/, '')
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
   const [page, setPage] = useState(currentPage)
-  const successforgotmsg = useSelector((state) => state.excelReducer.apiCalled);
+  const excelFileBackendResponse = useSelector((state) => state.excelReducer.apiCalled);
   const dbChartParams = useSelector((state) => state.excelReducer.chartParams);
   const chartParams = lodash.get(lodash.last(dbChartParams), 'values');
-  const parentsData = [];
+  const excelFileData = [];
   const colorChartParams = lodash.get(chartParams, 'colors', {});
   const lineChartParams = lodash.get(chartParams, 'PERS044', {});
-  if (successforgotmsg) {
-    // console.log(successforgotmsg);
-    successforgotmsg.forEach(row => {
+  if (excelFileBackendResponse) {
+    console.log(excelFileBackendResponse, 'excelFileBackendResponse');
+    excelFileBackendResponse.forEach(row => {
       row.values.forEach(values => {
-        parentsData.push(values);
+        excelFileData.push(values);
       });
     });
   }
+  console.log(lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT'), 'excelFileData')
+  var format = 'HH:mm';
+  const pitchTime = lodash.get(chartParams, 'pitchTime', 0); //minutes
+  // *************************** One Shift ***************************
+  // 08:00 to 14:00
+  const shiftTimeRange = lodash.get(lineChartParams, '[1].time', []);
+  const shiftDaysRange = lodash.get(lineChartParams, '[1].days', []);
+  const shiftTimeBreaks = lodash.get(lineChartParams, '[1].breaks', []);
+  // *************************** One Shift ***************************
+
+  // 14:00 to 22:00
+  // 23:00 to 17:00
+  var sumOfBreaks = 0;
+  for (const [key, value] of Object.entries(shiftTimeBreaks)) {
+    var breakStartTime = moment(value.time[0], format);
+    var breakEndTime = moment(value.time[1], format);
+
+    var breaksDuration = moment.duration(breakEndTime.diff(breakStartTime));
+    sumOfBreaks += breaksDuration.asMinutes();
+    // console.log(`${key}:`, key, value, 'hello', sumOfBreaks, breakStartTime, breakEndTime);
+  }
+
+  var shiftStartTime = moment(shiftTimeRange[0], format);
+  var shiftEndTime = moment(shiftTimeRange[1], format);
+
+  var shiftDuration = moment.duration(shiftEndTime.diff(shiftStartTime)).asMinutes() - sumOfBreaks;
+  const totalPitchesLength = Math.round(shiftDuration / pitchTime);
+
+  const checkCurrentDayShiftSelected = shiftDaysRange.includes(moment().format('ddd'));
+  // console.log(chartParams, 'chartParams', Math.round((shiftDuration / 60) * 100) / 100, sumOfBreaks, shiftDaysRange);
+  console.log('Day', shiftDaysRange, checkCurrentDayShiftSelected, moment().format('ddd'));
 
   const quantityPerBox = 3;   // .per_box_qty_UNITCAIXA_IT
-  const dailyHours = 8; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
-  const pitchTime = lodash.get(chartParams, 'pitchTime', 0); //minutes
-  const totalQuantity = lodash.sumBy(parentsData, 'quantity_VHOROQ_AH'); //sum of all quantities
-  var totalQuantityDynamic = lodash.sumBy(parentsData, 'quantity_VHOROQ_AH'); //sum of all quantities
+  // const quantityPerBox = lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT');   // .per_box_qty_UNITCAIXA_IT
+  console.log(quantityPerBox, 'quantityPerBox');
+  const dailyHours = Math.round((shiftDuration / 60) * 100) / 100; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
+  const totalQuantity = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
+  var totalQuantityDynamic = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
   const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
   const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
   // const quantityPerSecond = quantityPerMinute * 60;   // quanitity per second
@@ -51,8 +83,9 @@ const Users = () => {
   const quantityPerBoxPerMinute = quantityPerBox * quantityPerMinute;  // per box time
   // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
 
+  // const boxesPerPitch = pitchTime / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
   const boxesPerPitch = pitchTime / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
-  // console.log(boxesPerPitch, 'boxesPerPitch');
+  console.log(boxesPerPitch, 'boxesPerPitch');
 
   // TODO:: sum of all orders, quantity
   // TODO:: sum of all orders, quantity
@@ -66,8 +99,6 @@ const Users = () => {
   const redColorChartParams = lodash.get(colorChartParams, 'red', {});
   const blackColorChartParams = lodash.get(colorChartParams, 'black', {});
 
-  const timeRange = lodash.get(lineChartParams, '[1].time', []);
-
   const dispatch = useDispatch()
   // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(0);
@@ -76,7 +107,6 @@ const Users = () => {
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
 
-  var format = 'HH:mm'
   // var currentHour = 16;
   // var currentMinute = 40;
   // const [currentTime, setTimeLeft] = useState(moment('16:40', format));
@@ -112,21 +142,32 @@ const Users = () => {
       }, pitchTime * 60 * 1000);
       // }, 1 * 60 * 1000);
       // }, 1000);
+
+
+
+
+
       // Clear timeout if the component is unmounted
       return () => clearTimeout(timer);
     }
   });
-  var startShiftTime = moment(timeRange[1], format);
-  var initialShiftTime = moment(timeRange[0], format);
-
-
-  var duration = moment.duration(startShiftTime.diff(initialShiftTime));
-  // console.log(timeRange, 'timeRange', duration.asMinutes(), duration.asMinutes() / pitchTime, pitchTime)
+  // console.log(shiftTimeRange, 'shiftTimeRange', duration.asMinutes(), duration.asMinutes() / pitchTime, pitchTime)
   // duration subtract breaks
 
+  var inBetweenBreaks = false;
+  for (const [key, value] of Object.entries(shiftTimeBreaks)) {
+    var breakStartTime = moment(value.time[0], format);
+    var breakEndTime = moment(value.time[1], format);
+    var beforeTime = moment(breakEndTime.format('HH:mm'), format);
+    var afterTime = moment(breakStartTime.format('HH:mm'), format);
+    console.log(afterTime, beforeTime, 'hello')
+    if (moment().isBetween(afterTime, beforeTime)) {
+      inBetweenBreaks = true;
+      // console.log('inBetweenBreaks ')
+    }
+  }
+  console.log(inBetweenBreaks, 'inBetweenBreaks')
   var activeShiftPeriod = 0;
-  const totalPitchesLength = Math.round(duration.asMinutes() / pitchTime);
-
 
   useEffect(() => {
     const socket = socketIOClient(ENDPOINT);
@@ -142,7 +183,7 @@ const Users = () => {
     // });
     // });
 
-    // console.log(parentsData, 'parentsData', dataGroupByProduct)
+    // console.log(excelFileData, 'excelFileData', dataGroupByProduct)
 
 
     socket.on('singleClick', function (data) { //get button status from client
@@ -201,14 +242,13 @@ const Users = () => {
     // });
   }, []);
 
-
+  var dynamicProductRoundOff = 0;
   useEffect(() => {
-    if (parentsData.length !== 0 && dataGroupByProduct.length == 0) {
+    if (excelFileData.length !== 0 && dataGroupByProduct.length == 0) {
       var counter = 0;
       const allShiftsData = [];
 
-
-      const dataGroupColors = lodash.orderBy(lodash.chain(parentsData)
+      const dataGroupColors = lodash.orderBy(lodash.chain(excelFileData)
         // Group the elements of Array based on `color` property
         .groupBy("part_num_VHPRNO_C")
         // `key` is group's name (color), `value` is the array of objects
@@ -224,7 +264,7 @@ const Users = () => {
           }
         }).value(), ['sum'], ['desc']).filter(k => k.sum !== null);
       // console.log(dataGroupColors, 'dataGroupColors')
-      const dataGroup = lodash.orderBy(lodash.chain(parentsData)
+      const dataGroup = lodash.orderBy(lodash.chain(excelFileData)
         // Group the elements of Array based on `color` property
         .groupBy("order_num_VHMFNO_D")
         // `key` is group's name (color), `value` is the array of objects
@@ -251,9 +291,9 @@ const Users = () => {
           }
         }).value(), ['row_num'], ['asc']).filter(k => k.sum !== null);
 
-      // const dataGroupOriginal = lodash.orderBy(parentsData, ['row_num'], ['asc']).filter(k => k.quantity_VHOROQ_AH !== null);
+      // const dataGroupOriginal = lodash.orderBy(excelFileData, ['row_num'], ['asc']).filter(k => k.quantity_VHOROQ_AH !== null);
 
-      // console.log(dataGroup, 'dataGroup');
+      console.log(dataGroup, 'dataGroup');
 
       const dataGroupLength = dataGroup.length;
       // const productCount = Math.round(boxesPerPitch / dataGroupLength * 10) / 10;
@@ -264,7 +304,7 @@ const Users = () => {
 
       // }
       var currentElement = 0;
-      var dynamicProductRoundOff = 0;
+
       // for (var i = blackColorChartParams.max; i >= 1; i--) {
       for (var i = totalPitchesLength; i >= 1; i--) {
 
@@ -278,7 +318,7 @@ const Users = () => {
         // if sum - boxesPerPitch !<= 0, then subtract, else move to next order
         // console.log(dataGroup, 'dataGroup2', i, currentElement, dataGroup[currentElement])
 
-
+        console.log(currentElement, 'currentElement', Math.round(boxesPerPitch))
 
         roundOffSlice += Math.round(boxesPerPitch) - boxesPerPitch;
 
@@ -340,10 +380,10 @@ const Users = () => {
       // console.log(allShiftsData, 'allShiftsData')
       setDataGroupByProduct(allShiftsData);
     }
-  }, [parentsData]);
+  }, [excelFileData]);
 
   useEffect(() => {
-    // console.log(donePieces, 'donePieces')
+    console.log(dynamicProductRoundOff, 'donePieces')
     const allShiftsData = [...dataGroupByProduct];
     var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
     var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
@@ -385,14 +425,14 @@ const Users = () => {
     currentPage !== page && setPage(currentPage)
   }, [dispatch, currentPage, page])
 
-  const dataGroupByLine = lodash.chain(parentsData)
+  const dataGroupByLine = lodash.chain(excelFileData)
     // Group the elements of Array based on `color` property
     .groupBy("line_VOPLGR_EF")
     // `key` is group's name (color), `value` is the array of objects
     .map((value, key) => ({ lineNumber: key, data: value }))
     .value();
 
-  const dataGroupByOrder = lodash.chain(parentsData)
+  const dataGroupByOrder = lodash.chain(excelFileData)
     // Group the elements of Array based on `color` property
     .groupBy("order_num_VHMFNO_D")
     // `key` is group's name (color), `value` is the array of objects
@@ -401,7 +441,7 @@ const Users = () => {
 
 
   // check if currentTime is between the pitchTime, add cards to that pitch
-  // timeRange[0] add pitchTime, check if current time is between, old and new+shift time, show boxes
+  // shiftTimeRange[0] add pitchTime, check if current time is between, old and new+shift time, show boxes
   // var time = moment() gives you current time. no format required.
 
   // console.log(totalPitchesLength, 'totalPitchesLength', dataGroupByProduct)
@@ -423,8 +463,8 @@ const Users = () => {
     for (var i = totalPitchesLength; i >= 1; i--) {
       var color = filterColor(i);
 
-      var beforeTime = moment(startShiftTime.format('HH:mm'), format);
-      var afterTime = moment(startShiftTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
+      var beforeTime = moment(shiftEndTime.format('HH:mm'), format);
+      var afterTime = moment(shiftEndTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
       // console.log(currentTime, afterTime, beforeTime, 'hello')
       if (currentTime.isBetween(afterTime, beforeTime)) {
         // also check for length of allShiftsData
@@ -443,7 +483,7 @@ const Users = () => {
         shift={i <= activeShiftPeriod ? dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0) : undefined}
         cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
           currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
-          // console.log(product, 'singleProduct')
+          console.log(product.color, 'singleProductColor')
           return (
             <span className="content-center" style={{
               backgroundColor: product.color,
@@ -479,40 +519,45 @@ const Users = () => {
 
   renderCards();
   cardsData.splice(0, totalPitchesLength - 12);
-  console.log(totalPitchesLength, cardsData.length, 'cardsData')
+  console.log(totalPitchesLength, cardsData.length, blackColorChartParams.min, 'cardsData')
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   // console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
+  if (inBetweenBreaks) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>System in Break, Don't push the button.</h1></div>)
+  // if (!checkCurrentDayShiftSelected) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>No Shift for Today.</h1></div>)
   return (
-    <CFormGroup>
-      <CRow>
-        <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Total Pieces" text={totalQuantity} />
-        </CCol>
-        <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Done Pieces" text={donePieces} />
-        </CCol>
-        <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pending Pieces" text={totalQuantity - donePieces} />
-        </CCol>
-        <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (On Time)" text={parseFloat((totalQuantity - donePieces) / dailyHours).toFixed(2)} />
-        </CCol>
-        <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Day)" text={parseFloat(totalQuantity / dailyHours).toFixed(2)} />
-        </CCol>
-        <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Target)" text={parseFloat(totalQuantity / kanbanBoxes).toFixed(2)} />
-        </CCol>
-      </CRow>
-      <h1>{lodash.get(dataGroupByLine, '[0].lineNumber')}</h1>
-      <hr style={{ borderTop: '3px solid rgba(0, 0, 21, 0.2)' }}></hr>
-      <CRow>
-        {/* <CCol xl={12}> */}
-        {cardsData}
-        {/* </CCol> */}
-      </CRow>
+    <div>
+      <CFormGroup>
+        <CRow>
+          <CCol xs="2">
+            <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Total Pieces" text={totalQuantity} />
+          </CCol>
+          <CCol xs="2">
+            <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Done Pieces" text={donePieces} />
+          </CCol>
+          <CCol xs="2">
+            <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pending Pieces" text={totalQuantity - donePieces} />
+          </CCol>
+          <CCol xs="2">
+            <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (On Time)" text={parseFloat((totalQuantity - donePieces) / dailyHours).toFixed(2)} />
+          </CCol>
+          <CCol xs="2">
+            <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Day)" text={parseFloat(totalQuantity / dailyHours).toFixed(2)} />
+          </CCol>
+          <CCol xs="2">
+            <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Target)" text={parseFloat(totalQuantity / kanbanBoxes).toFixed(2)} />
+          </CCol>
+        </CRow>
+        <h1>{lodash.get(dataGroupByLine, '[0].lineNumber')}</h1>
+        <hr style={{ borderTop: '3px solid rgba(0, 0, 21, 0.2)' }}></hr>
+        <CRow style={{ float: 'right' }}>
+          {/* <CCol xl={12}> */}
+          {cardsData}
+
+          {/* </CCol> */}
+        </CRow>
+      </CFormGroup>
       <CRow>
         <CCol xs={{ offset: 9, size: 3 }} >
           <CWidgetSimple style={{ backgroundColor: lodash.get(currentCardBox, 'color'), color: 'white' }} className='widgetBackground' header="Kanban en curs" text={
@@ -527,7 +572,7 @@ const Users = () => {
           } />
         </CCol>
       </CRow>
-    </CFormGroup>
+    </div>
   )
 }
 

@@ -4,6 +4,7 @@ export const GET_CHART_DATA = "GET_CHART_DATA";
 export const PITCH_TIME = "PITCH_TIME";
 export const FILE_DOWNLOAD_TYPE = "FILE_DOWNLOAD_TYPE";
 export const SHIFT_DAYS = "SHIFT_DAYS";
+export const GET_SHIFT_DATA = "GET_SHIFT_DATA";
 export const SHIFT_TIME = "SHIFT_TIME";
 
 export const ADD_SHIFT = "ADD_SHIFT";
