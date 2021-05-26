@@ -38,9 +38,9 @@ const Params = () => {
   var [redMaxColor, setRedMaxColor] = useState(11);
   var [blackMinColor, setBlackMinColor] = useState(12);
   var [blackMaxColor, setBlackMaxColor] = useState(13);
-  var [shiftInitialTime, setShiftInitialTime] = useState(["09:00", "12:00"]);
-  var [shiftDaysValues, setshiftDaysValues] = useState([]);
-  var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState(["11:00", "11:15"]);
+  var [shiftInitialTime, setShiftInitialTime] = useState([["09:00", "12:00"]]);
+  var [shiftDaysValues, setShiftDaysValues] = useState([[]]);
+  var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState([["11:00", "11:15"]]);
   var [fileDownloadType, setFileDownloadType] = useState('');
   var [downloadTime, setDownloadTime] = useState([]);
 
@@ -113,6 +113,7 @@ const Params = () => {
       const dataState = { ...allState };
       delete dataState.apiCalled;
       delete dataState.chartParams;
+      delete dataState.response;
       console.log(dataState, 'dataState')
 
       dispatch(pushShiftsData(getParameters(dataState)));
@@ -172,10 +173,28 @@ const Params = () => {
       setBlackMinColor(chartParamsData.colors.black.min)
       // setBlackMinColor(chartParamsData.colors.black.max)
       let shiftsData = chartParamsData.PERS044;
-      setShiftInitialTime(shiftsData[1].time);
-      setShiftInitialBreakTime(shiftsData[1].breaks[1].time);
-      setshiftDaysValues(shiftsData[1].days);
-      console.log('shift', shiftsData[1].days);
+      console.log(shiftsData)
+      const shiftTimes = [];
+      const shiftDays = [];
+      const breakTimes = [];
+      for (const [shiftKey, shiftsData] of Object.entries(shiftsData)) {
+        console.log(shiftKey, shiftsData.breaks, 'hello');
+        const singleBreakTimes = [];
+
+        for (const [breakKey, breakData] of Object.entries(shiftsData.breaks)) {
+          console.log(breakKey, breakData.time, 'hello2');
+          singleBreakTimes.push(breakData.time);
+        }
+        breakTimes.push(singleBreakTimes);
+        shiftTimes.push(shiftsData.time);
+        shiftDays.push(shiftsData.days);
+      }
+      console.log(shiftTimes, breakTimes, 'hiwww');
+      // setShiftInitialTime(shiftsData[1].time);
+      setShiftInitialTime(shiftTimes);
+      setShiftInitialBreakTime(breakTimes);
+      setShiftDaysValues(shiftDays);
+      console.log('shift', shiftDays);
 
 
       dispatch(startApp(shiftsData));
@@ -370,9 +389,9 @@ const Params = () => {
                   totalShifts={shiftCount}
                   shiftCount={k}
                   setShiftCount={setShiftCount}
-                  shiftInitialTime={shiftInitialTime}
-                  shiftDaysValues={shiftDaysValues}
-                  shiftInitialBreakTime={shiftInitialBreakTime}
+                  shiftInitialTime={shiftInitialTime[k - 1]}
+                  shiftDaysValues={shiftDaysValues[k - 1]}
+                  shiftInitialBreakTime={shiftInitialBreakTime[k - 1]}
                 // shiftsData={chartParamsData.values.PERS044}
                 />
               )}

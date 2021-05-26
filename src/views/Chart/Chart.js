@@ -71,15 +71,21 @@ const Users = () => {
   // console.log(chartParams, 'chartParams', Math.round((shiftDuration / 60) * 100) / 100, sumOfBreaks, shiftDaysRange);
   // console.log('Day', shiftDaysRange, checkCurrentDayShiftSelected, moment().format('ddd'));
 
-  const quantityPerBox = 3;   // .per_box_qty_UNITCAIXA_IT
+  const quantityPerBox = 1;   // .per_box_qty_UNITCAIXA_IT
   // const quantityPerBox = lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT');   // .per_box_qty_UNITCAIXA_IT
   // console.log(quantityPerBox, 'quantityPerBox');
-  const dailyHours = Math.round((shiftDuration / 60) * 100) / 100; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
+  const dailyHours = Math.round((shiftDuration - sumOfBreaks / 60) * 100) / 100; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
   const totalQuantity = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
+
+  const takTimeMinutes = (shiftDuration - sumOfBreaks) / totalQuantity;
+  const takTimeSeconds = takTimeMinutes * 60;
+  const takTimeQuantity = Math.round((pitchTime * takTimeMinutes) * 100) / 100;
+
   var totalQuantityDynamic = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
   const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
   const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
   // const quantityPerSecond = quantityPerMinute * 60;   // quanitity per second
+  console.log(takTimeMinutes, takTimeSeconds, takTimeQuantity, 'time');
 
   const quantityPerBoxPerMinute = quantityPerBox * quantityPerMinute;  // per box time
   // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
@@ -270,7 +276,7 @@ const Users = () => {
         .groupBy("order_num_VHMFNO_D")
         // `key` is group's name (color), `value` is the array of objects
         .map((value, key) => {
-          // console.log(value, lodash.get(dataGroupColors.filter(q => q.product === value[0].part_num_VHPRNO_C), [0, 'color']), 'order')
+          // console.log(lodash.get(value, '0.per_box_qty_UNITCAIXA_IT'), 'order')
           const color = lodash.get(dataGroupColors.filter(q => q.product === value[0].part_num_VHPRNO_C), [0, 'color']);
           // ++counter;
 
@@ -288,7 +294,8 @@ const Users = () => {
             row_num: value[0].row_num,
             total: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
             sum: lodash.sumBy(value, 'quantity_VHOROQ_AH'),
-            productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
+            // productsPerBox: lodash.sumBy(value, 'quantity_VHOROQ_AH') / quantityPerBox
+            productsPerBox: lodash.get(value, '0.per_box_qty_UNITCAIXA_IT')
           }
         }).value(), ['row_num'], ['asc']).filter(k => k.sum !== null);
 
@@ -305,7 +312,8 @@ const Users = () => {
 
       // }
       var currentElement = 0;
-
+      var lastTakTimeElement = 0;
+      var runningTakTimeSum = 0;
       // for (var i = blackColorChartParams.max; i >= 1; i--) {
       for (var i = totalPitchesLength; i >= 1; i--) {
 
@@ -337,26 +345,30 @@ const Users = () => {
         // const numberOfProducts = 4; //number of Products in current order
 
         for (var j = 0; j < numberOfProducts; j++) {
-          var productCountDynamic = Math.round(Math.round(boxesPerPitch) / numberOfProducts);
-
-          if (productCountDynamic === 0) {
-            productCountDynamic = Math.round(boxesPerPitch / numberOfProducts * 2) / 2;
-            multipleRoundOff += Math.ceil(boxesPerPitch / numberOfProducts) - boxesPerPitch / numberOfProducts;
-            dynamicProductRoundOff += Math.ceil(boxesPerPitch / numberOfProducts) - boxesPerPitch / numberOfProducts;
-            if (dynamicProductRoundOff >= 1) {
-              productCountDynamic = Math.round(dynamicProductRoundOff);
-              dynamicProductRoundOff = 0;
-            } else {
-              productCountDynamic = 0;
-            }
-            console.log('Hello world');
-          } else {
-            multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
-          }
+          // var productCountDynamic = Math.round(Math.round(boxesPerPitch) / numberOfProducts);
+          var currentTakTimeSum = runningTakTimeSum + takTimeQuantity;
+          var productCountDynamic = Math.ceil(currentTakTimeSum) - Math.ceil(runningTakTimeSum);
+          runningTakTimeSum += takTimeQuantity;
+          // lastTakTimeElement += Math.ceil(takTimeQuantity);
+          // if (productCountDynamic === 0) {
+          //   productCountDynamic = Math.round(boxesPerPitch / numberOfProducts * 2) / 2;
+          //   multipleRoundOff += Math.ceil(boxesPerPitch / numberOfProducts) - boxesPerPitch / numberOfProducts;
+          //   dynamicProductRoundOff += Math.ceil(boxesPerPitch / numberOfProducts) - boxesPerPitch / numberOfProducts;
+          //   if (dynamicProductRoundOff >= 1) {
+          //     productCountDynamic = Math.round(dynamicProductRoundOff);
+          //     dynamicProductRoundOff = 0;
+          //   } else {
+          //     productCountDynamic = 0;
+          //   }
+          //   console.log('Hello world');
+          // } else {
+          multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
+          // }
           // console.log(j, dataGroup[currentElement].data[j], 'dataGroupLoop')
           // console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
           const singleProductColor = lodash.get(dataGroupColors.filter(q => q.product === lodash.get(dataGroup[currentElement].data[j], 'part_num_VHPRNO_C')), [0, 'color']);
-
+          // console.log(productCountDynamic, boxesPerPitch, numberOfProducts, runningTakTimeSum, lastTakTimeElement, 'productCountDynamic')
+          console.log(runningTakTimeSum, Math.ceil(runningTakTimeSum), productCountDynamic, 'productCountDynamic')
           // console.log(multipleRoundOff >= 1, productCountDynamic, productCountDynamic, 'singleProductColor')
           // console.log(productCountDynamic, boxesPerPitch / numberOfProducts, multipleRoundOff, dynamicProductRoundOff, 'singleProductColor')
 
@@ -365,8 +377,10 @@ const Users = () => {
             ...dataGroup[currentElement],
             color: singleProductColor ? singleProductColor : colorsPalette[j + 1],
             record: dataGroup[currentElement].data[j], //check sum, dataGroup[currentElement].data[j]
-            productCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic, //for changing dynamic, on button push
-            originalCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic //comparing with originalCount
+            // productCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic, //for changing dynamic, on button push
+            // originalCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic, //comparing with originalCount
+            productCount: productCountDynamic, //for changing dynamic, on button push
+            originalCount: productCountDynamic, //comparing with originalCount
           });
 
           if (multipleRoundOff >= 1) multipleRoundOff = 0;
@@ -531,7 +545,7 @@ const Users = () => {
   // if (!checkCurrentDayShiftSelected) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>No Shift for Today.</h1></div>)
   return (
     <CFormGroup>
-      <CRow>
+      <CRow >
         <CCol xs="2">
           <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Total Pieces" text={totalQuantity} />
         </CCol>
@@ -553,20 +567,20 @@ const Users = () => {
       </CRow>
       <h1>{lodash.get(dataGroupByLine, '[0].lineNumber')}</h1>
       <hr style={{ borderTop: '3px solid rgba(0, 0, 21, 0.2)' }}></hr>
-      <CRow>
+      <CRow style={{ float: 'right' }} >
         {/* <CCol xl={12}> */}
         {cardsData}
         {/* </CCol> */}
       </CRow>
-      <CRow>
-        <CCol xs={{ offset: 9, size: 3 }} >
+      <CRow style={{ display: 'block' }} >
+        <CCol xs={{ offset: 9, size: 3 }}>
           <CWidgetSimple style={{ backgroundColor: lodash.get(currentCardBox, 'color'), color: 'white' }} className='widgetBackground' header="Kanban en curs" text={
             <div style={{ textAlign: 'left' }}>
               <p style={kanbanBoxWidgetStyle}>Ordre de fabricació: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.order_num_VHMFNO_D')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Referencia de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.part_num_VHPRNO_C')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Descripció de producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.description_VHTXT1_W')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Referència del producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.part_num_VHPRNO_C')}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Descripció del producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.description_VHTXT1_W')}</span> </p>
               <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(currentCardBox, 'total')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat que falten per produit: <span style={metricStyle}>{lodash.get(currentCardBox, 'total') - donePieces}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat que falta per produir: <span style={metricStyle}>{lodash.get(currentCardBox, 'total') - donePieces}</span> </p>
               <p style={kanbanBoxWidgetStyle}>Quantitat per caixa: <span style={metricStyle}>{parseFloat(lodash.get(currentCardBox, 'productsPerBox')).toFixed(2)}</span> </p>
             </div>
           } />

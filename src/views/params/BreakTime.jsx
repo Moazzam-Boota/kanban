@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { CLabel, CFormGroup, CButton, CCol, CRow } from "@coreui/react";
 import TimeRangePicker from "@wojtekmaj/react-timerange-picker";
 import { useDispatch } from "react-redux";
@@ -12,7 +13,24 @@ const BreakTime = ({
   shiftInitialBreakTime,
 }) => {
   const dispatch = useDispatch();
-  console.log(breaksData);
+  const [value, onChange] = useState(shiftInitialBreakTime);
+  useEffect(() => {
+    // console.log(value, "break");
+    // dispatch(shiftTime({ shiftTime: value, shiftCount: shiftCount }));
+    dispatch(
+      breakTime({
+        shiftCount: shiftKey,
+        breakCount: breakCount,
+        breakValue: value,
+      })
+    );
+  }, [value]);
+
+  useEffect(() => {
+    onChange(shiftInitialBreakTime);
+  }, [shiftInitialBreakTime]);
+
+  // console.log(breaksData);
   return (
     <CFormGroup>
       <CRow>
@@ -22,16 +40,18 @@ const BreakTime = ({
         <CCol xs="4">
           <TimeRangePicker
             key={`breakTimePicker_${shiftKey}_${breakCount}`}
-            onChange={(value) => {
-              // set time for a break in redux
-              dispatch(
-                breakTime({
-                  shiftCount: shiftKey,
-                  breakCount: breakCount,
-                  breakValue: value,
-                })
-              );
-            }}
+            onChange={onChange}
+            value={value}
+            // onChange={(value) => {
+            //   // set time for a break in redux
+            //   dispatch(
+            //     breakTime({
+            //       shiftCount: shiftKey,
+            //       breakCount: breakCount,
+            //       breakValue: value,
+            //     })
+            //   );
+            // }}
             // onClockClose={(value) => {
             //   dispatch(
             //     breakTime({
@@ -41,7 +61,6 @@ const BreakTime = ({
             //     })
             //   );
             // }}
-            value={shiftInitialBreakTime}
           />
         </CCol>
         <CCol xs="1">

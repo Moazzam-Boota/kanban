@@ -24,18 +24,44 @@ const ShiftTime = ({
   shiftInitialBreakTime,
 }) => {
   const dispatch = useDispatch();
+  const [value, onChange] = useState(shiftInitialTime);
+  const [days, setDays] = useState([]);
 
   useEffect(() => {
-    dispatch(getShiftData(shiftCount));
-  }, []);
+    dispatch(shiftTime({ shiftTime: value, shiftCount: shiftCount }));
+  }, [value]);
 
-  const singleShiftData = useSelector(
-    (state) => state.excelReducer.chartParams
-  );
+  useEffect(() => {
+    dispatch(
+      shiftDays({
+        shiftDays: days,
+        shiftCount: shiftCount,
+      })
+    );
+  }, [days]);
 
-  console.log(singleShiftData, shiftDaysValues, "singleShiftData");
+  useEffect(() => {
+    onChange(shiftInitialTime);
+  }, [shiftInitialTime]);
+
+  useEffect(() => {
+    setDays(shiftDaysValues);
+  }, [shiftDaysValues]);
+
+  // useEffect(() => {
+  //   dispatch(getShiftData(shiftCount));
+  // }, []);
+
+  // const singleShiftData = useSelector(
+  //   (state) => state.excelReducer.chartParams
+  // );
+  // console.log(shiftInitialTime, "shiftInitialTime");
+  // console.log(shiftInitialBreakTime, "shiftInitialBreakTime");
+  // console.log(shiftDaysValues, "singleShiftData");
   // shift breaks, handle here
-  var [breakCount, setBreakCount] = useState([1]);
+  var [breakCount, setBreakCount] = useState(
+    shiftInitialBreakTime ? shiftInitialBreakTime.map((k, j) => j + 1) : [1]
+  );
 
   return (
     <CFormGroup>
@@ -50,9 +76,10 @@ const ShiftTime = ({
             distance={4}
             hideSelectedOptions={false}
             isMulti
-            value={shiftDaysValues.map((k) => {
-              return { value: k, label: k };
-            })}
+            // value={shiftDaysValues.map((k) => {
+            //   return { value: k, label: k };
+            // })}
+            value={days}
             // required
             options={[
               { value: "Mon", label: "Mon" },
@@ -64,26 +91,24 @@ const ShiftTime = ({
               { value: "Sun", label: "Sun" },
             ]}
             closeMenuOnSelect={false}
-            onChange={(selectedOptions) => {
-              console.log(selectedOptions, "selectedOptions");
-              // set week_days in redux for a assemblyLine
-              dispatch(
-                shiftDays({
-                  shiftDays: selectedOptions.map((k) => k.value),
-                  shiftCount: shiftCount,
-                })
-              );
-            }}
+            onChange={setDays}
+            // onChange={(selectedOptions) => {
+            //   console.log(selectedOptions, "selectedOptions");
+            //   // set week_days in redux for a assemblyLine
+            //   dispatch(
+            //     shiftDays({
+            //       shiftDays: selectedOptions.map((k) => k.value),
+            //       shiftCount: shiftCount,
+            //     })
+            //   );
+            // }}
           />
         </CCol>
         <CCol xs="4">
           <TimeRangePicker
             key={`shiftTimePicker_${shiftCount}`}
-            onChange={(value) => {
-              // set time for a shift in redux
-              dispatch(shiftTime({ shiftTime: value, shiftCount: shiftCount }));
-            }}
-            value={shiftInitialTime}
+            onChange={onChange}
+            value={value}
           />
         </CCol>
         <CCol xs="1">
@@ -144,7 +169,9 @@ const ShiftTime = ({
               breakCount={k}
               totalBreaks={breakCount}
               setBreakCount={setBreakCount}
-              shiftInitialBreakTime={shiftInitialBreakTime}
+              shiftInitialBreakTime={
+                shiftInitialBreakTime ? shiftInitialBreakTime[k - 1] : []
+              }
               // breaksData={shiftsData[shiftCount].breaks}
             />
           ))}
