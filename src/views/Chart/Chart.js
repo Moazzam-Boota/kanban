@@ -379,7 +379,7 @@ const Users = () => {
 
 
       // console.log('updatedShiftData', limitShift, donePieces % limitShift, localDonePieces, allShiftsData[0], allShiftsData.length, limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces, allShiftsDataRemainder)
-      console.log('updatedShiftData', limitShift, remainderDonePieces)
+      console.log('updatedShiftData', limitShift, remainderDonePieces, allShiftsSum)
       // if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) { //subtract on every button press
       if (allShiftsData[0] && remainderDonePieces > 0) { //subtract on every button press
         allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
