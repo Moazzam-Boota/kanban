@@ -363,7 +363,7 @@ const Users = () => {
     }
   }, [excelFileData]);
 
-  const allShiftsSum = 0;
+  var allShiftsSum = 0;
   useEffect(() => {
     if (!inBetweenBreaks) {
       console.log(dynamicProductRoundOff, 'donePieces')
