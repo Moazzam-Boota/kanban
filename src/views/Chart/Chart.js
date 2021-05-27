@@ -449,11 +449,11 @@ const Users = () => {
       if (currentTime.isBetween(afterTime, beforeTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
-        if (activeShiftPeriod >= i)
-          headerWidgetColor = filterColor(i);
-        else if (activeShiftPeriod < i)
-          headerWidgetColor = filterColor(activeShiftPeriod);
-        // if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
+        // if (activeShiftPeriod >= i)
+        headerWidgetColor = filterColor(i);
+        // else if (activeShiftPeriod < i)
+        //   headerWidgetColor = filterColor(activeShiftPeriod);
+        if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
         console.log(headerWidgetColor, activeShiftPeriod, i, trackShiftsDone, maxColorPitch, 'here is active')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
