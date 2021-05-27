@@ -85,7 +85,7 @@ const Users = () => {
   const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
   const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
   // const quantityPerSecond = quantityPerMinute * 60;   // quanitity per second
-  console.log(takTimeMinutes, takTimeSeconds, takTimeQuantity, pitchTakTime, 'time');
+  // console.log(takTimeMinutes, takTimeSeconds, takTimeQuantity, pitchTakTime, 'time');
 
   const quantityPerBoxPerMinute = quantityPerBox * quantityPerMinute;  // per box time
   // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
@@ -144,7 +144,7 @@ const Users = () => {
         //   }
         // )
         setTrackShiftsDone(trackShiftsDone - 1);
-        console.log(trackShiftsDone, 'trackShiftsDone')
+        // console.log(trackShiftsDone, 'trackShiftsDone')
         cardsData = [];
         activeShiftPeriod = 0;
         renderCards();
@@ -359,7 +359,7 @@ const Users = () => {
 
   useEffect(() => {
     if (!inBetweenBreaks) {
-      console.log(dynamicProductRoundOff, 'donePieces')
+      // console.log(dynamicProductRoundOff, 'donePieces')
       const allShiftsData = [...dataGroupByProduct];
       var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
       var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount']);
@@ -456,14 +456,14 @@ const Users = () => {
 
       // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
       // console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
-      console.log(i, activeShiftPeriod, 'here is 2')
+      // console.log(i, activeShiftPeriod, 'here is 2')
       cardsData.push(<CWidgetBrand
         style={{ marginLeft: '5px', width: '150px' }}
         color={color}
         shift={i <= activeShiftPeriod ? dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0) : undefined}
         cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
           currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
-          console.log(product.color, 'singleProductColor')
+          // console.log(product.color, 'singleProductColor')
           return (
             <span className="content-center" style={{
               backgroundColor: product.color,
@@ -499,7 +499,7 @@ const Users = () => {
 
   renderCards();
   cardsData.splice(0, totalPitchesLength - 12);
-  console.log(totalPitchesLength, cardsData.length, blackColorChartParams.min, 'cardsData')
+  // console.log(totalPitchesLength, cardsData.length, blackColorChartParams.min, 'cardsData')
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   // console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
