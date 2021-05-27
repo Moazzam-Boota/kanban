@@ -452,7 +452,7 @@ const Users = () => {
         activeShiftPeriod = i - trackShiftsDone;
         headerWidgetColor = filterColor(i - trackShiftsDone);
         if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
-        console.log(headerWidgetColor, i, activeShiftPeriod, maxColorPitch, 'here is active')
+        // console.log(headerWidgetColor, i, activeShiftPeriod, maxColorPitch, 'here is active')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
@@ -465,7 +465,7 @@ const Users = () => {
         shift={i <= activeShiftPeriod ? dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0) : undefined}
         cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
           currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
-          console.log(product.color, color, 'singleProductColor')
+          // console.log(product.color, color, 'singleProductColor')
           return (
             <span className="content-center" style={{
               backgroundColor: product.color,
@@ -501,7 +501,7 @@ const Users = () => {
 
   renderCards();
   cardsData.splice(0, totalPitchesLength - (12) + (12 - maxColorPitch));
-  console.log(totalPitchesLength, cardsData.length, blackColorChartParams.min, 'cardsData')
+  // console.log(totalPitchesLength, cardsData.length, blackColorChartParams.min, 'cardsData')
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   // console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
   const kanbanBoxWidgetStyle = { fontSize: '15px' };

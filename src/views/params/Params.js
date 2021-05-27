@@ -52,7 +52,7 @@ const Params = () => {
   // const response = useSelector((state) => state.excelReducer.apiCalled);
   const dbChartParams = useSelector((state) => state.excelReducer.chartParams);
   const allState = useSelector((state) => state.excelReducer);
-  console.log(dbChartParams, 'dbChartParams')
+  // console.log(dbChartParams, 'dbChartParams')
   // console.log(response, 'response');
 
   const [selectedFile, setSelectedFile] = useState();
@@ -84,8 +84,7 @@ const Params = () => {
           max: redMaxColor
         },
         black: {
-          min: blackMinColor,
-          // max: blackMaxColor
+          min: blackMinColor
         }
       },
       PERS044: {  // assembly Line
@@ -114,7 +113,7 @@ const Params = () => {
       delete dataState.apiCalled;
       delete dataState.chartParams;
       delete dataState.response;
-      console.log(dataState, 'dataState')
+      // console.log(dataState, 'dataState')
 
       dispatch(pushShiftsData(getParameters(dataState)));
       Swal.fire(
@@ -125,7 +124,7 @@ const Params = () => {
     }
   }
   const getTime = (value) => {
-    console.log(value, 'value')
+    // console.log(value, 'value')
     //set file download time
     setDownloadTime(value);
   }
@@ -158,7 +157,7 @@ const Params = () => {
   useEffect(() => {
 
     const chartParamsData = lodash.get(dbChartParams, [0, 'values']);
-    console.log(chartParamsData, 'dbChartParams')
+    // console.log(chartParamsData, 'dbChartParams')
     if (chartParamsData) {
       setPitchTime(chartParamsData.pitchTime)
       setFileDownloadType(chartParamsData.fileDownloadType)
@@ -173,28 +172,28 @@ const Params = () => {
       setBlackMinColor(chartParamsData.colors.black.min)
       // setBlackMinColor(chartParamsData.colors.black.max)
       let shiftsData = chartParamsData.PERS044;
-      console.log(shiftsData)
+      // console.log(shiftsData)
       const shiftTimes = [];
       const shiftDays = [];
       const breakTimes = [];
       for (const [shiftKey, shiftsData] of Object.entries(shiftsData)) {
-        console.log(shiftKey, shiftsData.breaks, 'hello');
+        // console.log(shiftKey, shiftsData.breaks, 'hello');
         const singleBreakTimes = [];
 
         for (const [breakKey, breakData] of Object.entries(shiftsData.breaks)) {
-          console.log(breakKey, breakData.time, 'hello2');
+          // console.log(breakKey, breakData.time, 'hello2');
           singleBreakTimes.push(breakData.time);
         }
         breakTimes.push(singleBreakTimes);
         shiftTimes.push(shiftsData.time);
         shiftDays.push(shiftsData.days);
       }
-      console.log(shiftTimes, breakTimes, 'hiwww');
+      // console.log(shiftTimes, breakTimes, 'hiwww');
       // setShiftInitialTime(shiftsData[1].time);
       setShiftInitialTime(shiftTimes);
       setShiftInitialBreakTime(breakTimes);
       setShiftDaysValues(shiftDays);
-      console.log('shift', shiftDays);
+      // console.log('shift', shiftDays);
 
 
       dispatch(startApp(shiftsData));
