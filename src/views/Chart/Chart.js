@@ -453,7 +453,7 @@ const Users = () => {
         headerWidgetColor = filterColor(i);
         // else if (activeShiftPeriod < i)
         //   headerWidgetColor = filterColor(activeShiftPeriod);
-        if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
+        // if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
         console.log(headerWidgetColor, activeShiftPeriod, i, trackShiftsDone, maxColorPitch, 'here is active')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
@@ -502,7 +502,8 @@ const Users = () => {
   }
 
   renderCards();
-  cardsData.splice(0, totalPitchesLength - (12) + (12 - maxColorPitch));
+  // cardsData.splice(0, totalPitchesLength - (12) + (12 - maxColorPitch));
+  cardsData.splice(0, totalPitchesLength - 12);
   // console.log(totalPitchesLength, cardsData.length, blackColorChartParams.min, 'cardsData')
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   // console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
