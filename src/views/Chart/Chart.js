@@ -127,6 +127,7 @@ const Users = () => {
       return;
     }
 
+    // don't load for 1st time
     if (pitchTime !== 0 && !inBetweenBreaks) {
       const timer = setTimeout(() => {
         if (trackShiftsDone <= 0)
@@ -143,16 +144,11 @@ const Users = () => {
         //   }
         // )
         setTrackShiftsDone(trackShiftsDone - 1);
+        console.log(trackShiftsDone, 'trackShiftsDone')
         cardsData = [];
         activeShiftPeriod = 0;
         renderCards();
       }, pitchTime * 60 * 1000);
-      // }, 1 * 60 * 1000);
-      // }, 1000);
-
-
-
-
 
       // Clear timeout if the component is unmounted
       return () => clearTimeout(timer);
@@ -340,59 +336,29 @@ const Users = () => {
         totalQuantityDynamic = totalQuantityDynamic - Math.round(boxesPerPitch);
 
         const recordSet = [];
-        var multipleRoundOff = 0;
         const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
         // const numberOfProducts = 4; //number of Products in current order
 
         for (var j = 0; j < numberOfProducts; j++) {
-          // var productCountDynamic = Math.round(Math.round(boxesPerPitch) / numberOfProducts);
-          var currentTakTimeSum = runningTakTimeSum + pitchTakTime;
-          var productCountDynamic = Math.ceil(currentTakTimeSum) - Math.ceil(runningTakTimeSum);
+          var productCountDynamic = Math.ceil(runningTakTimeSum + pitchTakTime) - Math.ceil(runningTakTimeSum);
           runningTakTimeSum += pitchTakTime;
-          // lastTakTimeElement += Math.ceil(takTimeQuantity);
-          // if (productCountDynamic === 0) {
-          //   productCountDynamic = Math.round(boxesPerPitch / numberOfProducts * 2) / 2;
-          //   multipleRoundOff += Math.ceil(boxesPerPitch / numberOfProducts) - boxesPerPitch / numberOfProducts;
-          //   dynamicProductRoundOff += Math.ceil(boxesPerPitch / numberOfProducts) - boxesPerPitch / numberOfProducts;
-          //   if (dynamicProductRoundOff >= 1) {
-          //     productCountDynamic = Math.round(dynamicProductRoundOff);
-          //     dynamicProductRoundOff = 0;
-          //   } else {
-          //     productCountDynamic = 0;
-          //   }
-          //   console.log('Hello world');
-          // } else {
-          multipleRoundOff += Math.round(Math.round(boxesPerPitch) / numberOfProducts) - Math.round(boxesPerPitch) / numberOfProducts;
-          // }
-          // console.log(j, dataGroup[currentElement].data[j], 'dataGroupLoop')
-          // console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
           const singleProductColor = lodash.get(dataGroupColors.filter(q => q.product === lodash.get(dataGroup[currentElement].data[j], 'part_num_VHPRNO_C')), [0, 'color']);
-          // console.log(productCountDynamic, boxesPerPitch, numberOfProducts, runningTakTimeSum, lastTakTimeElement, 'productCountDynamic')
-          console.log(runningTakTimeSum, Math.ceil(runningTakTimeSum), takTimeSeconds, productCountDynamic, pitchTakTime, 'productCountDynamic')
-          // console.log(multipleRoundOff >= 1, productCountDynamic, productCountDynamic, 'singleProductColor')
-          // console.log(productCountDynamic, boxesPerPitch / numberOfProducts, multipleRoundOff, dynamicProductRoundOff, 'singleProductColor')
 
-          // const productCountCalculation = dynamicProductRoundOff >= 1 ? Math.round(dynamicProductRoundOff) : 0;
+          console.log(runningTakTimeSum, Math.ceil(runningTakTimeSum), takTimeSeconds, productCountDynamic, pitchTakTime, 'productCountDynamic')
+
           recordSet.push({
             ...dataGroup[currentElement],
             color: singleProductColor ? singleProductColor : colorsPalette[j + 1],
             record: dataGroup[currentElement].data[j], //check sum, dataGroup[currentElement].data[j]
-            // productCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic, //for changing dynamic, on button push
-            // originalCount: multipleRoundOff >= 1 ? productCountDynamic - multipleRoundOff : productCountDynamic, //comparing with originalCount
             productCount: productCountDynamic, //for changing dynamic, on button push
             originalCount: productCountDynamic, //comparing with originalCount
           });
 
-          if (multipleRoundOff >= 1) multipleRoundOff = 0;
-
         }
-
-        // console.log(dataGroup, recordSet, 'dataGroup', totalQuantityDynamic, roundOffSlice, dataGroup.filter(k => k.product === dataGroup[currentElement].product)[0].sum, boxesPerPitch)
 
         allShiftsData.push(recordSet)
       }
 
-      // console.log(allShiftsData, 'allShiftsData')
       setDataGroupByProduct(allShiftsData);
     }
   }, [excelFileData]);
@@ -408,7 +374,6 @@ const Users = () => {
       const remainderDonePieces = donePieces % limitShift === 0 ? limitShift : donePieces % limitShift;
 
       var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
-
 
 
       console.log('updatedShiftData', limitShift, allShiftsData, limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
