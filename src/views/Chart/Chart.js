@@ -155,9 +155,9 @@ const Users = () => {
         activeShiftPeriod = 0;
         renderCards();
       }, pitchTime * 60 * 1000);
-
+      console.log(timer, 'timer')
       // Clear timeout if the component is unmounted
-      return () => clearTimeout(timer);
+      return () => clearTimeout(console.log(timer, 'timer'));
     }
   });
   // console.log(shiftTimeRange, 'shiftTimeRange', duration.asMinutes(), duration.asMinutes() / pitchTime, pitchTime)
