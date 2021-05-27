@@ -295,12 +295,6 @@ const Users = () => {
           }
         }).value(), ['row_num'], ['asc']).filter(k => k.sum !== null);
 
-      // const dataGroupOriginal = lodash.orderBy(excelFileData, ['row_num'], ['asc']).filter(k => k.quantity_VHOROQ_AH !== null);
-
-      // console.log(dataGroup, 'dataGroup');
-
-      const dataGroupLength = dataGroup.length;
-      // const productCount = Math.round(boxesPerPitch / dataGroupLength * 10) / 10;
       var roundOffSlice = 0;
       // for (var i = blackColorChartParams.max; i >= 1; i--) {
       // for (var i = totalPitchesLength; i >= 1; i--) {
@@ -363,7 +357,6 @@ const Users = () => {
     }
   }, [excelFileData]);
 
-  var allShiftsSum = 0;
   useEffect(() => {
     if (!inBetweenBreaks) {
       console.log(dynamicProductRoundOff, 'donePieces')
@@ -384,14 +377,12 @@ const Users = () => {
       if (allShiftsData[0] && remainderDonePieces > 0) { //subtract on every button press
         allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
         // } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
-      } else if (allShiftsData[0] && remainderDonePieces == 0) { //check for remove product or remove shift
+      } else if (allShiftsData[0] && remainderDonePieces === 0) { //check for remove product or remove shift
         setLocalDonePieces(localDonePieces + limitShift);
         // if (remainderDonePieces === limitShift) {
         // setLocalDonePieces(0);
         console.log(trackShiftsDone, 'trackShiftsDoneFinal')
         setTrackShiftsDone(trackShiftsDone + 1);
-        // }
-        // allShiftsSum += limitShift;
 
         if (allShiftsData[0].length > 1) { //remove product
           allShiftsData[0].pop();
@@ -464,7 +455,7 @@ const Users = () => {
 
       // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
       // console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
-      // console.log(i, activeShiftPeriod, 'here is 2')
+      console.log(i, activeShiftPeriod, 'here is 2')
       cardsData.push(<CWidgetBrand
         style={{ marginLeft: '5px', width: '150px' }}
         color={color}
