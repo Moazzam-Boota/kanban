@@ -363,6 +363,7 @@ const Users = () => {
     }
   }, [excelFileData]);
 
+  const allShiftsSum = 0;
   useEffect(() => {
     if (!inBetweenBreaks) {
       console.log(dynamicProductRoundOff, 'donePieces')
@@ -372,23 +373,24 @@ const Users = () => {
 
       const limitShift = currentShiftOriginalCount;
       // const remainderDonePieces = donePieces % limitShift === 0 ? limitShift : donePieces % limitShift;
-      const remainderDonePieces = limitShift - donePieces;
+      const remainderDonePieces = (limitShift + allShiftsSum) - donePieces;
 
-      var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
+      // var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
 
 
       console.log('updatedShiftData', limitShift, donePieces % limitShift, localDonePieces, allShiftsData[0], allShiftsData.length, limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces, allShiftsDataRemainder)
       // if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) { //subtract on every button press
-      if (allShiftsData[0] && remainderDonePieces >= 0) { //subtract on every button press
+      if (allShiftsData[0] && remainderDonePieces > 0) { //subtract on every button press
         allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
         // } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
-      } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
-        setLocalDonePieces(allShiftsDataRemainder);
-        if (remainderDonePieces === limitShift) {
-          setLocalDonePieces(0);
-          console.log(trackShiftsDone, 'trackShiftsDoneFinal')
-          setTrackShiftsDone(trackShiftsDone + 1);
-        }
+      } else if (allShiftsData[0] && remainderDonePieces == 0) { //check for remove product or remove shift
+        // setLocalDonePieces(allShiftsDataRemainder);
+        // if (remainderDonePieces === limitShift) {
+        // setLocalDonePieces(0);
+        console.log(trackShiftsDone, 'trackShiftsDoneFinal')
+        setTrackShiftsDone(trackShiftsDone + 1);
+        // }
+        allShiftsSum += limitShift;
 
         if (allShiftsData[0].length > 1) { //remove product
           allShiftsData[0].pop();
