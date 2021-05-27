@@ -450,7 +450,11 @@ const Users = () => {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
         // if (activeShiftPeriod >= i)
-        headerWidgetColor = filterColor(i);
+        if (trackShiftsDone < 0) {
+          headerWidgetColor = filterColor(activeShiftPeriod);
+        } else {
+          headerWidgetColor = filterColor(i);
+        }
         // else if (activeShiftPeriod < i)
         //   headerWidgetColor = filterColor(activeShiftPeriod);
         // if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
