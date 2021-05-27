@@ -381,7 +381,7 @@ const Users = () => {
         setLocalDonePieces(localDonePieces + limitShift);
         // if (remainderDonePieces === limitShift) {
         // setLocalDonePieces(0);
-        console.log(trackShiftsDone, 'trackShiftsDoneFinal')
+        console.log(trackShiftsDone, activeShiftPeriod, 'trackShiftsDoneFinal')
         setTrackShiftsDone(trackShiftsDone + 1);
 
         if (allShiftsData[0].length > 1) { //remove product
