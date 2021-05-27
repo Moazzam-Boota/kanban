@@ -382,6 +382,7 @@ const Users = () => {
         // if (remainderDonePieces === limitShift) {
         // setLocalDonePieces(0);
         console.log(trackShiftsDone, activeShiftPeriod, 'trackShiftsDoneFinal')
+        // activeShiftPeriod - trackShiftsDone
         setTrackShiftsDone(trackShiftsDone + 1);
 
         if (allShiftsData[0].length > 1) { //remove product
@@ -448,7 +449,7 @@ const Users = () => {
       if (currentTime.isBetween(afterTime, beforeTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
-        headerWidgetColor = filterColor(i);
+        headerWidgetColor = filterColor(i - trackShiftsDone);
         // console.log(currentTime, i, activeShiftPeriod, i - trackShiftsDone, 'here is active')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
