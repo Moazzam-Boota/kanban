@@ -133,15 +133,15 @@ const Users = () => {
           setTimeLeft(moment());
         // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
         // console.log(trackShiftsDone - 1, 'trackshift')
-        Swal.fire(
-          {
-            position: 'top-end',
-            icon: 'warning',
-            title: 'Shift Updated!',
-            showConfirmButton: false,
-            timer: 1500
-          }
-        )
+        // Swal.fire(
+        //   {
+        //     position: 'top-end',
+        //     icon: 'warning',
+        //     title: 'Shift Updated!',
+        //     showConfirmButton: false,
+        //     timer: 1500
+        //   }
+        // )
         setTrackShiftsDone(trackShiftsDone - 1);
         cardsData = [];
         activeShiftPeriod = 0;
