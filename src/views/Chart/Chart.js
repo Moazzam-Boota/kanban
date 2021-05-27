@@ -368,7 +368,7 @@ const Users = () => {
       console.log(dynamicProductRoundOff, 'donePieces')
       const allShiftsData = [...dataGroupByProduct];
       var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
-      var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount'], 0);
+      var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount']);
 
       const limitShift = currentShiftOriginalCount;
       const remainderDonePieces = donePieces % limitShift === 0 ? limitShift : donePieces % limitShift;
@@ -376,7 +376,7 @@ const Users = () => {
       var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
 
 
-      console.log('updatedShiftData', limitShift, allShiftsData, limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
+      console.log('updatedShiftData', limitShift, allShiftsData[0], allShiftsData.length, limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
       if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) { //subtract on every button press
         allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
       } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
