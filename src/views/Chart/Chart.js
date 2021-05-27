@@ -105,7 +105,13 @@ const Users = () => {
   const orangeColorChartParams = lodash.get(colorChartParams, 'orange', {});
   const redColorChartParams = lodash.get(colorChartParams, 'red', {});
   const blackColorChartParams = lodash.get(colorChartParams, 'black', {});
-
+  var maxColorPitch = 0;
+  for (const [key, value] of Object.entries(colorChartParams)) {
+    const minMaxNumber = Math.max(value.min, value.max);
+    if (maxColorPitch < minMaxNumber) maxColorPitch = minMaxNumber;
+    // console.log(key, minMaxNumber, 'colorChartParams')
+  }
+  // console.log(maxColorPitch, 'colorChartParams')
   const dispatch = useDispatch()
   // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(0);
@@ -338,7 +344,7 @@ const Users = () => {
           runningTakTimeSum += pitchTakTime;
           const singleProductColor = lodash.get(dataGroupColors.filter(q => q.product === lodash.get(dataGroup[currentElement].data[j], 'part_num_VHPRNO_C')), [0, 'color']);
 
-          console.log(runningTakTimeSum, Math.ceil(runningTakTimeSum), takTimeSeconds, productCountDynamic, pitchTakTime, 'productCountDynamic')
+          // console.log(runningTakTimeSum, Math.ceil(runningTakTimeSum), takTimeSeconds, productCountDynamic, pitchTakTime, 'productCountDynamic')
 
           recordSet.push({
             ...dataGroup[currentElement],
@@ -359,36 +365,31 @@ const Users = () => {
 
   useEffect(() => {
     if (!inBetweenBreaks) {
-      // console.log(dynamicProductRoundOff, 'donePieces')
       const allShiftsData = [...dataGroupByProduct];
       var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
       var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount']);
 
       const limitShift = currentShiftOriginalCount;
-      // const remainderDonePieces = donePieces % limitShift === 0 ? limitShift : donePieces % limitShift;
       const remainderDonePieces = (limitShift + localDonePieces) - donePieces;
-
+      // const remainderDonePieces = donePieces % limitShift === 0 ? limitShift : donePieces % limitShift;
       // var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
 
 
-      // console.log('updatedShiftData', limitShift, donePieces % limitShift, localDonePieces, allShiftsData[0], allShiftsData.length, limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces, allShiftsDataRemainder)
-      console.log('updatedShiftData', activeShiftPeriod, limitShift, remainderDonePieces, localDonePieces)
+      // console.log('updatedShiftData', activeShiftPeriod, limitShift, remainderDonePieces, localDonePieces)
       // if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) { //subtract on every button press
+      // } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
+
       if (allShiftsData[0] && remainderDonePieces > 0) { //subtract on every button press
         allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
-        // } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
       } else if (allShiftsData[0] && remainderDonePieces === 0) { //check for remove product or remove shift
         setLocalDonePieces(localDonePieces + limitShift);
         // if (remainderDonePieces === limitShift) {
-        // setLocalDonePieces(0);
-        console.log(trackShiftsDone, activeShiftPeriod, 'trackShiftsDoneFinal')
-        // activeShiftPeriod - trackShiftsDone
+        // console.log(trackShiftsDone, activeShiftPeriod, 'trackShiftsDoneFinal')
         setTrackShiftsDone(trackShiftsDone + 1);
 
         if (allShiftsData[0].length > 1) { //remove product
           allShiftsData[0].pop();
-        }
-        else { //remove shift
+        } else { //remove shift
           allShiftsData.splice(0, 1);
         }
       }
@@ -450,7 +451,8 @@ const Users = () => {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
         headerWidgetColor = filterColor(i - trackShiftsDone);
-        // console.log(currentTime, i, activeShiftPeriod, i - trackShiftsDone, 'here is active')
+        if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
+        console.log(headerWidgetColor, i, activeShiftPeriod, maxColorPitch, 'here is active')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
@@ -463,7 +465,7 @@ const Users = () => {
         shift={i <= activeShiftPeriod ? dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0) : undefined}
         cardName={i <= activeShiftPeriod ? lodash.get(dataGroupByProduct, i - 1, []).map((product, index) => {
           currentCardBox = (i === 1 && dataGroupByProductRandom.length - 1 === index) ? product : {};
-          // console.log(product.color, 'singleProductColor')
+          console.log(product.color, color, 'singleProductColor')
           return (
             <span className="content-center" style={{
               backgroundColor: product.color,
@@ -498,8 +500,8 @@ const Users = () => {
   }
 
   renderCards();
-  cardsData.splice(0, totalPitchesLength - 12);
-  // console.log(totalPitchesLength, cardsData.length, blackColorChartParams.min, 'cardsData')
+  cardsData.splice(0, totalPitchesLength - (12) + (12 - maxColorPitch));
+  console.log(totalPitchesLength, cardsData.length, blackColorChartParams.min, 'cardsData')
   // console.log(allShiftsData, currentCardBox, 'currentCardBox')
   // console.log(currentCardBox, 'currentCardBox', headerWidgetColor)
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
