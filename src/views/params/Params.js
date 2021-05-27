@@ -37,7 +37,7 @@ const Params = () => {
   var [redMinColor, setRedMinColor] = useState(9);
   var [redMaxColor, setRedMaxColor] = useState(11);
   var [blackMinColor, setBlackMinColor] = useState(12);
-  var [blackMaxColor, setBlackMaxColor] = useState(13);
+  // var [blackMaxColor, setBlackMaxColor] = useState(13);
   var [shiftInitialTime, setShiftInitialTime] = useState([["09:00", "12:00"]]);
   var [shiftDaysValues, setShiftDaysValues] = useState([[]]);
   var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState([["11:00", "11:15"]]);
@@ -85,7 +85,7 @@ const Params = () => {
         },
         black: {
           min: blackMinColor,
-          max: blackMaxColor
+          // max: blackMaxColor
         }
       },
       PERS044: {  // assembly Line
