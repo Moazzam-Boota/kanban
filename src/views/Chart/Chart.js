@@ -376,7 +376,7 @@ const Users = () => {
       var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
 
 
-      console.log('updatedShiftData', limitShift, donePieces % limitShift, localDonePieces, allShiftsData[0], allShiftsData.length, limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces)
+      console.log('updatedShiftData', limitShift, donePieces % limitShift, localDonePieces, allShiftsData[0], allShiftsData.length, limitShift - remainderDonePieces, limitShift - allShiftsDataRemainder, remainderDonePieces, allShiftsDataRemainder)
       if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) { //subtract on every button press
         allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
       } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
