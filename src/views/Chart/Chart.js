@@ -127,7 +127,7 @@ const Users = () => {
   // console.log(moment().set({ hour: currentHour, minute: currentMinute, second: 0, millisecond: 0 }).add(30, 'minutes'), 'time-current')
   const firstUpdate = useRef(true);
   useEffect(() => {
-    // console.log(firstUpdate, pitchTime, 'firstUpdate')
+    console.log(pitchTime, currentTime, shiftStartTime, 'pitchTime')
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
@@ -150,7 +150,7 @@ const Users = () => {
         //   }
         // )
         setTrackShiftsDone(trackShiftsDone - 1);
-        // console.log(trackShiftsDone, 'trackShiftsDone')
+        console.log(trackShiftsDone, 'trackShiftsDone')
         cardsData = [];
         activeShiftPeriod = 0;
         renderCards();
@@ -251,7 +251,6 @@ const Users = () => {
     // });
   }, []);
 
-  var dynamicProductRoundOff = 0;
   useEffect(() => {
     if (excelFileData.length !== 0 && dataGroupByProduct.length == 0) {
       var counter = 0;
@@ -446,13 +445,16 @@ const Users = () => {
 
       var beforeTime = moment(shiftEndTime.format('HH:mm'), format);
       var afterTime = moment(shiftEndTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
-      // console.log(currentTime, afterTime, beforeTime, 'hello')
+      console.log(currentTime.format('HH:mm:ss'), afterTime.format('HH:mm:ss'), beforeTime.format('HH:mm:ss'), 'hello')
       if (currentTime.isBetween(afterTime, beforeTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
-        headerWidgetColor = filterColor(i - trackShiftsDone);
-        if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
-        // console.log(headerWidgetColor, i, activeShiftPeriod, maxColorPitch, 'here is active')
+        if (activeShiftPeriod >= i)
+          headerWidgetColor = filterColor(i);
+        else if (activeShiftPeriod < i)
+          headerWidgetColor = filterColor(activeShiftPeriod);
+        // if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
+        console.log(headerWidgetColor, activeShiftPeriod, i, trackShiftsDone, maxColorPitch, 'here is active')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
