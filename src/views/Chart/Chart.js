@@ -80,12 +80,12 @@ const Users = () => {
   const takTimeMinutes = (shiftDuration - sumOfBreaks) / totalQuantity;
   const takTimeSeconds = takTimeMinutes * 60;
   const takTimeQuantity = Math.round((pitchTime * takTimeMinutes) * 100) / 100;
-
+  const pitchTakTime = pitchTime / takTimeMinutes;
   var totalQuantityDynamic = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
   const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
   const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
   // const quantityPerSecond = quantityPerMinute * 60;   // quanitity per second
-  console.log(takTimeMinutes, takTimeSeconds, takTimeQuantity, 'time');
+  console.log(takTimeMinutes, takTimeSeconds, takTimeQuantity, pitchTakTime, 'time');
 
   const quantityPerBoxPerMinute = quantityPerBox * quantityPerMinute;  // per box time
   // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
@@ -346,9 +346,9 @@ const Users = () => {
 
         for (var j = 0; j < numberOfProducts; j++) {
           // var productCountDynamic = Math.round(Math.round(boxesPerPitch) / numberOfProducts);
-          var currentTakTimeSum = runningTakTimeSum + takTimeQuantity;
+          var currentTakTimeSum = runningTakTimeSum + pitchTakTime;
           var productCountDynamic = Math.ceil(currentTakTimeSum) - Math.ceil(runningTakTimeSum);
-          runningTakTimeSum += takTimeQuantity;
+          runningTakTimeSum += pitchTakTime;
           // lastTakTimeElement += Math.ceil(takTimeQuantity);
           // if (productCountDynamic === 0) {
           //   productCountDynamic = Math.round(boxesPerPitch / numberOfProducts * 2) / 2;
@@ -368,7 +368,7 @@ const Users = () => {
           // console.log(roundOffSlice, multipleRoundOff, 'roundOffSlice', Math.round(boxesPerPitch) / numberOfProducts)
           const singleProductColor = lodash.get(dataGroupColors.filter(q => q.product === lodash.get(dataGroup[currentElement].data[j], 'part_num_VHPRNO_C')), [0, 'color']);
           // console.log(productCountDynamic, boxesPerPitch, numberOfProducts, runningTakTimeSum, lastTakTimeElement, 'productCountDynamic')
-          console.log(runningTakTimeSum, Math.ceil(runningTakTimeSum), productCountDynamic, 'productCountDynamic')
+          console.log(runningTakTimeSum, Math.ceil(runningTakTimeSum), takTimeSeconds, productCountDynamic, pitchTakTime, 'productCountDynamic')
           // console.log(multipleRoundOff >= 1, productCountDynamic, productCountDynamic, 'singleProductColor')
           // console.log(productCountDynamic, boxesPerPitch / numberOfProducts, multipleRoundOff, dynamicProductRoundOff, 'singleProductColor')
 
