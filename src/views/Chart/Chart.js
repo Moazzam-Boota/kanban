@@ -160,7 +160,7 @@ const Users = () => {
       // return () => clearTimeout(console.log(timer, 'timer'));
       return () => window.clearTimeout(timer);
     }
-  }, []);
+  });
   // console.log(shiftTimeRange, 'shiftTimeRange', duration.asMinutes(), duration.asMinutes() / pitchTime, pitchTime)
   // duration subtract breaks
 
@@ -204,15 +204,15 @@ const Users = () => {
 
       // console.log(data, 'data')
       const message = data === 0 ? '' : ' in 5 Seconds';
-      // Swal.fire(
-      //   {
-      //     position: 'top-end',
-      //     icon: 'success',
-      //     title: 'Single Click, Press Button Again' + message,
-      //     showConfirmButton: false,
-      //     timer: 5000
-      //   }
-      // )
+      Swal.fire(
+        {
+          position: 'top-end',
+          icon: 'success',
+          title: 'Single Click, Press Button Again' + message,
+          showConfirmButton: false,
+          timer: 5000
+        }
+      )
     });
 
     socket.on('lightgreen', function (data) { //get button status from client
@@ -221,28 +221,28 @@ const Users = () => {
       // setSocketResponse(true);
       setDonePieces(data);
 
-      // Swal.fire(
-      //   {
-      //     position: 'top-end',
-      //     icon: 'success',
-      //     title: 'Card is updated!',
-      //     showConfirmButton: false,
-      //     timer: 1500
-      //   }
-      // )
+      Swal.fire(
+        {
+          position: 'top-end',
+          icon: 'success',
+          title: 'Card is updated!',
+          showConfirmButton: false,
+          timer: 1500
+        }
+      )
     });
     socket.on('lightred', function (data) { //get button status from client
       // document.getElementById("lightred").checked = data; //change checkbox according to push button on Raspberry Pi
       // socket.emit("lightred", data); //send push button status to back to server
-      // Swal.fire(
-      //   {
-      //     position: 'top-end',
-      //     icon: 'error',
-      //     title: 'Some Error Occured!',
-      //     showConfirmButton: false,
-      //     timer: 1500
-      //   }
-      // )
+      Swal.fire(
+        {
+          position: 'top-end',
+          icon: 'error',
+          title: 'Some Error Occured!',
+          showConfirmButton: false,
+          timer: 1500
+        }
+      )
     });
 
     // socket.on("FromAPI", data => {
