@@ -135,7 +135,7 @@ const Users = () => {
 
     // don't load for 1st time
     if (pitchTime !== 0 && !inBetweenBreaks) {
-      const timer = setTimeout(() => {
+      const timer = window.setTimeout(() => {
         if (trackShiftsDone <= 0)
           setTimeLeft(moment());
         // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
@@ -157,9 +157,10 @@ const Users = () => {
       }, pitchTime * 60 * 1000);
       console.log(timer, 'timer')
       // Clear timeout if the component is unmounted
-      return () => clearTimeout(console.log(timer, 'timer'));
+      // return () => clearTimeout(console.log(timer, 'timer'));
+      return () => window.clearTimeout(timer);
     }
-  });
+  }, []);
   // console.log(shiftTimeRange, 'shiftTimeRange', duration.asMinutes(), duration.asMinutes() / pitchTime, pitchTime)
   // duration subtract breaks
 
@@ -203,15 +204,15 @@ const Users = () => {
 
       // console.log(data, 'data')
       const message = data === 0 ? '' : ' in 5 Seconds';
-      Swal.fire(
-        {
-          position: 'top-end',
-          icon: 'success',
-          title: 'Single Click, Press Button Again' + message,
-          showConfirmButton: false,
-          timer: 5000
-        }
-      )
+      // Swal.fire(
+      //   {
+      //     position: 'top-end',
+      //     icon: 'success',
+      //     title: 'Single Click, Press Button Again' + message,
+      //     showConfirmButton: false,
+      //     timer: 5000
+      //   }
+      // )
     });
 
     socket.on('lightgreen', function (data) { //get button status from client
@@ -220,28 +221,28 @@ const Users = () => {
       // setSocketResponse(true);
       setDonePieces(data);
 
-      Swal.fire(
-        {
-          position: 'top-end',
-          icon: 'success',
-          title: 'Card is updated!',
-          showConfirmButton: false,
-          timer: 1500
-        }
-      )
+      // Swal.fire(
+      //   {
+      //     position: 'top-end',
+      //     icon: 'success',
+      //     title: 'Card is updated!',
+      //     showConfirmButton: false,
+      //     timer: 1500
+      //   }
+      // )
     });
     socket.on('lightred', function (data) { //get button status from client
       // document.getElementById("lightred").checked = data; //change checkbox according to push button on Raspberry Pi
       // socket.emit("lightred", data); //send push button status to back to server
-      Swal.fire(
-        {
-          position: 'top-end',
-          icon: 'error',
-          title: 'Some Error Occured!',
-          showConfirmButton: false,
-          timer: 1500
-        }
-      )
+      // Swal.fire(
+      //   {
+      //     position: 'top-end',
+      //     icon: 'error',
+      //     title: 'Some Error Occured!',
+      //     showConfirmButton: false,
+      //     timer: 1500
+      //   }
+      // )
     });
 
     // socket.on("FromAPI", data => {
