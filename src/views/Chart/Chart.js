@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { intialExcelSheet, getChartData } from "../../redux/actions/actions";
@@ -20,7 +20,7 @@ const moment = require('moment');
 const colorsPalette = ['#F26430', '#009B72', '#F6E27F', '#E2C391', '#2A2D34', '#6761A8', '#009DDC'];
 
 
-const Users = () => {
+const Users = (props) => {
   const queryPage = useLocation().search.match(/page=([0-9]+)/, '')
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
   const [page, setPage] = useState(currentPage)
@@ -149,16 +149,13 @@ const Users = () => {
     // this value changes (useEffect re-run)
     []
   );
-  useEffect(() => {
-    console.log(pitchTime, currentTime, shiftStartTime, 'pitchTime')
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
-    }
+  // const [refreshTime, setRefreshTime] = useState(0);
+  const MINUTE_MS = parseInt(pitchTime) * 60 * 1000;
 
-    // don't load for 1st time
+  useEffect(() => {
     if (pitchTime !== 0 && !inBetweenBreaks) {
-      const timer = window.setTimeout(() => {
+      const interval = setInterval(() => {
+        console.log('Logs every 5 seconds minute', pitchTime, MINUTE_MS);
         if (trackShiftsDone <= 0)
           setTimeLeft(moment());
         // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
@@ -177,13 +174,50 @@ const Users = () => {
         cardsData = [];
         activeShiftPeriod = 0;
         renderCards();
-      }, pitchTime * 60 * 1000);
-      console.log(timer, 'timer', pitchTime)
-      // Clear timeout if the component is unmounted
-      // return () => clearTimeout(console.log(timer, 'timer'));
-      return () => window.clearTimeout(timer);
+      }, MINUTE_MS);
+
+      return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
     }
-  });
+  }, [pitchTime])
+
+  // const [refreshTime, setRefreshTime] = useState("");
+
+  // const [timer, setTimer] = useState("")
+
+  // const secondPassed = useCallback(() => {
+  //   const cur_date = new Date(Date.now() - 1000 * 60);
+  //   const minutes = cur_date.getMinutes();
+  //   const seconds = cur_date.getSeconds();
+  //   console.log((4 - (minutes % 5)) + ":" + (seconds >= 50 ? "0" : "") + (59 - seconds), 'seconds-passed')
+  //   setRefreshTime(`${(4 - (minutes % 5)) + ":" + (seconds >= 50 ? "0" : "") + (59 - seconds)}`)
+  // }, [])
+
+  // useEffect(() => {
+  //   const run = setInterval(secondPassed, 500)
+  //   console.log(run, 'refreshTime');
+  //   return () => clearInterval(run)
+  // }, [])
+
+  // console.log(refreshTime, 'refreshTime')
+
+  // useEffect(() => {
+  //   console.log(pitchTime, currentTime, shiftStartTime, 'pitchTime')
+  //   if (firstUpdate.current) {
+  //     firstUpdate.current = false;
+  //     return;
+  //   }
+
+  //   // don't load for 1st time
+  //   if (pitchTime !== 0 && !inBetweenBreaks) {
+  //     const timer = window.setTimeout(() => {
+
+  //     }, pitchTime * 60 * 1000);
+  //     console.log(timer, 'timer', pitchTime)
+  //     // Clear timeout if the component is unmounted
+  //     // return () => clearTimeout(console.log(timer, 'timer'));
+  //     return () => window.clearTimeout(timer);
+  //   }
+  // });
   // console.log(shiftTimeRange, 'shiftTimeRange', duration.asMinutes(), duration.asMinutes() / pitchTime, pitchTime)
   // duration subtract breaks
 
