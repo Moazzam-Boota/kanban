@@ -131,7 +131,7 @@ const Users = () => {
   const delay = 5;
   const [show, setShow] = useState(false);
   let timer1 = setTimeout(() => setShow(true), delay * 1000);
-  console.log('timer1', timer1)
+  // console.log('timer1', timer1)
   useEffect(
     () => {
 
