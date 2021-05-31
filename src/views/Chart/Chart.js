@@ -52,12 +52,14 @@ const Users = () => {
   // 23:00 to 17:00
   var sumOfBreaks = 0;
   for (const [key, value] of Object.entries(shiftTimeBreaks)) {
-    var breakStartTime = moment(value.time[0], format);
-    var breakEndTime = moment(value.time[1], format);
+    if (value.time) {
+      var breakStartTime = moment(value.time[0], format);
+      var breakEndTime = moment(value.time[1], format);
 
-    var breaksDuration = moment.duration(breakEndTime.diff(breakStartTime));
-    sumOfBreaks += breaksDuration.asMinutes();
-    // console.log(`${key}:`, key, value, 'hello', sumOfBreaks, breakStartTime, breakEndTime);
+      var breaksDuration = moment.duration(breakEndTime.diff(breakStartTime));
+      sumOfBreaks += breaksDuration.asMinutes();
+      // console.log(`${key}:`, key, value, 'hello', sumOfBreaks, breakStartTime, breakEndTime);
+    }
   }
 
   var shiftStartTime = moment(shiftTimeRange[0], format);
@@ -166,14 +168,16 @@ const Users = () => {
 
   var inBetweenBreaks = false;
   for (const [key, value] of Object.entries(shiftTimeBreaks)) {
-    var breakStartTime = moment(value.time[0], format);
-    var breakEndTime = moment(value.time[1], format);
-    var beforeTime = moment(breakEndTime.format('HH:mm'), format);
-    var afterTime = moment(breakStartTime.format('HH:mm'), format);
-    // console.log(afterTime, beforeTime, 'hello')
-    if (moment().isBetween(afterTime, beforeTime)) {
-      inBetweenBreaks = true;
-      // console.log('inBetweenBreaks ')
+    if (value.time) {
+      var breakStartTime = moment(value.time[0], format);
+      var breakEndTime = moment(value.time[1], format);
+      var beforeTime = moment(breakEndTime.format('HH:mm'), format);
+      var afterTime = moment(breakStartTime.format('HH:mm'), format);
+      // console.log(afterTime, beforeTime, 'hello')
+      if (moment().isBetween(afterTime, beforeTime)) {
+        inBetweenBreaks = true;
+        // console.log('inBetweenBreaks ')
+      }
     }
   }
   // console.log(inBetweenBreaks, 'inBetweenBreaks')

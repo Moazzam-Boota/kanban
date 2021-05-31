@@ -48,6 +48,10 @@ const ShiftTime = ({
     setDays(shiftDaysValues);
   }, [shiftDaysValues]);
 
+  useEffect(() => {
+    setBreakCount(shiftInitialBreakTime.map((k, j) => j + 1));
+  }, [shiftInitialBreakTime]);
+
   // useEffect(() => {
   //   dispatch(getShiftData(shiftCount));
   // }, []);
@@ -56,12 +60,9 @@ const ShiftTime = ({
   //   (state) => state.excelReducer.chartParams
   // );
   // console.log(shiftInitialTime, "shiftInitialTime");
-  // console.log(shiftInitialBreakTime, "shiftInitialBreakTime");
   // console.log(shiftDaysValues, "singleShiftData");
   // shift breaks, handle here
-  var [breakCount, setBreakCount] = useState(
-    shiftInitialBreakTime ? shiftInitialBreakTime.map((k, j) => j + 1) : [1]
-  );
+  var [breakCount, setBreakCount] = useState([]);
 
   return (
     <CFormGroup>

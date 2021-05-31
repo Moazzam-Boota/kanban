@@ -40,7 +40,7 @@ const Params = () => {
   // var [blackMaxColor, setBlackMaxColor] = useState(13);
   var [shiftInitialTime, setShiftInitialTime] = useState([["09:00", "12:00"]]);
   var [shiftDaysValues, setShiftDaysValues] = useState([[]]);
-  var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState([["11:00", "11:15"]]);
+  var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState([[["11:00", "11:15"]]]);
   var [fileDownloadType, setFileDownloadType] = useState('');
   var [downloadTime, setDownloadTime] = useState([]);
 
@@ -182,13 +182,14 @@ const Params = () => {
 
         for (const [breakKey, breakData] of Object.entries(shiftsData.breaks)) {
           // console.log(breakKey, breakData.time, 'hello2');
+          // singleBreakTimes.push(breakData.time);
           singleBreakTimes.push(breakData.time);
         }
         breakTimes.push(singleBreakTimes);
         shiftTimes.push(shiftsData.time);
         shiftDays.push(shiftsData.days);
       }
-      // console.log(shiftTimes, breakTimes, 'hiwww');
+      console.log(shiftTimes, breakTimes, 'hiwww');
       // setShiftInitialTime(shiftsData[1].time);
       setShiftInitialTime(shiftTimes);
       setShiftInitialBreakTime(breakTimes);
