@@ -156,8 +156,8 @@ const Users = (props) => {
     if (pitchTime !== 0 && !inBetweenBreaks) {
       const interval = setInterval(() => {
         console.log('Logs every 5 seconds minute', pitchTime, MINUTE_MS);
-        if (trackShiftsDone <= 0)
-          setTimeLeft(moment());
+        // if (trackShiftsDone <= 0)
+        setTimeLeft(moment());
         // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
         // console.log(trackShiftsDone - 1, 'trackshift')
         // Swal.fire(
