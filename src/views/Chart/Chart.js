@@ -128,6 +128,27 @@ const Users = () => {
   const [currentTime, setTimeLeft] = useState(moment());
   // console.log(moment().set({ hour: currentHour, minute: currentMinute, second: 0, millisecond: 0 }).add(30, 'minutes'), 'time-current')
   const firstUpdate = useRef(true);
+  const delay = 5;
+  const [show, setShow] = useState(false);
+  let timer1 = setTimeout(() => setShow(true), delay * 1000);
+  console.log('timer1', timer1)
+  useEffect(
+    () => {
+
+      // this will clear Timeout
+      // when component unmount like in willComponentUnmount
+      // and show will not change to true
+      return () => {
+        clearTimeout(timer1);
+      };
+    },
+    // useEffect will run only one time with empty []
+    // if you pass a value to array,
+    // like this - [data]
+    // than clearTimeout will run every time
+    // this value changes (useEffect re-run)
+    []
+  );
   useEffect(() => {
     console.log(pitchTime, currentTime, shiftStartTime, 'pitchTime')
     if (firstUpdate.current) {
@@ -157,7 +178,7 @@ const Users = () => {
         activeShiftPeriod = 0;
         renderCards();
       }, pitchTime * 60 * 1000);
-      console.log(timer, 'timer')
+      console.log(timer, 'timer', pitchTime)
       // Clear timeout if the component is unmounted
       // return () => clearTimeout(console.log(timer, 'timer'));
       return () => window.clearTimeout(timer);
