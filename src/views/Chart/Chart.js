@@ -174,7 +174,7 @@ const Users = (props) => {
         console.log(trackShiftsDone, ':::after minus')
         // console.log(trackShiftsDone, '------after minus')
         cardsData = [];
-        activeShiftPeriod = 0;
+        // activeShiftPeriod = 0;
         renderCards();
       }, MINUTE_MS);
 
@@ -514,11 +514,11 @@ const Users = (props) => {
         activeShiftPeriod = i - trackShiftsDone;
         console.log(trackShiftsDone, "::::::::loop")
         // if (activeShiftPeriod >= i)
-        if (trackShiftsDone < 0) {
-          headerWidgetColor = filterColor(i);
-        } else {
-          headerWidgetColor = filterColor(activeShiftPeriod);
-        }
+        // if (trackShiftsDone < 0) {
+        //   headerWidgetColor = filterColor(i);
+        // } else {
+        headerWidgetColor = filterColor(activeShiftPeriod);
+        // }
         // else if (activeShiftPeriod < i)
         //   headerWidgetColor = filterColor(activeShiftPeriod);
         // if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
