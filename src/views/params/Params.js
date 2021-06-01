@@ -189,7 +189,7 @@ const Params = () => {
         shiftTimes.push(shiftsData.time);
         shiftDays.push(shiftsData.days);
       }
-      console.log(shiftTimes, breakTimes, 'hiwww');
+      // console.log(shiftTimes, breakTimes, 'hiwww');
       // setShiftInitialTime(shiftsData[1].time);
       setShiftInitialTime(shiftTimes);
       setShiftInitialBreakTime(breakTimes);

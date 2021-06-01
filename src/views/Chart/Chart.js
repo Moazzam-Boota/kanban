@@ -156,7 +156,7 @@ const Users = (props) => {
     if (pitchTime !== 0 && !inBetweenBreaks) {
       const interval = setInterval(() => {
         console.log('Logs every 5 seconds minute', pitchTime, trackShiftsDone, MINUTE_MS);
-        alert(trackShiftsDone)
+        alert(trackShiftsDone, '------before minus')
         // if (trackShiftsDone <= 0)
         setTimeLeft(moment());
         // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
@@ -171,8 +171,8 @@ const Users = (props) => {
         //   }
         // )
         setTrackShiftsDone(trackShiftsDone - 1);
-        alert(trackShiftsDone)
-        console.log(trackShiftsDone, 'trackShiftsDone')
+        alert(trackShiftsDone, '------after minus')
+        // console.log(trackShiftsDone, '------after minus')
         cardsData = [];
         activeShiftPeriod = 0;
         renderCards();
@@ -447,7 +447,7 @@ const Users = (props) => {
         // if (remainderDonePieces === limitShift) {
         // console.log(trackShiftsDone, activeShiftPeriod, 'trackShiftsDoneFinal')
         setTrackShiftsDone(trackShiftsDone + 1);
-        alert(trackShiftsDone+':::: done Piecess')
+        console.log(trackShiftsDone, ':::: done Piecess')
         if (allShiftsData[0].length > 1) { //remove product
           allShiftsData[0].pop();
         } else { //remove shift
@@ -512,7 +512,7 @@ const Users = (props) => {
       if (currentTime.isBetween(startPitchTime, endPitchTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
-        alert(trackShiftsDone + ": loop")
+        console.log(trackShiftsDone, "::::::::loop")
         // if (activeShiftPeriod >= i)
         if (trackShiftsDone < 0) {
           headerWidgetColor = filterColor(i);
