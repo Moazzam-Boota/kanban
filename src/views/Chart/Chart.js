@@ -507,7 +507,7 @@ const Users = (props) => {
 
       var endPitchTime = moment(shiftEndTime.format('HH:mm'), format);
       var startPitchTime = moment(shiftEndTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
-      console.log(currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'), 'hello', currentTime.isBetween(startPitchTime, endPitchTime))
+      // console.log(currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'), 'hello', currentTime.isBetween(startPitchTime, endPitchTime))
 
       if (currentTime.isBetween(startPitchTime, endPitchTime)) {
         // also check for length of allShiftsData
@@ -522,7 +522,7 @@ const Users = (props) => {
         // else if (activeShiftPeriod < i)
         //   headerWidgetColor = filterColor(activeShiftPeriod);
         // if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
-        console.log(headerWidgetColor, activeShiftPeriod, i, trackShiftsDone, maxColorPitch, 'here is active')
+        // console.log(headerWidgetColor, activeShiftPeriod, i, trackShiftsDone, maxColorPitch, 'here is active')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
