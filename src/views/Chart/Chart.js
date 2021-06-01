@@ -226,10 +226,10 @@ const Users = (props) => {
     if (value.time) {
       var breakStartTime = moment(value.time[0], format);
       var breakEndTime = moment(value.time[1], format);
-      var beforeTime = moment(breakEndTime.format('HH:mm'), format);
-      var afterTime = moment(breakStartTime.format('HH:mm'), format);
-      // console.log(afterTime, beforeTime, 'hello')
-      if (moment().isBetween(afterTime, beforeTime)) {
+      var endPitchTime = moment(breakEndTime.format('HH:mm'), format);
+      var startPitchTime = moment(breakStartTime.format('HH:mm'), format);
+      // console.log(startPitchTime, endPitchTime, 'hello')
+      if (moment().isBetween(startPitchTime, endPitchTime)) {
         inBetweenBreaks = true;
         // console.log('inBetweenBreaks ')
       }
@@ -503,10 +503,11 @@ const Users = (props) => {
     for (var i = totalPitchesLength; i >= 1; i--) {
       var color = filterColor(i);
 
-      var beforeTime = moment(shiftEndTime.format('HH:mm'), format);
-      var afterTime = moment(shiftEndTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
-      console.log(currentTime.format('HH:mm:ss'), afterTime.format('HH:mm:ss'), beforeTime.format('HH:mm:ss'), 'hello')
-      if (currentTime.isBetween(afterTime, beforeTime)) {
+      var endPitchTime = moment(shiftEndTime.format('HH:mm'), format);
+      var startPitchTime = moment(shiftEndTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
+      console.log(currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'), 'hello', currentTime.isBetween(startPitchTime, endPitchTime))
+
+      if (currentTime.isBetween(startPitchTime, endPitchTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
         // if (activeShiftPeriod >= i)
