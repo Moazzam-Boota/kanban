@@ -121,7 +121,7 @@ const Users = (props) => {
   const [trackShiftsDone, setTrackShiftsDone] = useState(0);
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
-
+  console.log(trackShiftsDone, '::::: initial render');
   // var currentHour = 16;
   // var currentMinute = 40;
   // const [currentTime, setTimeLeft] = useState(moment('16:40', format));
