@@ -170,7 +170,7 @@ const Users = (props) => {
         //     timer: 1500
         //   }
         // )
-        setTrackShiftsDone(trackShiftsDone - 1);
+        // setTrackShiftsDone(trackShiftsDone - 1);
         console.log(trackShiftsDone, ':::after minus')
         // console.log(trackShiftsDone, '------after minus')
         cardsData = [];
