@@ -447,7 +447,7 @@ const Users = (props) => {
         // if (remainderDonePieces === limitShift) {
         // console.log(trackShiftsDone, activeShiftPeriod, 'trackShiftsDoneFinal')
         setTrackShiftsDone(trackShiftsDone + 1);
-
+        alert(trackShiftsDone+':::: done Piecess')
         if (allShiftsData[0].length > 1) { //remove product
           allShiftsData[0].pop();
         } else { //remove shift
@@ -512,6 +512,7 @@ const Users = (props) => {
       if (currentTime.isBetween(startPitchTime, endPitchTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
+        alert(trackShiftsDone + ": loop")
         // if (activeShiftPeriod >= i)
         if (trackShiftsDone < 0) {
           headerWidgetColor = filterColor(i);
