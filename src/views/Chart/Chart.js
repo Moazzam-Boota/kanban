@@ -69,10 +69,6 @@ const Users = (props) => {
   var shiftDuration = moment.duration(shiftEndTime.diff(shiftStartTime)).asMinutes();
   const totalPitchesLength = Math.round(shiftDuration / pitchTime);
 
-  const checkCurrentDayShiftSelected = shiftDaysRange.includes(moment().format('ddd'));
-  // console.log(chartParams, 'chartParams', Math.round((shiftDuration / 60) * 100) / 100, sumOfBreaks, shiftDaysRange);
-  // console.log('Day', shiftDaysRange, checkCurrentDayShiftSelected, moment().format('ddd'));
-
   const quantityPerBox = 1;   // .per_box_qty_UNITCAIXA_IT
   // const quantityPerBox = lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT');   // .per_box_qty_UNITCAIXA_IT
   // console.log(quantityPerBox, 'quantityPerBox');
@@ -80,27 +76,16 @@ const Users = (props) => {
   const totalQuantity = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
 
   const takTimeMinutes = (shiftDuration - sumOfBreaks) / totalQuantity;
-  const takTimeSeconds = takTimeMinutes * 60;
-  const takTimeQuantity = Math.round((pitchTime * takTimeMinutes) * 100) / 100;
+  // const takTimeSeconds = takTimeMinutes * 60;
+  // const takTimeQuantity = Math.round((pitchTime * takTimeMinutes) * 100) / 100;
   const pitchTakTime = pitchTime / takTimeMinutes;
   var totalQuantityDynamic = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
   const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
   const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
-  // const quantityPerSecond = quantityPerMinute * 60;   // quanitity per second
-  // console.log(takTimeMinutes, takTimeSeconds, takTimeQuantity, pitchTakTime, 'time');
 
   const quantityPerBoxPerMinute = quantityPerBox * quantityPerMinute;  // per box time
-  // const quantityPerBoxPerSecond = quantityPerBox * quantityPerSecond;  // per box time
-
-  // const boxesPerPitch = pitchTime / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
   const boxesPerPitch = pitchTime / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
-  // console.log(boxesPerPitch, 'boxesPerPitch');
 
-  // TODO:: sum of all orders, quantity
-  // TODO:: sum of all orders, quantity
-  // 
-  // const donePieces = 100; //receive from clicking the button double click
-  // const skipBoxes = 3;
   const kanbanBoxes = (dailyHours * 60) / pitchTime;
   const blueColorChartParams = lodash.get(colorChartParams, 'blue', {});
   const greenColorChartParams = lodash.get(colorChartParams, 'green', {});
@@ -108,12 +93,12 @@ const Users = (props) => {
   const redColorChartParams = lodash.get(colorChartParams, 'red', {});
   const blackColorChartParams = lodash.get(colorChartParams, 'black', {});
   var maxColorPitch = 0;
+
   for (const [key, value] of Object.entries(colorChartParams)) {
     const minMaxNumber = Math.max(value.min, value.max);
     if (maxColorPitch < minMaxNumber) maxColorPitch = minMaxNumber;
-    // console.log(key, minMaxNumber, 'colorChartParams')
   }
-  // console.log(maxColorPitch, 'colorChartParams')
+
   const dispatch = useDispatch()
   // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(0);
@@ -121,35 +106,9 @@ const Users = (props) => {
   const [trackShiftsDone, setTrackShiftsDone] = useState(0);
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
-  console.log(trackShiftsDone, '::::: initial render');
-  // var currentHour = 16;
-  // var currentMinute = 40;
-  // const [currentTime, setTimeLeft] = useState(moment('16:40', format));
-  const [currentTime, setTimeLeft] = useState(moment());
-  // console.log(moment().set({ hour: currentHour, minute: currentMinute, second: 0, millisecond: 0 }).add(30, 'minutes'), 'time-current')
-  const firstUpdate = useRef(true);
-  const delay = 5;
-  const [show, setShow] = useState(false);
-  let timer1 = setTimeout(() => setShow(true), delay * 1000);
-  // console.log('timer1', timer1)
-  useEffect(
-    () => {
 
-      // this will clear Timeout
-      // when component unmount like in willComponentUnmount
-      // and show will not change to true
-      return () => {
-        clearTimeout(timer1);
-      };
-    },
-    // useEffect will run only one time with empty []
-    // if you pass a value to array,
-    // like this - [data]
-    // than clearTimeout will run every time
-    // this value changes (useEffect re-run)
-    []
-  );
-  // const [refreshTime, setRefreshTime] = useState(0);
+  const [currentTime, setTimeLeft] = useState(moment());
+
   const MINUTE_MS = parseInt(pitchTime) * 60 * 1000;
 
   useEffect(() => {
@@ -160,68 +119,15 @@ const Users = (props) => {
         // if (trackShiftsDone <= 0)
         setTimeLeft(moment());
         // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
-        // console.log(trackShiftsDone - 1, 'trackshift')
-        // Swal.fire(
-        //   {
-        //     position: 'top-end',
-        //     icon: 'warning',
-        //     title: 'Shift Updated!',
-        //     showConfirmButton: false,
-        //     timer: 1500
-        //   }
-        // )
-        // setTrackShiftsDone(trackShiftsDone - 1);
-        console.log(trackShiftsDone, ':::after minus')
+
+        // console.log(trackShiftsDone, ':::after minus')
         // console.log(trackShiftsDone, '------after minus')
-        cardsData = [];
-        // activeShiftPeriod = 0;
         renderCards();
       }, MINUTE_MS);
 
       return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
     }
   }, [pitchTime])
-
-  // const [refreshTime, setRefreshTime] = useState("");
-
-  // const [timer, setTimer] = useState("")
-
-  // const secondPassed = useCallback(() => {
-  //   const cur_date = new Date(Date.now() - 1000 * 60);
-  //   const minutes = cur_date.getMinutes();
-  //   const seconds = cur_date.getSeconds();
-  //   console.log((4 - (minutes % 5)) + ":" + (seconds >= 50 ? "0" : "") + (59 - seconds), 'seconds-passed')
-  //   setRefreshTime(`${(4 - (minutes % 5)) + ":" + (seconds >= 50 ? "0" : "") + (59 - seconds)}`)
-  // }, [])
-
-  // useEffect(() => {
-  //   const run = setInterval(secondPassed, 500)
-  //   console.log(run, 'refreshTime');
-  //   return () => clearInterval(run)
-  // }, [])
-
-  // console.log(refreshTime, 'refreshTime')
-
-  // useEffect(() => {
-  //   console.log(pitchTime, currentTime, shiftStartTime, 'pitchTime')
-  //   if (firstUpdate.current) {
-  //     firstUpdate.current = false;
-  //     return;
-  //   }
-
-  //   // don't load for 1st time
-  //   if (pitchTime !== 0 && !inBetweenBreaks) {
-  //     const timer = window.setTimeout(() => {
-
-  //     }, pitchTime * 60 * 1000);
-  //     console.log(timer, 'timer', pitchTime)
-  //     // Clear timeout if the component is unmounted
-  //     // return () => clearTimeout(console.log(timer, 'timer'));
-  //     return () => window.clearTimeout(timer);
-  //   }
-  // });
-  // console.log(shiftTimeRange, 'shiftTimeRange', duration.asMinutes(), duration.asMinutes() / pitchTime, pitchTime)
-  // duration subtract breaks
 
   var inBetweenBreaks = false;
   for (const [key, value] of Object.entries(shiftTimeBreaks)) {
@@ -341,8 +247,7 @@ const Users = (props) => {
         .map((value, key) => {
           // console.log(lodash.get(value, '0.per_box_qty_UNITCAIXA_IT'), 'order')
           const color = lodash.get(dataGroupColors.filter(q => q.product === value[0].part_num_VHPRNO_C), [0, 'color']);
-          // ++counter;
-
+          console.log(lodash.sumBy(value, 'quantity_VHOROQ_AH'), 'quantity')
           return {
             product: key,
             totalProducts: value.length,
@@ -363,28 +268,10 @@ const Users = (props) => {
         }).value(), ['row_num'], ['asc']).filter(k => k.sum !== null);
 
       var roundOffSlice = 0;
-      // for (var i = blackColorChartParams.max; i >= 1; i--) {
-      // for (var i = totalPitchesLength; i >= 1; i--) {
-      //   console.log(dataGroup, 'dataGroup2', i)
-
-      // }
       var currentElement = 0;
-      var lastTakTimeElement = 0;
       var runningTakTimeSum = 0;
-      // for (var i = blackColorChartParams.max; i >= 1; i--) {
       for (var i = totalPitchesLength; i >= 1; i--) {
-
-
-        // const currentElement = dataGroup.length - 1;
-
-        // currentElement = dataGroup[currentElement].sum - Math.round(boxesPerPitch) >= 0 ? currentElement : currentElement + 1;
         if (dataGroup[currentElement].sum - Math.round(boxesPerPitch) <= 0) currentElement = currentElement + 1;
-        // Difference of order from 0, 9 - 14 -> -5
-        // foreach pitch, subtract the boxesPerPitch
-        // if sum - boxesPerPitch !<= 0, then subtract, else move to next order
-        // console.log(dataGroup, 'dataGroup2', i, currentElement, dataGroup[currentElement])
-
-        // console.log(currentElement, 'currentElement', Math.round(boxesPerPitch))
 
         roundOffSlice += Math.round(boxesPerPitch) - boxesPerPitch;
 
@@ -404,8 +291,6 @@ const Users = (props) => {
           var productCountDynamic = Math.ceil(runningTakTimeSum + pitchTakTime) - Math.ceil(runningTakTimeSum);
           runningTakTimeSum += pitchTakTime;
           const singleProductColor = lodash.get(dataGroupColors.filter(q => q.product === lodash.get(dataGroup[currentElement].data[j], 'part_num_VHPRNO_C')), [0, 'color']);
-
-          // console.log(runningTakTimeSum, Math.ceil(runningTakTimeSum), takTimeSeconds, productCountDynamic, pitchTakTime, 'productCountDynamic')
 
           recordSet.push({
             ...dataGroup[currentElement],
@@ -481,14 +366,6 @@ const Users = (props) => {
     .map((value, key) => ({ orderNumber: key, data: value }))
     .value();
 
-
-  // check if currentTime is between the pitchTime, add cards to that pitch
-  // shiftTimeRange[0] add pitchTime, check if current time is between, old and new+shift time, show boxes
-  // var time = moment() gives you current time. no format required.
-
-  // console.log(totalPitchesLength, 'totalPitchesLength', dataGroupByProduct)
-  // for (var i = kanbanBoxes - skipBoxes; i >= 1; i--) {
-
   function filterColor(currentPointer) {
     if (currentPointer <= parseInt(blueColorChartParams.min) && parseInt(blueColorChartParams.min) !== 0) return 'blue';
     else if (currentPointer >= parseInt(greenColorChartParams.min) && currentPointer <= parseInt(greenColorChartParams.max) && parseInt(greenColorChartParams.min) !== 0 && parseInt(greenColorChartParams.max) !== 0) return 'green';
@@ -513,22 +390,14 @@ const Users = (props) => {
         // also check for length of allShiftsData
         activeShiftPeriod = i - trackShiftsDone;
         console.log(trackShiftsDone, "::::::::loop")
-        // if (activeShiftPeriod >= i)
-        // if (trackShiftsDone < 0) {
-        //   headerWidgetColor = filterColor(i);
-        // } else {
         headerWidgetColor = filterColor(activeShiftPeriod);
-        // }
-        // else if (activeShiftPeriod < i)
-        //   headerWidgetColor = filterColor(activeShiftPeriod);
+
         // if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
         // console.log(headerWidgetColor, activeShiftPeriod, i, trackShiftsDone, maxColorPitch, 'here is active')
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
       // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
-      // console.log(dataGroupByProductRandom.map(k => k.productCount).reduce((a, b) => a + b, 0), 'dataGroupByProductRandom', i - 1, activeShiftPeriod)
-      // console.log(i, activeShiftPeriod, 'here is 2')
       cardsData.push(<CWidgetBrand
         style={{ marginLeft: '5px', width: '150px' }}
         color={color}
