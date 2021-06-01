@@ -156,7 +156,7 @@ const Users = (props) => {
     if (pitchTime !== 0 && !inBetweenBreaks) {
       const interval = setInterval(() => {
         console.log('Logs every 5 seconds minute', pitchTime, trackShiftsDone, MINUTE_MS);
-        alert(trackShiftsDone, '------before minus')
+        console.log(trackShiftsDone, ':::before minus')
         // if (trackShiftsDone <= 0)
         setTimeLeft(moment());
         // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
@@ -171,7 +171,7 @@ const Users = (props) => {
         //   }
         // )
         setTrackShiftsDone(trackShiftsDone - 1);
-        alert(trackShiftsDone, '------after minus')
+        console.log(trackShiftsDone, ':::after minus')
         // console.log(trackShiftsDone, '------after minus')
         cardsData = [];
         activeShiftPeriod = 0;
