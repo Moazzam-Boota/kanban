@@ -155,7 +155,7 @@ const Users = (props) => {
   useEffect(() => {
     if (pitchTime !== 0 && !inBetweenBreaks) {
       const interval = setInterval(() => {
-        console.log('Logs every 5 seconds minute', pitchTime, MINUTE_MS);
+        console.log('Logs every 5 seconds minute', pitchTime, trackShiftsDone, MINUTE_MS);
         // if (trackShiftsDone <= 0)
         setTimeLeft(moment());
         // setTimeLeft(moment().set({ hour: currentTime.hour(), minute: currentTime.minutes(), second: 0, millisecond: 0 }).add(30, 'minutes'));
