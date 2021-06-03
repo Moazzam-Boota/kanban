@@ -104,9 +104,10 @@ const Users = () => {
   const [donePieces, setDonePieces] = useState(0);
   const [localDonePieces, setLocalDonePieces] = useState(0);
   const [trackShiftsDone, setTrackShiftsDone] = useState(0);
-  const [piecesPerHourOnTimeMoment, setPiecesPerHourOnTimeMoment] = useState(moment());
+  const [piecesPerHourOnTimeMoment, setPiecesPerHourOnTimeMoment] = useState(moment(moment(), format));
   const [piecesPerHourOnTime, setPiecesPerHourOnTime] = useState(0);
   const [piecesPerHourOnDay, setPiecesPerHourOnDay] = useState(0);
+  const [pendingPiecesPerProduct, setPendingPiecesPerProduct] = useState(0);
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
 
@@ -273,7 +274,7 @@ const Users = () => {
       setDataGroupByProduct(allShiftsData);
     }
   }, [excelFileData]);
-
+  // console.log(moment.duration(moment().diff(piecesPerHourOnTimeMoment)).asMinutes(), 'timediff')
   useEffect(() => {
     if (!inBetweenBreaks && donePieces !== 0) {
       const allShiftsData = [...dataGroupByProduct];
@@ -291,12 +292,16 @@ const Users = () => {
       // } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
 
       // press button calculate difference
-      const currentTime = moment();
+      const currentTime = moment(moment(), format);
       // set value
       setPiecesPerHourOnDay(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours());
       setPiecesPerHourOnTime(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours());
       setPiecesPerHourOnTimeMoment(currentTime);
-      console.log(piecesPerHourOnTime, 'piecesPerHourOnTime')
+
+      // lodash.get(currentCardBox, 'total')
+      if ((lodash.get(currentCardBox, 'total') + pendingPiecesPerProduct) - donePieces === 0)
+        setPendingPiecesPerProduct(pendingPiecesPerProduct + lodash.get(currentCardBox, 'total'));
+      // console.log(piecesPerHourOnTime, 'piecesPerHourOnTime')
       if (allShiftsData[0] && remainderDonePieces > 0) { //subtract on every button press
         allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
       } else if (allShiftsData[0] && remainderDonePieces === 0) { //check for remove product or remove shift
