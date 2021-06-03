@@ -274,7 +274,7 @@ const Users = () => {
       setDataGroupByProduct(allShiftsData);
     }
   }, [excelFileData]);
-  // console.log(moment.duration(moment().diff(piecesPerHourOnTimeMoment)).asMinutes(), 'timediff')
+  // console.log(moment.duration(moment().diff(piecesPerHourOnTimeMoment)).asHours(), 'timediff')
   useEffect(() => {
     if (!inBetweenBreaks && donePieces !== 0) {
       const allShiftsData = [...dataGroupByProduct];
@@ -450,7 +450,7 @@ const Users = () => {
               <p style={kanbanBoxWidgetStyle}>Referència del producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.part_num_VHPRNO_C')}</span> </p>
               <p style={kanbanBoxWidgetStyle}>Descripció del producte: <span style={metricStyle}>{lodash.get(currentCardBox, 'record.description_VHTXT1_W')}</span> </p>
               <p style={kanbanBoxWidgetStyle}>Quantitat a produir total: <span style={metricStyle}>{lodash.get(currentCardBox, 'total')}</span> </p>
-              <p style={kanbanBoxWidgetStyle}>Quantitat que falta per produir: <span style={metricStyle}>{lodash.get(currentCardBox, 'total') - donePieces}</span> </p>
+              <p style={kanbanBoxWidgetStyle}>Quantitat que falta per produir: <span style={metricStyle}>{pendingPiecesPerProduct + lodash.get(currentCardBox, 'total') - donePieces}</span> </p>
               <p style={kanbanBoxWidgetStyle}>Quantitat per caixa: <span style={metricStyle}>{parseFloat(lodash.get(currentCardBox, 'productsPerBox')).toFixed(2)}</span> </p>
             </div>
           } />
