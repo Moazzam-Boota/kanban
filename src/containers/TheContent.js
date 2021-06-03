@@ -35,7 +35,7 @@ const TheContent = () => {
                   )} />
               )
             })}
-            <Redirect from="/" to="/params" />
+            <Redirect from="/" to="/chart" />
           </Switch>
         </Suspense>
       </CContainer>
