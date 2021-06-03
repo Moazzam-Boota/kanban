@@ -71,30 +71,29 @@ const Users = () => {
 
   // const [quantityPerBox, setQuantityPerBox] = useState(1);
   // const quantityPerBox = 1;   // .per_box_qty_UNITCAIXA_IT
-  const quantityPerBox = lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT');   // .per_box_qty_UNITCAIXA_IT
+  // const quantityPerBox = lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT');   // .per_box_qty_UNITCAIXA_IT
   // console.log(quantityPerBox, 'quantityPerBox');
-  const dailyHours = Math.round((shiftDuration - sumOfBreaks / 60) * 100) / 100; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
+  // const dailyHours = Math.round((shiftDuration - sumOfBreaks / 60) * 100) / 100; //hours, sum of all shifts (1, 2, 3) - sum of breaks (15min, 20min)
   const totalQuantity = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
 
   const takTimeMinutes = (shiftDuration - sumOfBreaks) / totalQuantity;
+  // console.log(takTimeMinutes * 60, 'takTimeMinutes')
   // const takTimeSeconds = takTimeMinutes * 60;
   // const takTimeQuantity = Math.round((pitchTime * takTimeMinutes) * 100) / 100;
   const pitchTakTime = pitchTime / takTimeMinutes;
   var totalQuantityDynamic = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
-  const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
-  const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
-
-  const quantityPerBoxPerMinute = quantityPerBox * quantityPerMinute;  // per box time
+  // const quantityPerHour = dailyHours / totalQuantity;   // quanitity per hour
+  // const quantityPerMinute = quantityPerHour * 60;   // quanitity per minute
+  // const quantityPerBoxPerMinute = quantityPerBox * quantityPerMinute;  // per box time
   // const boxesPerPitch = pitchTime / quantityPerBoxPerMinute;  //13.875 -> 13, 13, 13, 13, 14, when decimal equals 1, add to next one
 
-  const kanbanBoxes = (dailyHours * 60) / pitchTime;
   const blueColorChartParams = lodash.get(colorChartParams, 'blue', {});
   const greenColorChartParams = lodash.get(colorChartParams, 'green', {});
   const orangeColorChartParams = lodash.get(colorChartParams, 'orange', {});
   const redColorChartParams = lodash.get(colorChartParams, 'red', {});
   const blackColorChartParams = lodash.get(colorChartParams, 'black', {});
-  var maxColorPitch = 0;
 
+  var maxColorPitch = 0;
   for (const [key, value] of Object.entries(colorChartParams)) {
     const minMaxNumber = Math.max(value.min, value.max);
     if (maxColorPitch < minMaxNumber) maxColorPitch = minMaxNumber;
@@ -105,6 +104,9 @@ const Users = () => {
   const [donePieces, setDonePieces] = useState(0);
   const [localDonePieces, setLocalDonePieces] = useState(0);
   const [trackShiftsDone, setTrackShiftsDone] = useState(0);
+  const [piecesPerHourOnTimeMoment, setPiecesPerHourOnTimeMoment] = useState(moment());
+  const [piecesPerHourOnTime, setPiecesPerHourOnTime] = useState(0);
+  const [piecesPerHourOnDay, setPiecesPerHourOnDay] = useState(0);
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
   var headerWidgetColor = '';
 
@@ -273,7 +275,7 @@ const Users = () => {
   }, [excelFileData]);
 
   useEffect(() => {
-    if (!inBetweenBreaks) {
+    if (!inBetweenBreaks && donePieces !== 0) {
       const allShiftsData = [...dataGroupByProduct];
       var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
       var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount']);
@@ -288,6 +290,13 @@ const Users = () => {
       // if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) { //subtract on every button press
       // } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
 
+      // press button calculate difference
+      const currentTime = moment();
+      // set value
+      setPiecesPerHourOnDay(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours());
+      setPiecesPerHourOnTime(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours());
+      setPiecesPerHourOnTimeMoment(currentTime);
+      console.log(piecesPerHourOnTime, 'piecesPerHourOnTime')
       if (allShiftsData[0] && remainderDonePieces > 0) { //subtract on every button press
         allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
       } else if (allShiftsData[0] && remainderDonePieces === 0) { //check for remove product or remove shift
@@ -412,13 +421,13 @@ const Users = () => {
           <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pending Pieces" text={totalQuantity - donePieces} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (On Time)" text={parseFloat((totalQuantity - donePieces) / dailyHours).toFixed(2)} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (On Time)" text={parseFloat(piecesPerHourOnTime).toFixed(2)} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Day)" text={parseFloat(totalQuantity / dailyHours).toFixed(2)} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Day)" text={parseFloat(piecesPerHourOnDay).toFixed(2)} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Target)" text={parseFloat(totalQuantity / kanbanBoxes).toFixed(2)} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Target)" text={parseFloat(1 / (takTimeMinutes * 60)).toFixed(2)} />
         </CCol>
       </CRow>
       <h1>{lodash.get(dataGroupByLine, '[0].lineNumber')}</h1>
