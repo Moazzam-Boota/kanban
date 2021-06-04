@@ -274,8 +274,7 @@ const Users = () => {
       setDataGroupByProduct(allShiftsData);
     }
   }, [excelFileData]);
-  console.log(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours(), 'timediff-1')
-  console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'timediff-2')
+
   useEffect(() => {
     if (!inBetweenBreaks && donePieces !== 0) {
       const allShiftsData = [...dataGroupByProduct];
@@ -297,6 +296,8 @@ const Users = () => {
       // set value
       setPiecesPerHourOnDay(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours());
       console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'diff');
+      console.log(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours(), 'timediff-1')
+      console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'timediff-2')
       setPiecesPerHourOnTime(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours());
       setPiecesPerHourOnTimeMoment(currentTime);
 
