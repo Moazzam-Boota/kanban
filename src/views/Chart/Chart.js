@@ -274,7 +274,8 @@ const Users = () => {
       setDataGroupByProduct(allShiftsData);
     }
   }, [excelFileData]);
-  // console.log(moment.duration(moment().diff(piecesPerHourOnTimeMoment)).asHours(), 'timediff')
+  console.log(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours(), 'timediff-1')
+  console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'timediff-2')
   useEffect(() => {
     if (!inBetweenBreaks && donePieces !== 0) {
       const allShiftsData = [...dataGroupByProduct];
@@ -432,7 +433,7 @@ const Users = () => {
           <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Day)" text={parseFloat(piecesPerHourOnDay).toFixed(2)} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Target)" text={parseFloat(1 / (takTimeMinutes * 60)).toFixed(2)} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Target)" text={parseFloat((1 / (takTimeMinutes * 60)) * (shiftDuration - sumOfBreaks)).toFixed(2)} />
         </CCol>
       </CRow>
       <h1>{lodash.get(dataGroupByLine, '[0].lineNumber')}</h1>
