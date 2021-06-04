@@ -296,6 +296,7 @@ const Users = () => {
       const currentTime = moment(moment(), format);
       // set value
       setPiecesPerHourOnDay(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours());
+      console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(),'diff');
       setPiecesPerHourOnTime(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours());
       setPiecesPerHourOnTimeMoment(currentTime);
 
