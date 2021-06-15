@@ -236,7 +236,7 @@ const Users = () => {
       var loadNextProductTotal = 0;
       var currentElement = 0;
       var runningTakTimeSum = 0;
-      for (var i = totalPitchesLength; (i >= 1 && totalQuantityDynamic > 0); i--) {
+      for (var i = totalPitchesLength; (i >= 1 && totalQuantityDynamic > 0 && dataGroup[currentElement]); i--) {
         const recordSet = [];
         console.log(numberOfProducts, dataGroup[currentElement], 'numberOfProducts')
         const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
