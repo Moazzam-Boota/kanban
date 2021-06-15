@@ -77,7 +77,7 @@ const Users = () => {
   const totalQuantity = lodash.sumBy(excelFileData, 'quantity_VHOROQ_AH'); //sum of all quantities
 
   const takTimeMinutes = (shiftDuration - sumOfBreaks) / totalQuantity;
-  // console.log(takTimeMinutes * 60, 'takTimeMinutes')
+  // console.log(takTimeMinutes, shiftDuration - sumOfBreaks, 'takTimeMinutes')
   // const takTimeSeconds = takTimeMinutes * 60;
   // const takTimeQuantity = Math.round((pitchTime * takTimeMinutes) * 100) / 100;
   const pitchTakTime = pitchTime / takTimeMinutes;
@@ -240,17 +240,28 @@ const Users = () => {
         const recordSet = [];
         const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
         // const numberOfProducts = 4; //number of Products in current order
+        // console.log(dataGroup, 'dataGroup243')
+
+        const currentShiftProducts = 0;
+        // based on count, assign products
+        // also subtract their sum value
+
         for (var j = 0; j < numberOfProducts; j++) {
           var currentElementData = dataGroup[currentElement];
           const singleProductColor = colorsPalette[currentElement];
-
-          var productCountDynamic = Math.ceil(runningTakTimeSum + pitchTakTime) - Math.ceil(runningTakTimeSum);
+          const currentShiftSum = Math.ceil(runningTakTimeSum + pitchTakTime) - Math.ceil(runningTakTimeSum);
+          var productCountDynamic = currentShiftSum;
+          var nextProduct = 0;
           runningTakTimeSum += pitchTakTime;
 
-          if (loadNextProductTotal + productCountDynamic >= currentElementData.sum) {
+          // console.log(productCountDynamic, 'productCountDynamic0')
+          if (loadNextProductTotal + productCountDynamic >= currentElementData.sum) {  //nextProduct
+
             productCountDynamic = productCountDynamic - (loadNextProductTotal + productCountDynamic - currentElementData.sum);
+            nextProduct = currentShiftSum - productCountDynamic;
             loadNextProductTotal = 0;
             currentElement = currentElement + 1;
+            // console.log(productCountDynamic, nextProduct, 'productCountDynamic')
           } else {
             loadNextProductTotal += productCountDynamic;
           }
@@ -265,6 +276,23 @@ const Users = () => {
             productCount: productCountDynamic, //for changing dynamic, on button push
             originalCount: productCountDynamic, //comparing with originalCount
           });
+
+          if (nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0))
+            // console.log(nextProduct, currentShiftSum, currentShiftSum - nextProduct, nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0), lodash.get(dataGroup[currentElement], 'sum', 0), 'nextProduct');
+          if (nextProduct !== 0 && nextProduct !== currentShiftSum && dataGroup[currentElement]) {
+            // console.log(currentElementData, 'currentElementData')
+            var currentElementData = dataGroup[currentElement];
+            // console.log(dataGroup[currentElement].sum, 'dataGroup[currentElement].sum')
+            currentElementData.sum = currentElementData.sum - nextProduct;
+            const singleProductColor = colorsPalette[currentElement];
+            recordSet.push({
+              ...currentElementData,
+              color: singleProductColor,
+              record: currentElementData.data[j], //check sum, currentElementData.data[j]
+              productCount: nextProduct, //for changing dynamic, on button push
+              originalCount: nextProduct, //comparing with originalCount
+            });
+          }
 
         }
 
@@ -295,9 +323,9 @@ const Users = () => {
       const currentTime = moment(moment(), format);
       // set value
       setPiecesPerHourOnDay(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours());
-      console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'diff');
-      console.log(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours(), 'timediff-1')
-      console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'timediff-2')
+      // console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'diff');
+      // console.log(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours(), 'timediff-1')
+      // console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'timediff-2')
       setPiecesPerHourOnTime(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours());
       setPiecesPerHourOnTimeMoment(currentTime);
 
@@ -429,13 +457,13 @@ const Users = () => {
           <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pending Pieces" text={totalQuantity - donePieces} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (On Time)" text={parseFloat(piecesPerHourOnTime).toFixed(2)} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (On Time)" text={parseFloat(piecesPerHourOnTime).toFixed(1)} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Day)" text={parseFloat(piecesPerHourOnDay).toFixed(2)} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Day)" text={parseFloat(piecesPerHourOnDay).toFixed(1)} />
         </CCol>
         <CCol xs="2">
-          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Target)" text={parseFloat((1 / (takTimeMinutes * 60)) * (shiftDuration - sumOfBreaks)).toFixed(2)} />
+          <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Target)" text={parseFloat(((1 / takTimeMinutes) * 60)).toFixed(0)} />
         </CCol>
       </CRow>
       <h1>{lodash.get(dataGroupByLine, '[0].lineNumber')}</h1>

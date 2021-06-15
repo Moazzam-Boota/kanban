@@ -63,7 +63,7 @@ export function getChartData() {
 
 export function startApp(data) {
   return function (dispatch) {
-    console.log('data', data)
+    // console.log('data', data)
     dispatch({
       type: types.START_APP,
       data: data,

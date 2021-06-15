@@ -23,7 +23,7 @@ export default function excelReducer(state = initialState, action) {
   switch (action.type) {
 
     case types.START_APP: {
-      console.log(lodash.isEmpty(action.data), action.data, state, 'startApp')
+      // console.log(lodash.isEmpty(action.data), action.data, state, 'startApp')
       return !lodash.isEmpty(action.data) ? action.data : { ...state }
     }
 
@@ -112,7 +112,7 @@ export default function excelReducer(state = initialState, action) {
     }
 
     case types.BREAK_TIME: {
-      console.log(action.data.breakValue, 'action.data.breakValue');
+      // console.log(action.data.breakValue, 'action.data.breakValue');
       return {
         ...state,
         [action.data.shiftCount]: {
@@ -142,7 +142,7 @@ export default function excelReducer(state = initialState, action) {
     }
 
     case types.GET_SHIFT_DATA: {
-      console.log(state[action.data])
+      // console.log(state[action.data])
       return {
         // ...state,
         // [action.data.shiftCount]: {
