@@ -232,13 +232,13 @@ const Users = () => {
             productsPerBox: lodash.get(value, '0.per_box_qty_UNITCAIXA_IT')  //product quantity
           }
         }).value(), ['row_num'], ['asc']).filter(k => k.sum !== null);
-      console.log(dataGroup, totalPitchesLength, totalQuantityDynamic, 'dataGroup')
+      // console.log(dataGroup, totalPitchesLength, totalQuantityDynamic, 'dataGroup')
       var loadNextProductTotal = 0;
       var currentElement = 0;
       var runningTakTimeSum = 0;
       for (var i = totalPitchesLength; (i >= 1 && totalQuantityDynamic > 0 && dataGroup[currentElement]); i--) {
         const recordSet = [];
-        console.log(numberOfProducts, dataGroup[currentElement], 'numberOfProducts')
+        // console.log(numberOfProducts, dataGroup[currentElement], 'numberOfProducts')
         const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
         // const numberOfProducts = 4; //number of Products in current order
         // console.log(dataGroup, 'dataGroup243')
@@ -252,6 +252,7 @@ const Users = () => {
           const singleProductColor = colorsPalette[currentElement];
           const currentShiftSum = Math.ceil(runningTakTimeSum + pitchTakTime) - Math.ceil(runningTakTimeSum);
           var productCountDynamic = currentShiftSum;
+          const recordList = [];
           var nextProduct = 0;
           runningTakTimeSum += pitchTakTime;
 
@@ -293,8 +294,9 @@ const Users = () => {
                 productCount: nextProduct, //for changing dynamic, on button push
                 originalCount: nextProduct, //comparing with originalCount
               });
+              recordSet.reverse();
             }
-
+          // console.log(recordSet, 'recordSet')
         }
 
         allShiftsData.push(recordSet)
