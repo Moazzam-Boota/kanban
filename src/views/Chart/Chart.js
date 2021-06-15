@@ -232,7 +232,7 @@ const Users = () => {
             productsPerBox: lodash.get(value, '0.per_box_qty_UNITCAIXA_IT')  //product quantity
           }
         }).value(), ['row_num'], ['asc']).filter(k => k.sum !== null);
-      console.log(dataGroup, 'dataGroup')
+      console.log(dataGroup, totalPitchesLength, totalQuantityDynamic, 'dataGroup')
       var loadNextProductTotal = 0;
       var currentElement = 0;
       var runningTakTimeSum = 0;
