@@ -232,13 +232,14 @@ const Users = () => {
             productsPerBox: lodash.get(value, '0.per_box_qty_UNITCAIXA_IT')  //product quantity
           }
         }).value(), ['row_num'], ['asc']).filter(k => k.sum !== null);
-      // console.log(dataGroup, 'dataGroup')
+      console.log(dataGroup, 'dataGroup')
       var loadNextProductTotal = 0;
       var currentElement = 0;
       var runningTakTimeSum = 0;
       for (var i = totalPitchesLength; (i >= 1 && totalQuantityDynamic > 0); i--) {
         const recordSet = [];
         const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
+        console.log(numberOfProducts, dataGroup[currentElement], 'numberOfProducts')
         // const numberOfProducts = 4; //number of Products in current order
         // console.log(dataGroup, 'dataGroup243')
 
@@ -279,20 +280,20 @@ const Users = () => {
 
           if (nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0))
             // console.log(nextProduct, currentShiftSum, currentShiftSum - nextProduct, nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0), lodash.get(dataGroup[currentElement], 'sum', 0), 'nextProduct');
-          if (nextProduct !== 0 && nextProduct !== currentShiftSum && dataGroup[currentElement]) {
-            // console.log(currentElementData, 'currentElementData')
-            var currentElementData = dataGroup[currentElement];
-            // console.log(dataGroup[currentElement].sum, 'dataGroup[currentElement].sum')
-            currentElementData.sum = currentElementData.sum - nextProduct;
-            const singleProductColor = colorsPalette[currentElement];
-            recordSet.push({
-              ...currentElementData,
-              color: singleProductColor,
-              record: currentElementData.data[j], //check sum, currentElementData.data[j]
-              productCount: nextProduct, //for changing dynamic, on button push
-              originalCount: nextProduct, //comparing with originalCount
-            });
-          }
+            if (nextProduct !== 0 && nextProduct !== currentShiftSum && dataGroup[currentElement]) {
+              // console.log(currentElementData, 'currentElementData')
+              var currentElementData = dataGroup[currentElement];
+              // console.log(dataGroup[currentElement].sum, 'dataGroup[currentElement].sum')
+              currentElementData.sum = currentElementData.sum - nextProduct;
+              const singleProductColor = colorsPalette[currentElement];
+              recordSet.push({
+                ...currentElementData,
+                color: singleProductColor,
+                record: currentElementData.data[j], //check sum, currentElementData.data[j]
+                productCount: nextProduct, //for changing dynamic, on button push
+                originalCount: nextProduct, //comparing with originalCount
+              });
+            }
 
         }
 
