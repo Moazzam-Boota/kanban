@@ -367,7 +367,7 @@ io.on("connection", (socket) => {
 
     var lightvalue = 0; // get from db
     // var countValue = 0;
-    var startPressButton = '';
+    // var startPressButton = '';
     pushButton.watch(function (err, value) { //Watch for hardware interrupts on pushButton
         if (err) { //if an error
             console.error('There was an error', err); //output error message to console
@@ -375,24 +375,24 @@ io.on("connection", (socket) => {
         }
         // lightvalue = value;
 
-        var endPressButton = moment();
-        var diffInSeconds = moment.duration(endPressButton.diff(startPressButton)).asSeconds();
+        // var endPressButton = moment();
+        // var diffInSeconds = moment.duration(endPressButton.diff(startPressButton)).asSeconds();
         // countValue = countValue + 1;
 
         // if (countValue === 2 && diffInSeconds < 5) {
-        if (diffInSeconds < 5) {
-            lightvalue = lightvalue + 1;
-            socket.emit('lightgreen', lightvalue); //send button status to client
-            // socket.emit('lightred', lightvalue); //send button status to client
-            // countValue = 0;
-        } else if (diffInSeconds > 5) {
-            // countValue = 1;
-            startPressButton = moment();
-            socket.emit('singleClick', 1);
-        } else {
-            startPressButton = moment();
-            socket.emit('singleClick', 0);
-        }
+        // if (diffInSeconds < 5) {
+        lightvalue = lightvalue + 1;
+        socket.emit('lightgreen', lightvalue); //send button status to client
+        // socket.emit('lightred', lightvalue); //send button status to client
+        // countValue = 0;
+        // } else if (diffInSeconds > 5) {
+        // countValue = 1;
+        //     startPressButton = moment();
+        //     socket.emit('singleClick', 1);
+        // } else {
+        //     startPressButton = moment();
+        //     socket.emit('singleClick', 0);
+        // }
     });
     socket.on('lightgreen', function (data) { //get light switch status from client
         lightvalue = data;
