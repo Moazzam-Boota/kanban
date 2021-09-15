@@ -38,6 +38,8 @@ const Users = () => {
       });
     });
   }
+
+  const downloadAutoTime = lodash.get(chartParams, 'downloadTime');
   // console.log(lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT'), 'excelFileData')
   var format = 'HH:mm';
   const pitchTime = lodash.get(chartParams, 'pitchTime', 0); //minutes
@@ -47,6 +49,31 @@ const Users = () => {
   // const shiftDaysRange = lodash.get(lineChartParams, '[1].days', []);
   const shiftTimeBreaks = lodash.get(lineChartParams, '[1].breaks', []);
   // *************************** One Shift ***************************
+
+  if (downloadAutoTime) {
+    const autoDownloadTimeMoment = moment(downloadAutoTime, format).add(2, 'minutes');
+    // console.log(downloadAutoTime, autoDownloadTimeMoment.hours(), autoDownloadTimeMoment.minutes(), 'downloadAutoTime');
+    function refreshAt(hours, minutes, seconds) {
+      var now = new Date();
+      var then = new Date();
+
+      if (now.getHours() > hours || (now.getHours() == hours && now.getMinutes() > minutes) || now.getHours() == hours && now.getMinutes() == minutes && now.getSeconds() >= seconds) {
+        then.setDate(now.getDate() + 1);
+      }
+      then.setHours(hours);
+      then.setMinutes(minutes);
+      then.setSeconds(seconds);
+
+      var timeout = (then.getTime() - now.getTime());
+      setTimeout(function () { window.location.reload(true); }, timeout);
+      // console.log('script refreshed')
+    }
+
+    refreshAt(autoDownloadTimeMoment.hours(), autoDownloadTimeMoment.minutes(), autoDownloadTimeMoment.seconds()); //Will refresh the page at 18:45pm
+  }
+
+
+
 
   // 14:00 to 22:00
   // 23:00 to 17:00
