@@ -140,7 +140,12 @@ const Users = () => {
 
   const [currentTime, setTimeLeft] = useState(moment());
 
-  const MINUTE_MS = parseInt(pitchTime) * 60 * 1000;
+  // if (currentTime.isBetween(pitchRefreshIntervalStartPitchTime, pitchRefreshIntervalEndPitchTime)) {
+  var pitchRefreshIntervalStartPitchTime = moment(shiftStartTime.format('HH:mm'), format);
+  var pitchRefreshIntervalEndPitchTime = moment(shiftEndTime.format('HH:mm'), format);
+  const pitchRefreshInterval = (currentTime.isBetween(pitchRefreshIntervalStartPitchTime, pitchRefreshIntervalEndPitchTime)) ? pitchTime : 0.5;
+  // console.log(pitchRefreshInterval, 'pitchTime');
+  const MINUTE_MS = parseInt(pitchRefreshInterval) * 60 * 1000; // need to decide about 1st refresh and
 
   useEffect(() => {
     if (pitchTime !== 0 && !inBetweenBreaks) {
@@ -410,20 +415,26 @@ const Users = () => {
   var currentCardBox = {};
   var cardsData = [];
   function renderCards() {
+    var counterTimeShift = 0;
     for (var i = totalPitchesLength; i >= 1; i--) {
       var color = filterColor(i);
+      counterTimeShift++;
+      // var endPitchTime = moment(shiftEndTime.format('HH:mm'), format);
+      // var startPitchTime = moment(shiftEndTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
+      // console.log(totalPitchesLength, currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'), 'hello', currentTime.isBetween(startPitchTime, endPitchTime))
 
-      var endPitchTime = moment(shiftEndTime.format('HH:mm'), format);
-      var startPitchTime = moment(shiftEndTime.subtract(pitchTime, 'minutes').format('HH:mm'), format);
-      // console.log(currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'), 'hello', currentTime.isBetween(startPitchTime, endPitchTime))
+
+      var startPitchTime = moment(shiftStartTime.format('HH:mm'), format);
+      var endPitchTime = moment(shiftStartTime.add(pitchTime, 'minutes').format('HH:mm'), format);
+      // console.log(totalPitchesLength, currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'), 'hello-1', currentTime.isBetween(startPitchTime, endPitchTime))
 
       if (currentTime.isBetween(startPitchTime, endPitchTime)) {
         // also check for length of allShiftsData
-        activeShiftPeriod = i - trackShiftsDone;
+        activeShiftPeriod = counterTimeShift - trackShiftsDone;
         headerWidgetColor = filterColor(activeShiftPeriod);
         // console.log(trackShiftsDone, "::::::::loop")
         // if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
-        // console.log(headerWidgetColor, activeShiftPeriod, i, trackShiftsDone, maxColorPitch, 'here is active')
+        // console.log(headerWidgetColor, activeShiftPeriod, i, trackShiftsDone, maxColorPitch, counterTimeShift, 'here is active', currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'))
       }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
@@ -462,6 +473,7 @@ const Users = () => {
       >
       </CWidgetBrand >);
     }
+
   }
 
   renderCards();
