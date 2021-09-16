@@ -144,6 +144,7 @@ const Users = () => {
   var pitchRefreshIntervalStartPitchTime = moment(shiftStartTime.format('HH:mm'), format);
   var pitchRefreshIntervalEndPitchTime = moment(shiftEndTime.format('HH:mm'), format);
   const pitchRefreshInterval = (currentTime.isBetween(pitchRefreshIntervalStartPitchTime, pitchRefreshIntervalEndPitchTime)) ? pitchTime : 0.5;
+  // if ((currentTime.isBetween(pitchRefreshIntervalStartPitchTime, pitchRefreshIntervalEndPitchTime))) setPiecesPerHourOnDay(0);
   // console.log(pitchRefreshInterval, 'pitchTime');
   const MINUTE_MS = parseInt(pitchRefreshInterval) * 60 * 1000; // need to decide about 1st refresh and
 
@@ -337,6 +338,7 @@ const Users = () => {
       setDataGroupByProduct(allShiftsData);
     }
   }, [excelFileData]);
+  // console.log(0 / moment.duration(currentTime.diff(shiftStartTime)).asHours(), moment.duration(currentTime.diff(shiftStartTime)).asHours(), 'negative');
 
   useEffect(() => {
     if (!inBetweenBreaks && donePieces !== 0) {
@@ -416,7 +418,8 @@ const Users = () => {
   var cardsData = [];
   function renderCards() {
     var counterTimeShift = 0;
-    for (var i = totalPitchesLength; i >= 1; i--) {
+    for (var i = 12; i >= 1; i--) {
+      // totalPitchesLength
       var color = filterColor(i);
       counterTimeShift++;
       // var endPitchTime = moment(shiftEndTime.format('HH:mm'), format);
