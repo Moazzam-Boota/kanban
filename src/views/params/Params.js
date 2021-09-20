@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { excelSheet, getChartData, intialExcelSheet, pushShiftsData, startApp } from "../../redux/actions/actions";
+import { excelSheet, startApp, pushShiftsData } from "../../redux/actions/actions";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2/dist/sweetalert2.js';
@@ -21,10 +21,14 @@ import {
 
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import helpers from '../../helpers/helpers';
 
 import ShiftTime from './Shift';
 
+import PouchDB from 'pouchdb-browser';
+
 const lodash = require('lodash');
+const pouchDBConnection = new PouchDB('kanban_db', { revs_limit: 1, auto_compaction: true });
 
 const Params = () => {
   var [shiftCount, setShiftCount] = useState([1]);
@@ -36,21 +40,28 @@ const Params = () => {
   var [orangeMaxColor, setOrangeMaxColor] = useState(8);
   var [redMinColor, setRedMinColor] = useState(9);
   var [redMaxColor, setRedMaxColor] = useState(11);
-  var [blackMinColor, setBlackMinColor] = useState(12);
+  var [blackMinColor, setBlackMinColor] = useState(11);
   // var [blackMaxColor, setBlackMaxColor] = useState(13);
   var [shiftInitialTime, setShiftInitialTime] = useState([["09:00", "12:00"]]);
   var [shiftDaysValues, setShiftDaysValues] = useState([[]]);
   var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState([[["11:00", "11:15"]]]);
   var [fileDownloadType, setFileDownloadType] = useState('');
   var [downloadTime, setDownloadTime] = useState([]);
+  const [dbChartParams, setDbChartParams] = useState({});
 
   // get data from redux
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getChartData());
-  }, []);
+    pouchDBConnection.get("params").then(function (doc) {
+      // console.log(doc, 'receive here');
+      setDbChartParams(doc.data);
+    });
+  }, dbChartParams);
   // const response = useSelector((state) => state.excelReducer.apiCalled);
-  const dbChartParams = useSelector((state) => state.excelReducer.chartParams);
+
+
+
+  // console.log(dbChartParams, 'dbChartParamsdd');
   const allState = useSelector((state) => state.excelReducer);
   // console.log(dbChartParams, 'dbChartParams')
   // console.log(response, 'response');
@@ -113,9 +124,10 @@ const Params = () => {
       delete dataState.apiCalled;
       delete dataState.chartParams;
       delete dataState.response;
-      // console.log(dataState, 'dataState')
 
+      // console.log(getParameters(dataState), 'dataState')
       dispatch(pushShiftsData(getParameters(dataState)));
+      helpers.updatePouchDB({ "_id": "params", "data": getParameters(dataState), "_rev": "1-params" + new Date().toISOString() });
       Swal.fire(
         'Saved',
         'Shift data is saved!',
@@ -156,22 +168,20 @@ const Params = () => {
 
   useEffect(() => {
 
-    const chartParamsData = lodash.get(dbChartParams, [0, 'values']);
-    // console.log(chartParamsData, 'dbChartParams')
-    if (chartParamsData) {
-      setPitchTime(chartParamsData.pitchTime)
-      setFileDownloadType(chartParamsData.fileDownloadType)
-      setDownloadTime(chartParamsData.downloadTime)
-      setBlueColor(chartParamsData.colors.blue.min)
-      setGreenMinColor(chartParamsData.colors.green.min)
-      setGreenMaxColor(chartParamsData.colors.green.max)
-      setOrangeMinColor(chartParamsData.colors.orange.min)
-      setOrangeMaxColor(chartParamsData.colors.orange.max)
-      setRedMinColor(chartParamsData.colors.red.min)
-      setRedMaxColor(chartParamsData.colors.red.max)
-      setBlackMinColor(chartParamsData.colors.black.min)
+    if (dbChartParams && Object.values(dbChartParams).length !== 0) {
+      setPitchTime(dbChartParams.pitchTime)
+      setFileDownloadType(dbChartParams.fileDownloadType)
+      setDownloadTime(dbChartParams.downloadTime)
+      setBlueColor(dbChartParams.colors.blue.min)
+      setGreenMinColor(dbChartParams.colors.green.min)
+      setGreenMaxColor(dbChartParams.colors.green.max)
+      setOrangeMinColor(dbChartParams.colors.orange.min)
+      setOrangeMaxColor(dbChartParams.colors.orange.max)
+      setRedMinColor(dbChartParams.colors.red.min)
+      setRedMaxColor(dbChartParams.colors.red.max)
+      setBlackMinColor(dbChartParams.colors.black.min)
       // setBlackMinColor(chartParamsData.colors.black.max)
-      let shiftsData = chartParamsData.PERS044;
+      let shiftsData = dbChartParams.PERS044;
       // console.log(shiftsData)
       const shiftTimes = [];
       const shiftDays = [];
@@ -205,7 +215,7 @@ const Params = () => {
     <CCard>
       <CCardHeader>
         Parameters
-          </CCardHeader>
+      </CCardHeader>
       <CCardBody>
         <CRow>
           <CCol xs="4" sm="4" md="4" lg="4">

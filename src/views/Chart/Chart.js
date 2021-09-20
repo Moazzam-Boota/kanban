@@ -1,17 +1,24 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { intialExcelSheet, getChartData } from "../../redux/actions/actions";
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { intialExcelSheet } from "../../redux/actions/actions";
 import CWidgetBrand from './CWidgetBrand';
 import {
   CFormGroup,
   CCol,
   CRow,
-} from '@coreui/react'
+  CButton
+} from '@coreui/react';
 import CWidgetSimple from './CWidgetSimple';
 import socketIOClient from "socket.io-client";
 import Swal from 'sweetalert2/dist/sweetalert2.js';
 import 'sweetalert2/src/sweetalert2.scss';
+import helpers from '../../helpers/helpers';
+
+
+import PouchDB from 'pouchdb-browser';
+const pouchDBConnection = new PouchDB('kanban_db', { revs_limit: 1, auto_compaction: true });
+
 
 const ENDPOINT = "http://127.0.0.1:4001";
 const lodash = require('lodash');
@@ -23,13 +30,14 @@ const colorsPalette = ['#F26430', '#009B72', '#F6E27F', '#E2C391', '#2A2D34', '#
 const Users = () => {
   const queryPage = useLocation().search.match(/page=([0-9]+)/, '')
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1)
-  const [page, setPage] = useState(currentPage)
+  const [page, setPage] = useState(currentPage);
+  const [dbChartParams, setDbChartParams] = useState({});
   const excelFileBackendResponse = useSelector((state) => state.excelReducer.apiCalled);
-  const dbChartParams = useSelector((state) => state.excelReducer.chartParams);
-  const chartParams = lodash.get(lodash.last(dbChartParams), 'values');
+  const weekDaysRun = lodash.get(dbChartParams, ['PERS044', 1, 'days'], []).map(k => k.value);
+
   const excelFileData = [];
-  const colorChartParams = lodash.get(chartParams, 'colors', {});
-  const lineChartParams = lodash.get(chartParams, 'PERS044', {});
+  const colorChartParams = lodash.get(dbChartParams, 'colors', {});
+  const lineChartParams = lodash.get(dbChartParams, 'PERS044', {});
   if (excelFileBackendResponse) {
     // console.log(excelFileBackendResponse, 'excelFileBackendResponse');
     excelFileBackendResponse.forEach(row => {
@@ -39,10 +47,10 @@ const Users = () => {
     });
   }
 
-  const downloadAutoTime = lodash.get(chartParams, 'downloadTime');
+  const downloadAutoTime = lodash.get(dbChartParams, 'downloadTime');
   // console.log(lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT'), 'excelFileData')
   var format = 'HH:mm';
-  const pitchTime = lodash.get(chartParams, 'pitchTime', 0); //minutes
+  const pitchTime = lodash.get(dbChartParams, 'pitchTime', 0); //minutes
   // *************************** One Shift ***************************
   // 08:00 to 14:00
   const shiftTimeRange = lodash.get(lineChartParams, '[1].time', []);
@@ -65,7 +73,16 @@ const Users = () => {
       then.setSeconds(seconds);
 
       var timeout = (then.getTime() - now.getTime());
-      setTimeout(function () { window.location.reload(true); }, timeout);
+      setTimeout(function () {
+        helpers.updatePouchDB({
+          "_id": "count", "data": {
+            "count": 0,
+            "piecesPerHourOnTime": 0.0,
+            "piecesPerHourOnDay": 0.0
+          }, "_rev": '1-somerev0'
+        });
+        window.location.reload(true);
+      }, timeout);
       // console.log('script refreshed')
     }
 
@@ -126,7 +143,8 @@ const Users = () => {
     if (maxColorPitch < minMaxNumber) maxColorPitch = minMaxNumber;
   }
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
   // const [socketResponse, setSocketResponse] = useState("");
   const [donePieces, setDonePieces] = useState(0);
   const [localDonePieces, setLocalDonePieces] = useState(0);
@@ -147,6 +165,7 @@ const Users = () => {
   // if ((currentTime.isBetween(pitchRefreshIntervalStartPitchTime, pitchRefreshIntervalEndPitchTime))) setPiecesPerHourOnDay(0);
   // console.log(pitchRefreshInterval, 'pitchTime');
   const MINUTE_MS = parseInt(pitchRefreshInterval) * 60 * 1000; // need to decide about 1st refresh and
+  var inBetweenBreaks = false;
 
   useEffect(() => {
     if (pitchTime !== 0 && !inBetweenBreaks) {
@@ -159,7 +178,7 @@ const Users = () => {
     }
   }, [pitchTime])
 
-  var inBetweenBreaks = false;
+
   for (const [key, value] of Object.entries(shiftTimeBreaks)) {
     if (value.time) {
       var breakStartTime = moment(value.time[0], format);
@@ -174,6 +193,24 @@ const Users = () => {
     }
   }
   // console.log(inBetweenBreaks, 'inBetweenBreaks')
+
+  const updateDonePieces = (count) => {
+    // dispatch(saveDonePieces(data));
+
+    updateFirstDonePieces(count);
+    setDonePieces(count);
+
+    // Swal.fire(
+    //   {
+    //     position: 'top-end',
+    //     icon: 'success',
+    //     title: 'Card is updated!',
+    //     showConfirmButton: false,
+    //     timer: 1500
+    //   }
+    // )
+  }
+
   var activeShiftPeriod = 0;
 
   useEffect(() => {
@@ -216,17 +253,7 @@ const Users = () => {
       // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
       socket.emit("lightgreen", data); //send push button status to back to server
       // setSocketResponse(true);
-      setDonePieces(data);
-
-      Swal.fire(
-        {
-          position: 'top-end',
-          icon: 'success',
-          title: 'Card is updated!',
-          showConfirmButton: false,
-          timer: 1500
-        }
-      )
+      updateDonePieces(data);
     });
     socket.on('lightred', function (data) { //get button status from client
       // document.getElementById("lightred").checked = data; //change checkbox according to push button on Raspberry Pi
@@ -265,7 +292,7 @@ const Users = () => {
             productsPerBox: lodash.get(value, '0.per_box_qty_UNITCAIXA_IT')  //product quantity
           }
         }).value(), ['row_num'], ['asc']).filter(k => k.sum !== null);
-      // console.log(dataGroup, totalPitchesLength, totalQuantityDynamic, 'dataGroup')
+      console.log(dataGroup, totalPitchesLength, totalQuantityDynamic, 'dataGroup')
       var loadNextProductTotal = 0;
       var currentElement = 0;
       var runningTakTimeSum = 0;
@@ -279,17 +306,16 @@ const Users = () => {
         const currentShiftProducts = 0;
         // based on count, assign products
         // also subtract their sum value
-
+        console.log(numberOfProducts, 'numberOfProducts');
         for (var j = 0; j < numberOfProducts; j++) {
           var currentElementData = dataGroup[currentElement];
           const singleProductColor = colorsPalette[currentElement];
           const currentShiftSum = Math.ceil(runningTakTimeSum + pitchTakTime) - Math.ceil(runningTakTimeSum);
           var productCountDynamic = currentShiftSum;
-          const recordList = [];
+
           var nextProduct = 0;
           runningTakTimeSum += pitchTakTime;
 
-          // console.log(productCountDynamic, 'productCountDynamic0')
           if (loadNextProductTotal + productCountDynamic >= currentElementData.sum) {  //nextProduct
 
             productCountDynamic = productCountDynamic - (loadNextProductTotal + productCountDynamic - currentElementData.sum);
@@ -300,17 +326,20 @@ const Users = () => {
           } else {
             loadNextProductTotal += productCountDynamic;
           }
+          // if (productCountDynamic === 0) continue;
+          console.log(loadNextProductTotal, productCountDynamic, currentElementData.sum, nextProduct, 'productCountDynamic0')
 
           totalQuantityDynamic = totalQuantityDynamic - productCountDynamic;
-          // console.log(i, currentElement, currentElementData.sum, productCountDynamic, totalQuantityDynamic, loadNextProductTotal, loadNextProductTotal + productCountDynamic, 'dataGroupCurrent')
+          console.log(i, currentElement, currentElementData.sum, productCountDynamic, totalQuantityDynamic, loadNextProductTotal, loadNextProductTotal + productCountDynamic, 'dataGroupCurrent')
 
-          recordSet.push({
-            ...currentElementData,
-            color: singleProductColor,
-            record: currentElementData.data[j], //check sum, currentElementData.data[j]
-            productCount: productCountDynamic, //for changing dynamic, on button push
-            originalCount: productCountDynamic, //comparing with originalCount
-          });
+          if (productCountDynamic !== 0)
+            recordSet.push({
+              ...currentElementData,
+              color: singleProductColor,
+              record: currentElementData.data[j], //check sum, currentElementData.data[j]
+              productCount: productCountDynamic, //for changing dynamic, on button push
+              originalCount: productCountDynamic, //comparing with originalCount
+            });
 
           if (nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0))
             // console.log(nextProduct, currentShiftSum, currentShiftSum - nextProduct, nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0), lodash.get(dataGroup[currentElement], 'sum', 0), 'nextProduct');
@@ -318,7 +347,7 @@ const Users = () => {
               // console.log(currentElementData, 'currentElementData')
               var currentElementData = dataGroup[currentElement];
               // console.log(dataGroup[currentElement].sum, 'dataGroup[currentElement].sum')
-              currentElementData.sum = currentElementData.sum - nextProduct;
+              // currentElementData.sum = currentElementData.sum - nextProduct;
               const singleProductColor = colorsPalette[currentElement];
               recordSet.push({
                 ...currentElementData,
@@ -331,68 +360,139 @@ const Users = () => {
             }
           // console.log(recordSet, 'recordSet')
         }
-
-        allShiftsData.push(recordSet)
+        if (recordSet.length !== 0)
+          allShiftsData.push(recordSet)
       }
       // console.log(allShiftsData, 'allShiftsData', totalPitchesLength)
       setDataGroupByProduct(allShiftsData);
     }
   }, [excelFileData]);
-  // console.log(0 / moment.duration(currentTime.diff(shiftStartTime)).asHours(), moment.duration(currentTime.diff(shiftStartTime)).asHours(), 'negative');
+
+  function updateFirstDonePieces(firstDonePieces = donePieces, type) {
+
+    console.log(firstDonePieces, 'firstDonePieces');
+    const allShiftsData = [...dataGroupByProduct];
+    var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
+    var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount']); // need to store
+
+    const limitShift = currentShiftOriginalCount;
+    const remainderDonePieces = (limitShift + localDonePieces) - firstDonePieces;
+    console.log(remainderDonePieces, localDonePieces, limitShift, 'remainderDonePieces')
+    // const remainderDonePieces = firstDonePieces % limitShift === 0 ? limitShift : donePieces % limitShift;
+    // var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
+
+
+    // console.log('updatedShiftData', activeShiftPeriod, limitShift, remainderDonePieces, localDonePieces)
+    // if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) { //subtract on every button press
+    // } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
+
+    // press button calculate difference
+    const currentTime = moment(moment(), format);
+    // set value
+    setPiecesPerHourOnDay(firstDonePieces / moment.duration(shiftStartTime.diff(currentTime)).asHours());
+    // console.log(0 / moment.duration(currentTime.diff(shiftStartTime)).asHours(), moment.duration(currentTime.diff(shiftStartTime)).asHours(), currentTime.format('HH:mm:ss'), moment(shiftStartTime.format('HH:mm'), format).format('HH:mm:ss'), shiftTimeRange[1], 'negative');
+
+    // console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'diff');
+    // console.log(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours(), 'timediff-1')
+    // console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'timediff-2')
+    setPiecesPerHourOnTime(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours());
+    helpers.updatePouchDB({
+      "_id": 'count', "data": {
+        "count": firstDonePieces,
+        "piecesPerHourOnTime": 1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(),
+        "piecesPerHourOnDay": firstDonePieces / moment.duration(shiftStartTime.diff(currentTime)).asHours()
+      }, "_rev": '1-somerev' + firstDonePieces.toString()
+    });
+
+    setPiecesPerHourOnTimeMoment(currentTime);
+
+    // lodash.get(currentCardBox, 'total')
+    if ((lodash.get(currentCardBox, 'total') + pendingPiecesPerProduct) - donePieces === 0)
+      setPendingPiecesPerProduct(pendingPiecesPerProduct + lodash.get(currentCardBox, 'total'));
+    // console.log(piecesPerHourOnTime, 'piecesPerHourOnTime')
+    if (allShiftsData[0] && remainderDonePieces > 0) { //subtract on every button press
+      allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1; //TODO: subtract dynamic
+      // helpers.updatePouchDB({ "_id": 'singleSubtract', "_rev": '1-somerev' });
+
+    } else if (allShiftsData[0] && remainderDonePieces === 0) { //check for remove product or remove shift
+      setLocalDonePieces(localDonePieces + limitShift);
+      // if (remainderDonePieces === limitShift) {
+      console.log(trackShiftsDone + 1, activeShiftPeriod, allShiftsData, 'shiftsTrack')
+
+
+      // console.log(trackShiftsDone, ':::: done Piecess')
+      if (allShiftsData[0].length > 1) { //remove product, dynamic remove
+        allShiftsData[0].pop();
+      } else { //remove shift, dynamic remove
+        allShiftsData.splice(0, 1);
+        setTrackShiftsDone(trackShiftsDone + 1); // only enter to shift done, when
+        helpers.updatePouchDB({ "_id": 'shiftsTrack', "data": { "localDonePieces": localDonePieces + limitShift, trackShift: trackShiftsDone + 1 }, "_rev": '1-somerev' });
+      }
+    }
+
+    // console.log('updatedShiftData', allShiftsData)
+    setDataGroupByProduct(allShiftsData);
+  }
 
   useEffect(() => {
-    if (!inBetweenBreaks && donePieces !== 0) {
-      const allShiftsData = [...dataGroupByProduct];
-      var allShiftsDataLength = lodash.get(allShiftsData, '[0].length', 0);
-      var currentShiftOriginalCount = lodash.get(allShiftsData, [[0], [allShiftsDataLength - 1], 'originalCount']);
+    if (donePieces === 0 && dataGroupByProduct.length !== 0) {
 
-      const limitShift = currentShiftOriginalCount;
-      const remainderDonePieces = (limitShift + localDonePieces) - donePieces;
-      // const remainderDonePieces = donePieces % limitShift === 0 ? limitShift : donePieces % limitShift;
-      // var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
+      pouchDBConnection.get('count', { latest: true }).then(function (countData) {
+
+        const allShiftsData = [...dataGroupByProduct];
+        // console.log(countData, allShiftsData[0][allShiftsData[0].length - 1].productCount - countData.data.count, 'receive here');
+        setDonePieces(countData.data.count);
+        setPiecesPerHourOnTime(countData.data.piecesPerHourOnTime);
+        setPiecesPerHourOnDay(countData.data.piecesPerHourOnDay);
+
+        pouchDBConnection.get('shiftsTrack', { latest: true }).then(function (shiftData) {
+          console.log(shiftData.data, allShiftsData[0], 'shiftsTrack here');
 
 
-      // console.log('updatedShiftData', activeShiftPeriod, limitShift, remainderDonePieces, localDonePieces)
-      // if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) { //subtract on every button press
-      // } else if (allShiftsData[0] && limitShift - remainderDonePieces <= limitShift - allShiftsDataRemainder) { //check for remove product or remove shift
 
-      // press button calculate difference
-      const currentTime = moment(moment(), format);
-      // set value
-      setPiecesPerHourOnDay(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours());
-      // console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'diff');
-      // console.log(donePieces / moment.duration(currentTime.diff(shiftStartTime)).asHours(), 'timediff-1')
-      // console.log(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours(), 'timediff-2')
-      setPiecesPerHourOnTime(1 / moment.duration(currentTime.diff(piecesPerHourOnTimeMoment)).asHours());
-      setPiecesPerHourOnTimeMoment(currentTime);
+          if (allShiftsData[0].length > 1) { //remove product, dynamic remove
+            allShiftsData[0].pop();
+          } else { //remove shift, dynamic remove
+            allShiftsData.splice(0, shiftData.data.trackShift);
+          }
 
-      // lodash.get(currentCardBox, 'total')
-      if ((lodash.get(currentCardBox, 'total') + pendingPiecesPerProduct) - donePieces === 0)
-        setPendingPiecesPerProduct(pendingPiecesPerProduct + lodash.get(currentCardBox, 'total'));
-      // console.log(piecesPerHourOnTime, 'piecesPerHourOnTime')
-      if (allShiftsData[0] && remainderDonePieces > 0) { //subtract on every button press
-        allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - 1;
-      } else if (allShiftsData[0] && remainderDonePieces === 0) { //check for remove product or remove shift
-        setLocalDonePieces(localDonePieces + limitShift);
-        // if (remainderDonePieces === limitShift) {
-        // console.log(trackShiftsDone, activeShiftPeriod, 'trackShiftsDoneFinal')
-        setTrackShiftsDone(trackShiftsDone + 1);
-        // console.log(trackShiftsDone, ':::: done Piecess')
-        if (allShiftsData[0].length > 1) { //remove product
-          allShiftsData[0].pop();
-        } else { //remove shift
-          allShiftsData.splice(0, 1);
-        }
-      }
-      // console.log('updatedShiftData', allShiftsData)
+          allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - countData.data.count + shiftData.data.localDonePieces;
 
-      setDataGroupByProduct(allShiftsData)
+          console.log('shift-remove', allShiftsData);
+
+          setDataGroupByProduct(allShiftsData);
+          setLocalDonePieces(shiftData.data.localDonePieces);
+          setTrackShiftsDone(shiftData.data.trackShift);
+        }).catch(function (err) {
+          console.log(err, 'error here');
+          allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - countData.data.count;
+          setDataGroupByProduct(allShiftsData);
+        });
+      });
     }
-  }, [donePieces]);
+
+
+  }, [dataGroupByProduct]);
+
+  // useEffect(() => {
+  //   if (!inBetweenBreaks && donePieces !== 0) {
+  //     console.log('hello-done')
+  //     updateFirstDonePieces();
+  //   }
+  // }, [donePieces]);
+
+  // useEffect(() => {
+
+
+  // }, [localDonePieces]);
 
   useEffect(() => {
     dispatch(intialExcelSheet());
-    dispatch(getChartData());
+    // dispatch(getChartData());
+    pouchDBConnection.get("params").then(function (doc) {
+      console.log(doc, 'receive here');
+      setDbChartParams(doc.data);
+    });
 
     currentPage !== page && setPage(currentPage)
   }, [dispatch, currentPage, page])
@@ -414,12 +514,18 @@ const Users = () => {
   }
 
   // console.log(totalPitchesLength, 'totalPitchesLength')
+  const alwaysTwelvePitches = totalPitchesLength < 12 ? (12 - totalPitchesLength) + totalPitchesLength : totalPitchesLength;
   var currentCardBox = {};
   var cardsData = [];
   function renderCards() {
     var counterTimeShift = 0;
-    for (var i = 12; i >= 1; i--) {
-      // totalPitchesLength
+    // console.log(dataGroupByProduct, 'dataGroupByProductUpdate')
+    for (var i = alwaysTwelvePitches; i >= 1; i--) {
+      // if (lodash.get(dataGroupByProduct, i - 1, []).length === 0) {
+      //   console.log('dataGroupByProduct', lodash.get(dataGroupByProduct, i - 1, []).length)
+      //   continue;
+      // }
+      // @TODO: totalPitchesLength
       var color = filterColor(i);
       counterTimeShift++;
       // var endPitchTime = moment(shiftEndTime.format('HH:mm'), format);
@@ -428,20 +534,30 @@ const Users = () => {
 
 
       var startPitchTime = moment(shiftStartTime.format('HH:mm'), format);
-      var endPitchTime = moment(shiftStartTime.add(pitchTime, 'minutes').format('HH:mm'), format);
-      // console.log(totalPitchesLength, currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'), 'hello-1', currentTime.isBetween(startPitchTime, endPitchTime))
+      var endPitchTime = moment(shiftStartTime.add(pitchTime, 'minutes').format('HH:mm'), format); //@TODO: check it's changing original shiftStartTime, like adding
+      console.log(totalPitchesLength, currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'), 'hello-1', currentTime.isBetween(startPitchTime, endPitchTime))
 
+      // if (currentTime.isBetween(moment(shiftStartTime.format('HH:mm'), format), moment(shiftEndTime.format('HH:mm'), format))) {
+
+      // console.log('hellow');
+      // @TODO: time 
       if (currentTime.isBetween(startPitchTime, endPitchTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = counterTimeShift - trackShiftsDone;
         headerWidgetColor = filterColor(activeShiftPeriod);
         // console.log(trackShiftsDone, "::::::::loop")
         // if (!headerWidgetColor) headerWidgetColor = filterColor(maxColorPitch);
-        // console.log(headerWidgetColor, activeShiftPeriod, i, trackShiftsDone, maxColorPitch, counterTimeShift, 'here is active', currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'))
+        console.log(headerWidgetColor, activeShiftPeriod, i, trackShiftsDone, maxColorPitch, counterTimeShift, 'here is active', currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'))
       }
+      // }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
 
       // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
+
+      // dataGroupByProductRandom.filter(l => {
+      //   if (l.productCount === 0)
+      //     continue;
+      // });
       cardsData.push(<CWidgetBrand
         style={{ marginLeft: '5px', width: '150px' }}
         color={color}
@@ -487,10 +603,20 @@ const Users = () => {
   // console.log(currentCardBox, 'currentCardBox')
   const kanbanBoxWidgetStyle = { fontSize: '15px' };
   const metricStyle = { fontWeight: 'bold' };
+  if (cardsData.length === 0) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>Loading...</h1></div>)
+  if (!weekDaysRun.includes(moment().format('ddd'))) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>No Shift for Today, Today not Set in Params.</h1></div>)
   if (inBetweenBreaks) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>System in Break, Don't push the button.</h1></div>)
-  // if (!checkCurrentDayShiftSelected) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>No Shift for Today.</h1></div>)
   return (
     <CFormGroup>
+      <CButton
+        style={{ float: 'right', height: '80px' }}
+        size="lg"
+        onClick={() => {
+          const newDonePieces = donePieces + 1;
+          // console.log(donePieces, newDonePieces, 'donePieces');
+          // setDonePieces(newDonePieces);
+          updateDonePieces(newDonePieces);
+        }} color="danger">Press<br /> Button</CButton>
       <CRow >
         <CCol xs="2">
           <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Total Pieces" text={totalQuantity} />
@@ -511,6 +637,10 @@ const Users = () => {
           <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Pieces/Hour (Target)" text={parseFloat(((1 / takTimeMinutes) * 60)).toFixed(0)} />
         </CCol>
       </CRow>
+
+
+
+
       <h1>{lodash.get(dataGroupByLine, '[0].lineNumber')}</h1>
       <hr style={{ borderTop: '3px solid rgba(0, 0, 21, 0.2)' }}></hr>
       <CRow style={{ float: 'right' }} >
@@ -532,7 +662,7 @@ const Users = () => {
           } />
         </CCol>
       </CRow>
-    </CFormGroup>
+    </CFormGroup >
   )
 }
 

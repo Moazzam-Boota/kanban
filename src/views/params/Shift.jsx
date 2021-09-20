@@ -112,7 +112,7 @@ const ShiftTime = ({
             value={value}
           />
         </CCol>
-        <CCol xs="1">
+        {/* <CCol xs="1">
           <CButton
             key={`shiftAddBtn_${shiftCount}`}
             onClick={() => {
@@ -159,7 +159,7 @@ const ShiftTime = ({
           >
             Delete
           </CButton>
-        </CCol>
+        </CCol> */}
       </CRow>
       <br></br>
       <CRow>

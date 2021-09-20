@@ -3,7 +3,7 @@ const PouchDB = require('pouchdb');
 const Excel = require('exceljs');
 PouchDB.plugin(require('pouchdb-find'));
 const moment = require('moment');
-
+// const PouchDB2 = require('pouchdb-browser');
 var cors = require('cors')
 const fileUpload = require('express-fileupload');
 const app = express();
@@ -76,7 +76,7 @@ function deleteDocs(type) {
     remoteDB.find({
         selector: { type: type }
     }).then(function (res) {
-        console.log(res)
+        // console.log(res)
         res.docs.map(k => {
             remoteDB.remove(k)
 
@@ -84,7 +84,8 @@ function deleteDocs(type) {
     });
 }
 
-
+// var scheduleDownloadingTime = new Date(year, month, day, hours, minutes, seconds);
+var scheduleDownloadingTime = new Date();
 schedule.scheduleJob(" * * * * * ", function () {
     var downloadTime = [];
     remoteDB.find({
@@ -255,6 +256,16 @@ app.post('/api/excel-upload', (req, res) => {
     });
 });
 
+const rule = new schedule.RecurrenceRule();
+rule.dayOfWeek = [0, new schedule.Range(4, 6)];
+rule.hour = 17;
+rule.minute = 0;
+
+const weekDays = { 'Sun': 0, 'Mon': 1, 'Tue': 2, 'Wed': 3, 'Thu': 4, 'Fri': 5, 'Sat': 6 };
+schedule.scheduleJob(rule, function () {
+    console.log('Today is recognized by Rebecca Black!');
+});
+
 app.post('/api/push-shifts-data', (req, res) => {
 
     deleteDocs('shifts')
@@ -265,6 +276,11 @@ app.post('/api/push-shifts-data', (req, res) => {
         type: 'shifts',
         values: req.body
     };
+    // scheduleDownloadingTime = moment(req.body.downloadTime, 'HH:mm');
+    // rule.dayOfWeek = req.body.PERS044[1].days.map(k => weekDays[k.value]).sort();
+    // rule.hour = scheduleDownloadingTime.get('hours');
+    // rule.minute = scheduleDownloadingTime.get('minutes');
+    // console.log(rule, req.body.downloadTime, scheduleDownloadingTime.get('hours'), scheduleDownloadingTime.get('minutes'), 'req.body');
     const promise = pouchDBConnection
         .put(ShiftsData, { force: true }).then(function (response) {
         }).then(function (err) {
@@ -279,6 +295,7 @@ app.post('/api/push-shifts-data', (req, res) => {
     // pouchDBConnection.sync(remoteDB);
 
 });
+
 app.get('/api/intial-excel-upload', (req, res) => {
 
     getDocs(res, "excel");
@@ -287,37 +304,6 @@ app.get('/api/intial-excel-upload', (req, res) => {
 app.get('/api/get-chart-data', (req, res) => {
     getDocs(res, "shifts");
 });
-
-// app.get('/api/excel-upload-auto', (req, res) => {
-//     var AWS = require('aws-sdk');
-//     var fs = require('fs');
-//     AWS.config.update(
-//         {
-//             accessKeyId: "AKIAQA425EAVAE6OMI76",
-//             secretAccessKey: "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",
-//             region: 'eu-west-1'
-//         }
-//     );
-//     var s3 = new AWS.S3();
-//     var options = {
-//         Bucket: 'bestplantbucket',
-//         Key: 'META_SQL (1).xlsm',
-//     };
-//     s3.getObject(options, function (err, data) {
-//         if (err) {
-//             throw err
-//         }
-//         fs.writeFileSync('./aws-files/' + options.Key, data.Body)
-//         console.log('file downloaded successfully')
-//     })
-//     res.send("true");
-//     // res.attachment('Dades sist Sequenciador MVP4 ruben 3 12.04.21.xlsx');
-//     // var fileStream = s3.getObject(options).createReadStream();
-//     // fileStream.pipe(res);
-//     //     res.attachment('Dades sist Sequenciador MVP4 ruben 3 12.04.21.xlsx');
-//     //     var fileStream = s3.getObject(options).createReadStream();
-//     //     fileStream.pipe(res);
-// });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
@@ -354,7 +340,7 @@ let interval;
 var Gpio = require('onoff').Gpio; //include onoff to interact with the Gpio
 var LED_RED = new Gpio('21', 'out'); //use Gpio pin 21 as output for LED RED
 var LED_GREEN = new Gpio('20', 'out'); //use Gpio pin 20 as output for LED GREEN
-//var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and 'both' button presses, and releases should be handled
+var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and 'both' button presses, and releases should be handled
 var pushButton = new Gpio('26', 'in', 'rising', { debounceTimeout: 10 });
 
 io.on("connection", (socket) => {
