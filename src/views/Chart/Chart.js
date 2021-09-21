@@ -686,12 +686,12 @@ const Users = () => {
   if (inBetweenBreaks) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>System in Break, Don't push the button.</h1></div>)
   return (
     <CFormGroup>
-      {/* <CButton
+      <CButton
         style={{ float: 'right', height: '80px' }}
         size="lg"
         onClick={() => {
           updateDonePieces(donePieces + 1);
-        }} color="danger">Press<br /> Button</CButton> */}
+        }} color="danger">Press<br /> Button</CButton>
       <CRow >
         <CCol xs="2">
           <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Total Pieces" text={totalQuantity} />
