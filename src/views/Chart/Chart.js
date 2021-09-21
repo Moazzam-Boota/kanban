@@ -78,7 +78,7 @@ const Users = () => {
   }
 
   var inBetweenBreaks = false;
-
+  var allBreaks = [];
   function callBreaks() {
     var breakCounter = 0;
     for (const [key, value] of Object.entries(shiftTimeBreaks)) {
@@ -86,6 +86,7 @@ const Users = () => {
         // if current time is less than break, set
         let breakStartTime = moment(value.time[0], format);
         let breakEndTime = moment(value.time[1], format);
+        allBreaks.push([breakStartTime, breakEndTime]);
         let startPitchTime = moment(breakStartTime.format('HH:mm'), format);
         let endPitchTime = moment(breakEndTime.format('HH:mm'), format);
         if (moment(moment(), format).isSameOrBefore(endPitchTime) && breakCounter === 0) {
@@ -601,7 +602,17 @@ const Users = () => {
       // if (currentTime.isBetween(moment(shiftStartTime.format('HH:mm'), format), moment(shiftEndTime.format('HH:mm'), format))) {
 
       // currentTime.isBetween(moment(shiftStartTime.format('HH:mm'), format), moment(shiftEndTime.format('HH:mm'), format))
-      console.log(shiftStartTime.format('HH:mm'), shiftMovingTime.format('HH:mm'), 'hellow');
+      // console.log(shiftStartTime.format('HH:mm'), shiftMovingTime.format('HH:mm'), 'hellow');
+      // for (var singleBreak = 0; singleBreak < allBreaks.length; singleBreak++) {
+      //   let breakStart = allBreaks[singleBreak][0];
+      //   let breakEnd = allBreaks[singleBreak][1];
+
+      //   if (breakStart.isBetween(startPitchTime, endPitchTime, null, '[)') && breakEnd.isBetween(startPitchTime, endPitchTime, null, '(]')) {
+      //     console.log(startPitchTime.format('HH:mm'), endPitchTime.format('HH:mm'), breakStart.format('HH:mm'), breakEnd.format('HH:mm'), 'hellow-break');
+
+      //   }
+      //   console.log(startPitchTime.format('HH:mm'), endPitchTime.format('HH:mm'), breakStart.format('HH:mm'), breakEnd.format('HH:mm'), 'hellow');
+      // }
       // @TODO: time 
       if (currentTime.isBetween(startPitchTime, endPitchTime)) {
         // also check for length of allShiftsData
