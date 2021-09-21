@@ -118,7 +118,7 @@ const Users = () => {
         });
         return pouchDBConnection.remove(doc);
       });
-     
+
       // pouchDBConnection.bulkDocs([{ _id: 'count', _deleted: true },
       // { _id: 'shiftsTrack', _deleted: true }], function (err, response) {
       //   if (err) {
@@ -237,20 +237,19 @@ const Users = () => {
 
 
   const updateDonePieces = (count) => {
-    // dispatch(saveDonePieces(data));
 
     updateFirstDonePieces(count);
     setDonePieces(count);
 
-    // Swal.fire(
-    //   {
-    //     position: 'top-end',
-    //     icon: 'success',
-    //     title: 'Card is updated!',
-    //     showConfirmButton: false,
-    //     timer: 1500
-    //   }
-    // )
+    Swal.fire(
+      {
+        position: 'top-end',
+        icon: 'success',
+        title: 'Card is updated!',
+        showConfirmButton: false,
+        timer: 1500
+      }
+    )
   }
 
   var activeShiftPeriod = 0;
@@ -672,15 +671,12 @@ const Users = () => {
   if (inBetweenBreaks) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>System in Break, Don't push the button.</h1></div>)
   return (
     <CFormGroup>
-      <CButton
+      {/* <CButton
         style={{ float: 'right', height: '80px' }}
         size="lg"
         onClick={() => {
-          const newDonePieces = donePieces + 1;
-          // console.log(donePieces, newDonePieces, 'donePieces');
-          // setDonePieces(newDonePieces);
-          updateDonePieces(newDonePieces);
-        }} color="danger">Press<br /> Button</CButton>
+          updateDonePieces(donePieces + 1);
+        }} color="danger">Press<br /> Button</CButton> */}
       <CRow >
         <CCol xs="2">
           <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Total Pieces" text={totalQuantity} />
