@@ -113,9 +113,20 @@ const Users = () => {
 
       // return db.remove(doc);
       pouchDBConnection.get('count').then(function (doc) {
+        pouchDBConnection.get('shiftsTrack').then(function (doc2) {
+          return pouchDBConnection.remove(doc2);
+        });
         return pouchDBConnection.remove(doc);
       });
-      
+     
+      // pouchDBConnection.bulkDocs([{ _id: 'count', _deleted: true },
+      // { _id: 'shiftsTrack', _deleted: true }], function (err, response) {
+      //   if (err) {
+      //     return console.log(err, 'delete error');
+      //   } else {
+      //     console.log(response + "Documents deleted Successfully");
+      //   }
+      // });
       // helpers.updatePouchDB({
       //   "_id": "count", "data": {
       //     "count": 0,
