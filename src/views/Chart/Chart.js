@@ -80,6 +80,7 @@ const Users = () => {
   var inBetweenBreaks = false;
 
   function callBreaks() {
+    var breakCounter = 0;
     for (const [key, value] of Object.entries(shiftTimeBreaks)) {
       if (value.time) {
         // if current time is less than break, set
@@ -87,11 +88,13 @@ const Users = () => {
         let breakEndTime = moment(value.time[1], format);
         let startPitchTime = moment(breakStartTime.format('HH:mm'), format);
         let endPitchTime = moment(breakEndTime.format('HH:mm'), format);
-        if (moment(moment(), format).isBefore(startPitchTime, endPitchTime)) {
+        if (moment(moment(), format).isSameOrBefore(endPitchTime) && breakCounter === 0) {
           // startOfBreak = startPitchTime;
-          if (startPitchTime === '') {
+          breakCounter++;
+          if (startOfBreak === '') {
             setStartOfBreak(startPitchTime);
             setEndOfBreak(endPitchTime);
+            console.log('break-set')
           }
           // endOfBreak = endPitchTime;
           console.log(moment(moment(), format), startPitchTime, endPitchTime, 'nearest-break')
@@ -107,11 +110,9 @@ const Users = () => {
 
   if (downloadAutoTime) {
     const autoDownloadTimeMoment = moment(downloadAutoTime, format).add(30, 'seconds');
-    // console.log(downloadAutoTime, autoDownloadTimeMoment.hours(), autoDownloadTimeMoment.minutes(), 'downloadAutoTime');
 
     refreshAt(autoDownloadTimeMoment.hours(), autoDownloadTimeMoment.minutes(), autoDownloadTimeMoment.seconds(), function () {
 
-      // return db.remove(doc);
       pouchDBConnection.get('count').then(function (doc) {
         pouchDBConnection.get('shiftsTrack').then(function (doc2) {
           return pouchDBConnection.remove(doc2);
@@ -119,28 +120,22 @@ const Users = () => {
         return pouchDBConnection.remove(doc);
       });
 
-      // pouchDBConnection.bulkDocs([{ _id: 'count', _deleted: true },
-      // { _id: 'shiftsTrack', _deleted: true }], function (err, response) {
-      //   if (err) {
-      //     return console.log(err, 'delete error');
-      //   } else {
-      //     console.log(response + "Documents deleted Successfully");
-      //   }
-      // });
-      // helpers.updatePouchDB({
-      //   "_id": "count", "data": {
-      //     "count": 0,
-      //     "piecesPerHourOnTime": 0.0,
-      //     "piecesPerHourOnDay": 0.0
-      //   }, "_rev": '1-somerev0',
-      // });
       window.location.reload(true);
     }); //Will refresh the page at 18:45pm
   }
 
-  console.log(startOfBreak, endOfBreak, 'our-breaks')
+  // console.log(startOfBreak, endOfBreak, 'our-breaks')
+  if (startOfBreak !== '') {
+    refreshAt(startOfBreak.hours(), startOfBreak.minutes(), startOfBreak.seconds(), function () {
+      window.location.reload(true);
+    });
+  }
 
-
+  if (endOfBreak !== '') {
+    refreshAt(endOfBreak.hours(), endOfBreak.minutes(), endOfBreak.seconds(), function () {
+      window.location.reload(true);
+    });
+  }
   // 14:00 to 22:00
   // 23:00 to 17:00
   var sumOfBreaks = 0;
@@ -152,11 +147,11 @@ const Users = () => {
 
       var breaksDuration = moment.duration(breakEndTime.diff(breakStartTime));
       sumOfBreaks += breaksDuration.asMinutes();
-      // console.log(`${key}:`, key, value, 'hello', sumOfBreaks, breakStartTime, breakEndTime);
+      // console.log(`${key}:`, key, value, 'hello-break', sumOfBreaks, breakStartTime, breakEndTime);
     }
   }
 
-
+  // console.log('hello-break', sumOfBreaks);
   // TODO:: run hook at exact break time, check current time
   callBreaks();
 
@@ -241,15 +236,15 @@ const Users = () => {
     updateFirstDonePieces(count);
     setDonePieces(count);
 
-    Swal.fire(
-      {
-        position: 'top-end',
-        icon: 'success',
-        title: 'Card is updated!',
-        showConfirmButton: false,
-        timer: 1500
-      }
-    )
+    // Swal.fire(
+    //   {
+    //     position: 'top-end',
+    //     icon: 'success',
+    //     title: 'Card is updated!',
+    //     showConfirmButton: false,
+    //     timer: 1500
+    //   }
+    // );
   }
 
   var activeShiftPeriod = 0;
@@ -295,7 +290,6 @@ const Users = () => {
       socket.emit("lightgreen", data); //send push button status to back to server
       // setSocketResponse(true);
       console.log(donePieces + 1, data, 'lightgreen');
-      // updateDonePieces(donePieces + 1);
       updateDonePieces(donePieces + 1);
     });
     socket.on('lightred', function (data) { //get button status from client
@@ -346,7 +340,7 @@ const Users = () => {
         // const numberOfProducts = 4; //number of Products in current order
         // console.log(dataGroup, 'dataGroup243')
 
-        const currentShiftProducts = 0;
+        // const currentShiftProducts = 0;
         // based on count, assign products
         // also subtract their sum value
         // console.log(numberOfProducts, 'numberOfProducts');
@@ -492,38 +486,43 @@ const Users = () => {
 
       pouchDBConnection.get('count', { latest: true }).then(function (countData) {
 
-        const allShiftsData = [...dataGroupByProduct];
-        // console.log(countData, allShiftsData, 'receive here');
+
+
         setDonePieces(countData.data.count);
         setPiecesPerHourOnTime(countData.data.piecesPerHourOnTime);
         setPiecesPerHourOnDay(countData.data.piecesPerHourOnDay);
 
         pouchDBConnection.get('shiftsTrack', { latest: true }).then(function (shiftData) {
-
+          console.log(shiftData.data.allData, countData.data.count, shiftData.data.localDonePieces, 'receive-db data here');
+          // const lastCountSubtract = countData.data.count - shiftData.data.localDonePieces;
           // if (allShiftsData[0].length > 1) { //remove product, dynamic remove
 
           // } else { //remove shift, dynamic remove
-          allShiftsData.splice(0, shiftData.data.trackShift);
-          // for (var i = 0; i < shiftData.data.trackShift; i++) {
-          // allShiftsData.pop();
+          // allShiftsData.splice(0, shiftData.data.trackShift);
+          // // for (var i = 0; i < shiftData.data.trackShift; i++) {
+          // // allShiftsData.pop();
+          // // }
+          // if (shiftData.data.productDone > 0) { //remove product, dynamic remove
+          //   //   console.log(shiftData.data, allShiftsData[i], 'shiftsTrack here');
+          //   allShiftsData[0].pop();
           // }
-          if (shiftData.data.productDone > 0) { //remove product, dynamic remove
-            //   console.log(shiftData.data, allShiftsData[i], 'shiftsTrack here');
-            allShiftsData[0].pop();
-          }
 
           // console.log('shift-remove', allShiftsData);
           // }
           // console.log(shiftData.data, allShiftsData, 'shiftsTrack-0 here');
           // only subtract based on remaining count
 
-          allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - countData.data.count + shiftData.data.localDonePieces;
+          shiftData.data.allData[0][shiftData.data.allData[0].length - 1].productCount = shiftData.data.allData[0][shiftData.data.allData[0].length - 1].productCount - countData.data.count + shiftData.data.localDonePieces;
+          // allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - countData.data.count + shiftData.data.localDonePieces;
+          // allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - lastCountSubtract;
 
           // console.log('shift-remove', allShiftsData);
-          setDataGroupByProduct(allShiftsData);
+          // setDataGroupByProduct(allShiftsData);
+          setDataGroupByProduct(shiftData.data.allData);
           setLocalDonePieces(shiftData.data.localDonePieces);
           setTrackShiftsDone(shiftData.data.trackShift);
         }).catch(function (err) {
+          const allShiftsData = [...dataGroupByProduct];
           // console.log(err, 'error here');
           // if (countData.data.count !== 0) {
           allShiftsData[0][allShiftsData[0].length - 1].productCount = allShiftsData[0][allShiftsData[0].length - 1].productCount - countData.data.count;

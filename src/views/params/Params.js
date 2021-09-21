@@ -145,6 +145,20 @@ const Params = () => {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
+    pouchDBConnection.get('count').then(function (doc) {
+      pouchDBConnection.get('shiftsTrack').then(function (doc2) {
+        return pouchDBConnection.remove(doc2);
+      });
+      return pouchDBConnection.remove(doc);
+    });
+    // const dataState = { ...allState };
+    // delete dataState.apiCalled;
+    // delete dataState.chartParams;
+    // delete dataState.response;
+    // dataState.manual = true;
+    // helpers.updatePouchDB({ "_id": "params", "data": getParameters(dataState), "_rev": "1-params" + new Date().toISOString() });
+
+
     dispatch(excelSheet(formData))
     Swal.fire(
       'Uploaded',
