@@ -603,6 +603,8 @@ const Users = () => {
 
       // currentTime.isBetween(moment(shiftStartTime.format('HH:mm'), format), moment(shiftEndTime.format('HH:mm'), format))
       // console.log(shiftStartTime.format('HH:mm'), shiftMovingTime.format('HH:mm'), 'hellow');
+
+      // @TODO: Skip Break Time
       // for (var singleBreak = 0; singleBreak < allBreaks.length; singleBreak++) {
       //   let breakStart = allBreaks[singleBreak][0];
       //   let breakEnd = allBreaks[singleBreak][1];
@@ -613,7 +615,8 @@ const Users = () => {
       //   }
       //   console.log(startPitchTime.format('HH:mm'), endPitchTime.format('HH:mm'), breakStart.format('HH:mm'), breakEnd.format('HH:mm'), 'hellow');
       // }
-      // @TODO: time 
+
+
       if (currentTime.isBetween(startPitchTime, endPitchTime)) {
         // also check for length of allShiftsData
         activeShiftPeriod = counterTimeShift - trackShiftsDone;
@@ -683,13 +686,12 @@ const Users = () => {
   if (inBetweenBreaks) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>System in Break, Don't push the button.</h1></div>)
   return (
     <CFormGroup>
-      <CButton
+      {/* <CButton
         style={{ float: 'right', height: '80px' }}
         size="lg"
         onClick={() => {
           updateDonePieces(donePieces + 1);
-        }} color="danger">Press<br /> Button</CButton
-      >
+        }} color="danger">Press<br /> Button</CButton> */}
       <CRow >
         <CCol xs="2">
           <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Total Pieces" text={totalQuantity} />
