@@ -237,15 +237,15 @@ const Users = () => {
     updateFirstDonePieces(count);
     setDonePieces(count);
 
-    // Swal.fire(
-    //   {
-    //     position: 'top-end',
-    //     icon: 'success',
-    //     title: 'Card is updated!',
-    //     showConfirmButton: false,
-    //     timer: 1500
-    //   }
-    // );
+    Swal.fire(
+      {
+        position: 'top-end',
+        icon: 'success',
+        title: 'Card is updated!',
+        showConfirmButton: false,
+        timer: 1500
+      }
+    );
   }
 
   var activeShiftPeriod = 0;
