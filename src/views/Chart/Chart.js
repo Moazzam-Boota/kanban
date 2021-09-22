@@ -605,19 +605,20 @@ const Users = () => {
       // console.log(shiftStartTime.format('HH:mm'), shiftMovingTime.format('HH:mm'), 'hellow');
 
       // @TODO: Skip Break Time
-      // for (var singleBreak = 0; singleBreak < allBreaks.length; singleBreak++) {
-      //   let breakStart = allBreaks[singleBreak][0];
-      //   let breakEnd = allBreaks[singleBreak][1];
+      var breakStatus = false;
+      for (var singleBreak = 0; singleBreak < allBreaks.length; singleBreak++) {
+        let breakStart = allBreaks[singleBreak][0];
+        let breakEnd = allBreaks[singleBreak][1];
 
-      //   if (breakStart.isBetween(startPitchTime, endPitchTime, null, '[)') && breakEnd.isBetween(startPitchTime, endPitchTime, null, '(]')) {
-      //     console.log(startPitchTime.format('HH:mm'), endPitchTime.format('HH:mm'), breakStart.format('HH:mm'), breakEnd.format('HH:mm'), 'hellow-break');
+        if (breakStart.isBetween(startPitchTime, endPitchTime, null, '[)') && breakEnd.isBetween(startPitchTime, endPitchTime, null, '(]')) {
+          console.log(startPitchTime.format('HH:mm'), endPitchTime.format('HH:mm'), breakStart.format('HH:mm'), breakEnd.format('HH:mm'), 'hellow-break');
+          breakStatus = true;
+        }
+        console.log(startPitchTime.format('HH:mm'), endPitchTime.format('HH:mm'), breakStart.format('HH:mm'), breakEnd.format('HH:mm'), 'hellow');
+      }
 
-      //   }
-      //   console.log(startPitchTime.format('HH:mm'), endPitchTime.format('HH:mm'), breakStart.format('HH:mm'), breakEnd.format('HH:mm'), 'hellow');
-      // }
 
-
-      if (currentTime.isBetween(startPitchTime, endPitchTime)) {
+      if (currentTime.isBetween(startPitchTime, endPitchTime) && breakStatus === false) {
         // also check for length of allShiftsData
         activeShiftPeriod = counterTimeShift - trackShiftsDone;
         headerWidgetColor = filterColor(activeShiftPeriod);
