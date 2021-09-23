@@ -310,10 +310,10 @@ const Users = () => {
     // socket.on("FromAPI", data => {
     //   setSocketResponse(data);
     //   socket.emit("lightred", Number(Math.random() < 0.5));
-    //   socket.emit("lightgreen", Number(Math.random() < 0.5));
+    //   socket.emit("lightgreen", Number(Math.random() < 0.5))
     // });
   }, []);
-
+//  ...................
   useEffect(() => {
     if (excelFileData.length !== 0 && dataGroupByProduct.length == 0) {
       const allShiftsData = [];
@@ -610,14 +610,12 @@ const Users = () => {
         let breakStart = allBreaks[singleBreak][0];
         let breakEnd = allBreaks[singleBreak][1];
 
-        if (breakStart.isBetween(startPitchTime, endPitchTime, null, '[)') && breakEnd.isBetween(startPitchTime, endPitchTime, null, '(]')) {
-          console.log(startPitchTime.format('HH:mm'), endPitchTime.format('HH:mm'), breakStart.format('HH:mm'), breakEnd.format('HH:mm'), 'hellow-break');
+        if (currentTime.isBetween(breakStart, breakEnd)) {
           breakStatus = true;
         }
-        console.log(startPitchTime.format('HH:mm'), endPitchTime.format('HH:mm'), breakStart.format('HH:mm'), breakEnd.format('HH:mm'), 'hellow');
       }
-
-
+      
+      console.log('breakStatus', breakStatus);
       if (currentTime.isBetween(startPitchTime, endPitchTime) && breakStatus === false) {
         // also check for length of allShiftsData
         activeShiftPeriod = counterTimeShift - trackShiftsDone;
@@ -628,7 +626,6 @@ const Users = () => {
       }
       // }
       var dataGroupByProductRandom = lodash.get(dataGroupByProduct, i - 1, []);
-
       // console.log(dataGroupByProductRandom, 'dataGroupByProductRandom');
 
       // dataGroupByProductRandom.filter(l => {
