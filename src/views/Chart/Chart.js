@@ -217,22 +217,61 @@ const Users = () => {
   var shiftEndTime = moment(shiftTimeRange[1], format);
   let skipMinutes = 0;
   let whichBreak = 0; // decide which break ends previously (currentTime is between endPreviousBreak and EndShiftTime )
-
-  for (var singleBreak = 0; singleBreak < allBreaks.length; singleBreak++) {
-    let breakStart = allBreaks[singleBreak][0];
-    let breakEnd = allBreaks[singleBreak][1];
-    // let nextBreakStart = allBreaks[singleBreak++][0];
-    console.log("break start", breakStart);
-    console.log("break end", breakEnd);
-    var BreakDiffInMinutes = moment.duration(breakEnd.diff(breakStart)).asMinutes();
-    skipMinutes += BreakDiffInMinutes;
-    console.log('length of breaks', allBreaks.length)
-    if (moment().isBetween(breakEnd, shiftEndTime)) {
-      // if firstBreak start skip firstBreak minutes if second add first and second and skip here
-      console.log("inBetween", skipMinutes);
-      shiftStartTime.add(skipMinutes, "m");
+  let endBreak;
+  if(allBreaks.length>=1){
+  var objs = allBreaks.map(function(x) { 
+    return { 
+      breakStart: x[0], 
+      breakEnd: x[1] 
+    }; 
+  });
+  for( whichBreak; whichBreak<allBreaks.length; whichBreak++){
+    let breakStart = allBreaks[whichBreak][0];
+    let breakEnd = allBreaks[whichBreak][1];
+    if(moment().isBetween(breakStart, breakEnd) && moment().isBetween(shiftStartTime, shiftEndTime)){
+      localStorage.setItem('whichBreak', whichBreak+1);
     }
   }
+  
+console.log('previousBreak', localStorage.getItem('whichBreak'));
+if(localStorage.getItem('whichBreak')){
+var previousBreak = localStorage.getItem('whichBreak');
+objs.slice(0, previousBreak).forEach(item => {
+  console.log(item.breakStart, item.breakEnd, 'defchbdehcb');
+  var BreakDiffInMinutes = moment.duration(item.breakEnd.diff(item.breakStart)).asMinutes();
+     skipMinutes += BreakDiffInMinutes;
+    console.log('length of breaks', allBreaks.length)
+})
+}
+console.log('allBrewaks', objs);
+console.log('previousBreak', previousBreak);
+console.log('allBreaks Length', allBreaks.length);
+
+
+ objs.slice(0,1).forEach(item => {
+  endBreak = item.breakEnd
+ })
+if (moment().isBetween(endBreak, shiftEndTime)) {
+  // if firstBreak start skip firstBreak minutes if second add first and second and skip here
+  console.log("inBetween", skipMinutes);
+  shiftStartTime.add(skipMinutes, "m");
+}
+  }
+  // for (var singleBreak = 0; singleBreak < previousBreak; singleBreak++) {
+  //   let breakStart = objs[singleBreak].breakStart;
+  //   let breakEnd = allBreaks[singleBreak].breakEnd;
+  //   // let nextBreakStart = allBreaks[singleBreak++][0];
+  //   console.log("break start", breakStart);
+  //   console.log("break end", breakEnd);
+  //   var BreakDiffInMinutes = moment.duration(breakEnd.diff(breakStart)).asMinutes();
+  //   skipMinutes += BreakDiffInMinutes;
+  //   console.log('length of breaks', allBreaks.length)
+  //   if (moment().isBetween(breakEnd, shiftEndTime)) {
+  //     // if firstBreak start skip firstBreak minutes if second add first and second and skip here
+  //     console.log("inBetween", skipMinutes);
+  //     shiftStartTime.add(skipMinutes, "m");
+  //   }
+  // }
 
   // console.log('shift start time', shiftStartTime.add(10, 'm').minutes());
 
