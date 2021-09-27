@@ -215,8 +215,8 @@ const Users = () => {
 
   var shiftStartTime = moment(shiftTimeRange[0], format);
   var shiftEndTime = moment(shiftTimeRange[1], format);
-  let skipMinutes = 0;
-  let whichBreak = 0; // decide which break ends previously (currentTime is between endPreviousBreak and EndShiftTime )
+  var skipMinutes = 0;
+  var whichBreak = 0; // decide which break ends previously (currentTime is between endPreviousBreak and EndShiftTime )
   let endBreak;
   if(allBreaks.length>=1){
   var objs = allBreaks.map(function(x) { 
@@ -257,21 +257,29 @@ if (moment().isBetween(endBreak, shiftEndTime)) {
   shiftStartTime.add(skipMinutes, "m");
 }
   }
-  // for (var singleBreak = 0; singleBreak < previousBreak; singleBreak++) {
-  //   let breakStart = objs[singleBreak].breakStart;
-  //   let breakEnd = allBreaks[singleBreak].breakEnd;
-  //   // let nextBreakStart = allBreaks[singleBreak++][0];
-  //   console.log("break start", breakStart);
-  //   console.log("break end", breakEnd);
-  //   var BreakDiffInMinutes = moment.duration(breakEnd.diff(breakStart)).asMinutes();
-  //   skipMinutes += BreakDiffInMinutes;
-  //   console.log('length of breaks', allBreaks.length)
-  //   if (moment().isBetween(breakEnd, shiftEndTime)) {
-  //     // if firstBreak start skip firstBreak minutes if second add first and second and skip here
-  //     console.log("inBetween", skipMinutes);
-  //     shiftStartTime.add(skipMinutes, "m");
-  //   }
-  // }
+
+
+if(!moment().isBetween(shiftStartTime, shiftEndTime) && allBreaks.length > 0){
+
+  var objs1 = allBreaks.map(function(x) { 
+    return { 
+      breakStart: x[0], 
+      breakEnd: x[1] 
+    }; 
+  });
+
+  objs1.forEach(item => {
+    const breakStart = item.breakStart;
+    const breakEnd = item.breakEnd;
+    if(!moment().isBetween(shiftStartTime, shiftEndTime) && !moment().isBetween(breakStart, breakEnd)){
+      localStorage.removeItem('whichBreak');
+    }
+  })
+}
+if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
+  localStorage.removeItem('whichBreak');
+}
+
 
   // console.log('shift start time', shiftStartTime.add(10, 'm').minutes());
 
@@ -486,7 +494,8 @@ if (moment().isBetween(endBreak, shiftEndTime)) {
         // const currentShiftProducts = 0;
         // based on count, assign products
         // also subtract their sum value
-        // console.log(numberOfProducts, 'numberOfProducts');
+        console.log(numberOfProducts, 'numberOfProducts');
+        console.log(dataGroup, 'dataGroup');
         for (var j = 0; j < numberOfProducts; j++) {
           var currentElementData = dataGroup[currentElement];
           const singleProductColor = colorsPalette[currentElement];
