@@ -107,6 +107,7 @@ const Params = () => {
 
 
   const saveParametersData = () => {
+    localStorage.removeItem('pendingPiecesPerProduct');
     let autoDownloadTime = document.getElementById("autoDownloadTime");
     if (autoDownloadTime == null || autoDownloadTime.value === "") {
       Swal.fire(
