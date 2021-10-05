@@ -29,7 +29,8 @@ const helpers = {
     },
     getDataPouchDB: function (data) {
 
-    }
+    },
 }
+
 
 export default helpers;

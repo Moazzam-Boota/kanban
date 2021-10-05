@@ -159,7 +159,7 @@ schedule.scheduleJob(" * * * * * ", function () {
 
                                 var rowsData = [];
 
-                                if (row.getCell('EF').value === "PERS044") {
+                                if (row.getCell('EF').value === "PERS012") {
 
                                     rowsData.push({
                                         row_num: rowNumber,
@@ -225,7 +225,7 @@ app.post('/api/excel-upload', (req, res) => {
 
             var rowsData = [];
 
-            if (row.getCell('EF').value === "PERS044") {
+            if (row.getCell('EF').value === "PERS012") {
 
                 rowsData.push({
                     row_num: rowNumber,
