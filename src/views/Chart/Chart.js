@@ -232,20 +232,19 @@ const Users = () => {
   }, [pitchTime])
 
 
-  const updateDonePieces = (count) => {
-
+  function updateDonePieces(count) {
     updateFirstDonePieces(count);
     setDonePieces(count);
 
-    // Swal.fire(
-    //   {
-    //     position: 'top-end',
-    //     icon: 'success',
-    //     title: 'Card is updated!',
-    //     showConfirmButton: false,
-    //     timer: 1500
-    //   }
-    // );
+    Swal.fire(
+      {
+        position: 'top-end',
+        icon: 'success',
+        title: 'Card is updated!',
+        showConfirmButton: false,
+        timer: 1500
+      }
+    );
   }
 
   var activeShiftPeriod = 0;
@@ -288,10 +287,11 @@ const Users = () => {
 
     socket.on('lightgreen', function (data) { //get button status from client
       // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
-      socket.emit("lightgreen", data); //send push button status to back to server
+      //socket.emit("lightgreen", data); //send push button status to back to server
       // setSocketResponse(true);
-      console.log(donePieces + 1, data, 'lightgreen');
-      updateDonePieces(donePieces + 1);
+      //console.log(donePieces + 1, data, 'lightgreen');
+      //updateDonePieces(donePieces + 1);
+      document.getElementById("newPieceDoneButton").click();
     });
     socket.on('lightred', function (data) { //get button status from client
       // document.getElementById("lightred").checked = data; //change checkbox according to push button on Raspberry Pi
@@ -312,6 +312,10 @@ const Users = () => {
     //   socket.emit("lightred", Number(Math.random() < 0.5));
     //   socket.emit("lightgreen", Number(Math.random() < 0.5));
     // });
+
+    return function cleanup() {
+      socket.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -422,7 +426,6 @@ const Users = () => {
     // console.log(remainderDonePieces, localDonePieces, limitShift, 'remainderDonePieces')
     // const remainderDonePieces = firstDonePieces % limitShift === 0 ? limitShift : donePieces % limitShift;
     // var allShiftsDataRemainder = currentShiftOriginalCount + localDonePieces;
-
 
     // console.log('updatedShiftData', activeShiftPeriod, limitShift, remainderDonePieces, localDonePieces)
     // if (allShiftsData[0] && limitShift - remainderDonePieces > limitShift - allShiftsDataRemainder) { //subtract on every button press
@@ -686,12 +689,15 @@ const Users = () => {
   if (inBetweenBreaks) return (<div style={{ textAlign: 'center', marginTop: '10%' }}><h1>System in Break, Don't push the button.</h1></div>)
   return (
     <CFormGroup>
-      {/* <CButton
+      {<CButton hidden
+        id="newPieceDoneButton"
         style={{ float: 'right', height: '80px' }}
         size="lg"
         onClick={() => {
-          updateDonePieces(donePieces + 1);
-        }} color="danger">Press<br /> Button</CButton> */}
+          if (activeShiftPeriod > 0) {
+            updateDonePieces(donePieces + 1);
+          }
+        }} color="danger">Press<br /> Button</CButton>}
       <CRow >
         <CCol xs="2">
           <CWidgetSimple style={{ backgroundColor: headerWidgetColor, color: 'white' }} header="Total Pieces" text={totalQuantity} />
