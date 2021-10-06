@@ -146,6 +146,7 @@ schedule.scheduleJob(" * * * * * ", function () {
                         throw err
                     }
                     fs.writeFileSync('/home/gestlean/kanban/aws-files/' + options.Key, data.Body)
+                    localStorage.removeItem('pendingPiecesPerProduct');
                     console.log('file downloaded successfully')
 
                     var workbook = new Excel.Workbook();

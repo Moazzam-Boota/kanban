@@ -48,6 +48,8 @@ const Users = () => {
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1);
   const [page, setPage] = useState(currentPage);
   const [startOfBreak, setStartOfBreak] = useState("");
+  // var initialTime = moment().format("hh:mm:ss A");
+  // const [time, setTime] = useState(initialTime);
   const [endOfBreak, setEndOfBreak] = useState("");
   const [dbChartParams, setDbChartParams] = useState({});
   const excelFileBackendResponse = useSelector(
@@ -68,6 +70,9 @@ const Users = () => {
       });
     });
   }
+  // useEffect(() => {
+  //   setTime (moment().format("hh:mm:ss A"))
+  // }, [time]);
 
   const downloadAutoTime = lodash.get(dbChartParams, "downloadTime");
   // console.log(lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT'), 'excelFileData')
@@ -164,8 +169,10 @@ const Users = () => {
           });
           return pouchDBConnection.remove(doc);
         });
-
+        localStorage.removeItem('pendingPiecesPerProduct');
+  
         window.location.reload(true);
+
       }
     ); //Will refresh the page at 18:45pm
   }
@@ -1150,6 +1157,7 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
     return (
       <div style={{ textAlign: "center", marginTop: "10%" }}>
         <h1>Out of Shift</h1>
+        {/* <h1>{initialTime}</h1> */}
       </div>
     );
   if (Object.values(dbChartParams).length === 0)
@@ -1232,7 +1240,7 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
         </CCol>
       </CRow>
 
-      <h1>PERS012</h1>
+      <h1>PERS012</h1> 
       <hr style={{ borderTop: "3px solid rgba(0, 0, 21, 0.2)" }}></hr>
       <CRow style={{ float: "right" }}>
         {/* <CCol xl={12}> */}
