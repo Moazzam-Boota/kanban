@@ -374,18 +374,21 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
     }
   }, [pitchTime]);
 
-  const updateDonePieces = (count) => {
+
+  function updateDonePieces(count) {
     updateFirstDonePieces(count);
     setDonePieces(count);
 
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "Card is updated!",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  };
+    Swal.fire(
+      {
+        position: 'top-end',
+        icon: 'success',
+        title: 'Card is updated!',
+        showConfirmButton: false,
+        timer: 1500
+      }
+    );
+  }
 
   var activeShiftPeriod = 0;
 
@@ -426,10 +429,12 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
     socket.on("lightgreen", function (data) {
       //get button status from client
       // document.getElementById("lightgreen").checked = data; //change checkbox according to push button on Raspberry Pi
-      socket.emit("lightgreen", data); //send push button status to back to server
+      //socket.emit("lightgreen", data); //send push button status to back to server
       // setSocketResponse(true);
-      console.log(donePieces + 1, data, "lightgreen");
-      updateDonePieces(donePieces + 1);
+
+      //console.log(donePieces + 1, data, 'lightgreen');
+      //updateDonePieces(donePieces + 1);
+      document.getElementById("newPieceDoneButton").click();
     });
     socket.on("lightred", function (data) {
       //get button status from client
@@ -449,6 +454,10 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
     //   socket.emit("lightred", Number(Math.random() < 0.5));
     //   socket.emit("lightgreen", Number(Math.random() < 0.5))
     // });
+
+    return function cleanup() {
+      socket.disconnect();
+    };
   }, []);
   //  ...................
   useEffect(() => {
@@ -1169,18 +1178,16 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
     );
   return (
     <CFormGroup>
-      <CButton
-        style={{ float: "right", height: "80px" }}
+      {<CButton hidden
+        id="newPieceDoneButton"
+        style={{ float: 'right', height: '80px' }}
         size="lg"
         onClick={() => {
-          updateDonePieces(donePieces + 1);
-        }}
-        color="danger"
-      >
-        Press
-        <br /> Button
-      </CButton>
-      <CRow>
+          if (activeShiftPeriod > 0) {
+            updateDonePieces(donePieces + 1);
+          }
+        }} color="danger">Press<br /> Button</CButton>}
+      <CRow >
         <CCol xs="2">
           <CWidgetSimple
             style={{ backgroundColor: headerWidgetColor, color: "white" }}

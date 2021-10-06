@@ -145,12 +145,12 @@ schedule.scheduleJob(" * * * * * ", function () {
                     if (err) {
                         throw err
                     }
-                    fs.writeFileSync('./aws-files/' + options.Key, data.Body)
+                    fs.writeFileSync('/home/gestlean/kanban/aws-files/' + options.Key, data.Body)
                     console.log('file downloaded successfully')
 
                     var workbook = new Excel.Workbook();
 
-                    workbook.xlsx.readFile('aws-files/META_SQL.xlsm')
+                    workbook.xlsx.readFile('/home/gestlean/kanban/aws-files/META_SQL.xlsm')
                         .then(function () {
                             var worksheet = workbook.getWorksheet('Hoja1');
 
@@ -353,10 +353,11 @@ app.use(router);
 
 const server = http.createServer(app);
 
-// const serialPort = require('serialport')
-// var previousTime = new Date().getTime();
-// const buttonPort = new serialPort('/dev/ttyUSB0', { baudRate: 110 })
 
+const serialPort = require('serialport')
+var previousTime = new Date().getTime();
+const buttonPort = new serialPort('/dev/ttyUSB0', { baudRate: 110 })
+var EventEmitter = require('events');
 
 
 // const io = socketIo(server, {
@@ -376,6 +377,9 @@ const server = http.createServer(app);
 // var LED_GREEN = new Gpio('20', 'out'); //use Gpio pin 20 as output for LED GREEN
 // var pushButton = new Gpio('26', 'in', 'both'); //use Gpio pin 26 as input, and 'both' button presses, and releases should be handled
 // var pushButton = new Gpio('26', 'in', 'rising', { debounceTimeout: 10 });
+var lightvalue = 0; // get from db
+var triggerButton = new EventEmitter(); // Event used to send a packet to the Frontend when the button is pressed.
+
 
 // io.on("connection", (socket) => {
 //     console.log("New client connected");
@@ -456,6 +460,127 @@ const server = http.createServer(app);
 //         clearInterval(interval);
 //     });
 // });
+
+// Open socket with the Frontend:
+io.on("connection", (socket) => {
+    console.log("New client connected");
+
+    triggerButton.on("triggerButton", function () {
+        socket.emit('lightgreen', lightvalue); // Send button status to client
+    });
+
+    socket.on("disconnect", () => {
+        console.log("Client disconnected");
+        clearInterval(interval);
+    });
+});
+
+// Open UART port for the button:
+buttonPort.on("open", function () {
+    // Send dummy data, used to detect when the button is pressed:
+    setInterval(function () {
+        buttonPort.write("\n", function (err, results) {
+            // It happens when the button is not pressed.
+        });
+    }, 100);
+
+    // Run when the button is pressed:
+    buttonPort.on("data", function (data) {
+        // Check whether enough time has passed from the previous button press:
+        const currentTime = new Date().getTime();
+        if (currentTime - previousTime > 500) {
+            previousTime = currentTime;
+
+            lightvalue = lightvalue + 1;
+            triggerButton.emit("triggerButton");
+        }
+    });
+});
+
+// On CTRL+C:
+process.on('SIGINT', function () {
+    buttonPort.close(); // Close UART port.
+    process.exit(); // Exit completely
+});
+
+/*buttonPort.on("open", function () {
+    io.on("connection", (socket) => {
+        console.log("New client connected");
+        // if (interval) {
+        //     clearInterval(interval);
+        // }
+        // interval = setInterval(() => getApiAndEmit(socket), 1000);
+
+        var lightvalue = 0; // get from db
+        // var countValue = 0;
+        // var startPressButton = '';
+
+        //socket.emit('lightgreen', -1); //send button status to client
+        // Run when the button is pressed:
+        buttonPort.on("data", function (data) {
+            // Check whether enough time has passed from the previous button press:
+            const currentTime = new Date().getTime();
+            if (currentTime - previousTime > 500) {
+                previousTime = currentTime;
+                console.log('Button pressed');
+
+                lightvalue = lightvalue + 1;
+                socket.emit('lightgreen', lightvalue); //send button status to client
+            }
+        });
+        
+        // Interval to send continuous data to detect button being pressed:
+        setInterval(function () {
+            buttonPort.write("\n", function (err, results) {
+                // It happens when the button is not pressed.
+            });
+        }, 100);
+
+        // pushButton.watch(function (err, value) { //Watch for hardware interrupts on pushButton
+        //     if (err) { //if an error
+        //         console.error('There was an error', err); //output error message to console
+        //         return;
+        //     }
+        // lightvalue = value;
+
+        // var endPressButton = moment();
+        // var diffInSeconds = moment.duration(endPressButton.diff(startPressButton)).asSeconds();
+        // countValue = countValue + 1;
+
+        // if (countValue === 2 && diffInSeconds < 5) {
+        // if (diffInSeconds < 5) {
+
+        // socket.emit('lightred', lightvalue); //send button status to client
+        // countValue = 0;
+        // } else if (diffInSeconds > 5) {
+        // countValue = 1;
+        //     startPressButton = moment();
+        //     socket.emit('singleClick', 1);
+        // } else {
+        //     startPressButton = moment();
+        //     socket.emit('singleClick', 0);
+        // }
+        // });
+        // socket.on('lightgreen', function (data) { //get light switch status from client
+        //     lightvalue = data;
+        //     if (lightvalue != LED_GREEN.readSync()) { //only change LED_GREEN if status has changed
+        //         LED_GREEN.writeSync(lightvalue); //turn LED_GREEN on or off
+        //     }
+        // });
+        // socket.on('lightred', function (data) { //get light switch status from client
+        //     lightvalue = data;
+        //     if (lightvalue != LED_RED.readSync()) { //only change LED_RED if status has changed
+        //         LED_RED.writeSync(lightvalue); //turn LED_RED on or off
+        //     }
+        // });
+
+
+        socket.on("disconnect", () => {
+            console.log("Client disconnected");
+            clearInterval(interval);
+        });
+    });
+});*/
 
 // process.on('SIGINT', function () { //on ctrl+c
 //     LED_RED.writeSync(0); // Turn LED_RED off
