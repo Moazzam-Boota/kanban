@@ -1178,7 +1178,7 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
     );
   return (
     <CFormGroup>
-      {<CButton hidden
+      {<CButton 
         id="newPieceDoneButton"
         style={{ float: 'right', height: '80px' }}
         size="lg"
