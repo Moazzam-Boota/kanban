@@ -169,10 +169,9 @@ const Users = () => {
           });
           return pouchDBConnection.remove(doc);
         });
-        localStorage.removeItem('pendingPiecesPerProduct');
-  
-        window.location.reload(true);
+        localStorage.removeItem("pendingPiecesPerProduct");
 
+        window.location.reload(true);
       }
     ); //Will refresh the page at 18:45pm
   }
@@ -225,69 +224,75 @@ const Users = () => {
   var skipMinutes = 0;
   var whichBreak = 0; // decide which break ends previously (currentTime is between endPreviousBreak and EndShiftTime )
   let endBreak;
-  if(allBreaks.length>=1){
-  var objs = allBreaks.map(function(x) { 
-    return { 
-      breakStart: x[0], 
-      breakEnd: x[1] 
-    }; 
-  });
-  for( whichBreak; whichBreak<allBreaks.length; whichBreak++){
-    let breakStart = allBreaks[whichBreak][0];
-    let breakEnd = allBreaks[whichBreak][1];
-    if(moment().isBetween(breakStart, breakEnd) && moment().isBetween(shiftStartTime, shiftEndTime)){
-      localStorage.setItem('whichBreak', whichBreak+1);
+  if (allBreaks.length >= 1) {
+    var objs = allBreaks.map(function (x) {
+      return {
+        breakStart: x[0],
+        breakEnd: x[1],
+      };
+    });
+    for (whichBreak; whichBreak < allBreaks.length; whichBreak++) {
+      let breakStart = allBreaks[whichBreak][0];
+      let breakEnd = allBreaks[whichBreak][1];
+      if (
+        moment().isBetween(breakStart, breakEnd) &&
+        moment().isBetween(shiftStartTime, shiftEndTime)
+      ) {
+        localStorage.setItem("whichBreak", whichBreak + 1);
+      }
+    }
+
+    console.log("previousBreak", localStorage.getItem("whichBreak"));
+    if (localStorage.getItem("whichBreak")) {
+      var previousBreak = localStorage.getItem("whichBreak");
+      objs.slice(0, previousBreak).forEach((item) => {
+        console.log(item.breakStart, item.breakEnd, "defchbdehcb");
+        var BreakDiffInMinutes = moment
+          .duration(item.breakEnd.diff(item.breakStart))
+          .asMinutes();
+        skipMinutes += BreakDiffInMinutes;
+        console.log("length of breaks", allBreaks.length);
+      });
+    }
+    console.log("allBrewaks", objs);
+    console.log("previousBreak", previousBreak);
+    console.log("allBreaks Length", allBreaks.length);
+
+    objs.slice(0, 1).forEach((item) => {
+      endBreak = item.breakEnd;
+    });
+    if (moment().isBetween(endBreak, shiftEndTime)) {
+      // if firstBreak start skip firstBreak minutes if second add first and second and skip here
+      console.log("inBetween", skipMinutes);
+      shiftStartTime.add(skipMinutes, "m");
     }
   }
-  
-console.log('previousBreak', localStorage.getItem('whichBreak'));
-if(localStorage.getItem('whichBreak')){
-var previousBreak = localStorage.getItem('whichBreak');
-objs.slice(0, previousBreak).forEach(item => {
-  console.log(item.breakStart, item.breakEnd, 'defchbdehcb');
-  var BreakDiffInMinutes = moment.duration(item.breakEnd.diff(item.breakStart)).asMinutes();
-     skipMinutes += BreakDiffInMinutes;
-    console.log('length of breaks', allBreaks.length)
-})
-}
-console.log('allBrewaks', objs);
-console.log('previousBreak', previousBreak);
-console.log('allBreaks Length', allBreaks.length);
 
+  if (
+    !moment().isBetween(shiftStartTime, shiftEndTime) &&
+    allBreaks.length >= 1
+  ) {
+    var objs1 = allBreaks.map(function (x) {
+      return {
+        breakStart: x[0],
+        breakEnd: x[1],
+      };
+    });
 
- objs.slice(0,1).forEach(item => {
-  endBreak = item.breakEnd
- })
-if (moment().isBetween(endBreak, shiftEndTime)) {
-  // if firstBreak start skip firstBreak minutes if second add first and second and skip here
-  console.log("inBetween", skipMinutes);
-  shiftStartTime.add(skipMinutes, "m");
-}
+    objs1.forEach((item) => {
+      const breakStart = item.breakStart;
+      const breakEnd = item.breakEnd;
+      if (
+        !moment().isBetween(shiftStartTime, shiftEndTime) &&
+        !moment().isBetween(breakStart, breakEnd)
+      ) {
+        localStorage.removeItem("whichBreak");
+      }
+    });
   }
-
-
-if(!moment().isBetween(shiftStartTime, shiftEndTime) && allBreaks.length >= 1){
-
-  var objs1 = allBreaks.map(function(x) { 
-    return { 
-      breakStart: x[0], 
-      breakEnd: x[1] 
-    }; 
-  });
-
-  objs1.forEach(item => {
-    const breakStart = item.breakStart;
-    const breakEnd = item.breakEnd;
-    if(!moment().isBetween(shiftStartTime, shiftEndTime) && !moment().isBetween(breakStart, breakEnd)){
-      localStorage.removeItem('whichBreak');
-     
-    }
-  })
-}
-if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
-  localStorage.removeItem('whichBreak');
-  
-}
+  if (!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks) {
+    localStorage.removeItem("whichBreak");
+  }
 
   // console.log('shift start time', shiftStartTime.add(10, 'm').minutes());
 
@@ -338,9 +343,13 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
   );
   const [piecesPerHourOnTime, setPiecesPerHourOnTime] = useState(0);
   const [piecesPerHourOnDay, setPiecesPerHourOnDay] = useState(0);
-  var initialstate = localStorage.getItem('pendingPiecesPerProduct') ? parseInt(localStorage.getItem('pendingPiecesPerProduct')) : 0;
-  const [pendingPiecesPerProduct, setPendingPiecesPerProduct] = useState(initialstate);
+  var initialstate = localStorage.getItem("pendingPiecesPerProduct")
+    ? parseInt(localStorage.getItem("pendingPiecesPerProduct"))
+    : 0;
+  const [pendingPiecesPerProduct, setPendingPiecesPerProduct] =
+    useState(initialstate);
   const [dataGroupByProduct, setDataGroupByProduct] = useState([]);
+  const [movingBreakSum, setMovingBreakSum] = useState(0);
   var headerWidgetColor = "";
 
   const [currentTime, setTimeLeft] = useState(moment());
@@ -381,20 +390,19 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
     }
   }, [pitchTime]);
 
-
   function updateDonePieces(count) {
     updateFirstDonePieces(count);
     setDonePieces(count);
 
-    Swal.fire(
-      {
-        position: 'top-end',
-        icon: 'success',
-        title: 'Card is updated!',
-        showConfirmButton: false,
-        timer: 1500
-      }
-    );
+    // Swal.fire(
+    //   {
+    //     position: 'top-end',
+    //     icon: 'success',
+    //     title: 'Card is updated!',
+    //     showConfirmButton: false,
+    //     timer: 1500
+    //   }
+    // );
   }
 
   var activeShiftPeriod = 0;
@@ -494,12 +502,18 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
           ["asc"]
         )
         .filter((k) => k.sum !== null);
-      console.log(dataGroup.map(k => k.sum), totalPitchesLength,'t', totalQuantityDynamic, 'dataGroup-base')
+      console.log(
+        dataGroup.map((k) => k.sum),
+        totalPitchesLength,
+        "t",
+        totalQuantityDynamic,
+        "dataGroup-base"
+      );
       var loadNextProductTotal = 0;
       var currentElement = 0;
       var runningTakTimeSum = 0;
       var totalSum = 0;
-      if(totalPitchesLength < 55){
+      if (totalPitchesLength < 55) {
         for (
           var i = totalPitchesLength;
           i >= 1 && totalQuantityDynamic > 0 && dataGroup[currentElement];
@@ -510,12 +524,12 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
           const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
           // const numberOfProducts = 4; //number of Products in current order
           // console.log(dataGroup, 'dataGroup243')
-  
+
           // const currentShiftProducts = 0;
           // based on count, assign products
           // also subtract their sum value
-          console.log(numberOfProducts, 'numberOfProducts');
-          console.log(dataGroup, 'dataGroup');
+          console.log(numberOfProducts, "numberOfProducts");
+          console.log(dataGroup, "dataGroup");
           for (var j = 0; j < numberOfProducts; j++) {
             var currentElementData = dataGroup[currentElement];
             const singleProductColor = colorsPalette[currentElement];
@@ -524,28 +538,38 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
               Math.ceil(runningTakTimeSum);
             var productCountDynamic = currentShiftSum;
             // console.log(productCountDynamic, 'productCountDynamic', currentShiftSum, 'currentShiftSum', 'pitchTalktime', pitchTakTime, runningTakTimeSum)
-  
+
             var nextProduct = 0;
             runningTakTimeSum += pitchTakTime;
-            console.log(pitchTakTime, 'pitchTakTime', runningTakTimeSum, 'runningTakTime')
+            console.log(
+              pitchTakTime,
+              "pitchTakTime",
+              runningTakTimeSum,
+              "runningTakTime"
+            );
             if (
               loadNextProductTotal + productCountDynamic >=
               currentElementData.sum
             ) {
               //nextProduct
               // console.log(loadNextProductTotal, productCountDynamic, loadNextProductTotal + productCountDynamic, 'loadNextProductTotal + productCountDynamic', productCountDynamic)
-  
+
               productCountDynamic =
                 productCountDynamic -
                 (loadNextProductTotal +
                   productCountDynamic -
                   currentElementData.sum);
               nextProduct = currentShiftSum - productCountDynamic;
-              console.log(productCountDynamic, 'productCountDynamic', nextProduct, 'nextProduct');
+              console.log(
+                productCountDynamic,
+                "productCountDynamic",
+                nextProduct,
+                "nextProduct"
+              );
               totalSum += productCountDynamic;
               loadNextProductTotal = 0;
               currentElement = currentElement + 1; //setting next product index
-              console.log('currentElementData', currentElement)
+              console.log("currentElementData", currentElement);
               console.log(
                 currentShiftSum,
                 productCountDynamic,
@@ -556,10 +580,10 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
             } else {
               loadNextProductTotal += productCountDynamic;
             }
-  
+
             totalQuantityDynamic = totalQuantityDynamic - productCountDynamic;
             // console.log(i, currentElement, currentElementData.sum, productCountDynamic, totalQuantityDynamic, loadNextProductTotal, loadNextProductTotal + productCountDynamic, 'dataGroupCurrent')
-  
+
             if (productCountDynamic !== 0)
               recordSet.push({
                 ...currentElementData,
@@ -568,14 +592,14 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
                 productCount: productCountDynamic, //for changing dynamic, on button push
                 originalCount: productCountDynamic, //comparing with originalCount
               });
-              // recordSet.reverse();
-  
+            // recordSet.reverse();
+
             console.log(nextProduct, currentShiftSum, "jani");
             console.log(totalSum, "totalSum");
-            if (nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0)) {
+            if (nextProduct - lodash.get(dataGroup[currentElement], "sum", 0)) {
               // console.log(nextProduct, currentShiftSum, currentShiftSum - nextProduct, nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0), lodash.get(dataGroup[currentElement], 'sum', 0), 'nextProduct');
               // currentElement = currentElement + 1;
-              currentElementData = dataGroup[currentElement] 
+              currentElementData = dataGroup[currentElement];
               if (
                 nextProduct !== 0 &&
                 nextProduct !== currentShiftSum &&
@@ -587,14 +611,14 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
                 // currentElementData.sum = currentElementData.sum - nextProduct;
                 const singleProductColor1 = colorsPalette[currentElement];
                 console.log(currentElementData.sum, "here we need");
-                console.log('love', nextProduct, 'p', productCountDynamic);
-                nextProduct =  productCountDynamic -
-                (loadNextProductTotal +
+                console.log("love", nextProduct, "p", productCountDynamic);
+                nextProduct =
                   productCountDynamic -
-                  dataGroup[currentElement].sum);
-                  
-                  
-                console.log('np',nextProduct, productCountDynamic, 'pc');
+                  (loadNextProductTotal +
+                    productCountDynamic -
+                    dataGroup[currentElement].sum);
+
+                console.log("np", nextProduct, productCountDynamic, "pc");
                 recordSet.push({
                   ...currentElementData,
                   color: singleProductColor1,
@@ -603,132 +627,139 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
                   originalCount: nextProduct, //comparing with originalCount
                 });
                 currentElement = currentElement + 1;
-                
-               
+
                 recordSet.reverse();
                 // console.log(recordSet, 'recordSet')
               }
             }
-            console.log(recordSet, 'recordSet1213')
+            console.log(recordSet, "recordSet1213");
           }
           if (recordSet.length !== 0) allShiftsData.push(recordSet);
         }
       }
-      if(totalPitchesLength >= 55){
-      for (
-        var i = totalPitchesLength;
-        i >= 1 && totalQuantityDynamic > 0 && dataGroup[currentElement];
-        i--
-      ) {
-        const recordSet = [];
-        // console.log(numberOfProducts, dataGroup[currentElement], 'numberOfProducts')
-        const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
-        // const numberOfProducts = 4; //number of Products in current order
-        // console.log(dataGroup, 'dataGroup243')
+      if (totalPitchesLength >= 55) {
+        for (
+          var i = totalPitchesLength;
+          i >= 1 && totalQuantityDynamic > 0 && dataGroup[currentElement];
+          i--
+        ) {
+          const recordSet = [];
+          // console.log(numberOfProducts, dataGroup[currentElement], 'numberOfProducts')
+          const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
+          // const numberOfProducts = 4; //number of Products in current order
+          // console.log(dataGroup, 'dataGroup243')
 
-        // const currentShiftProducts = 0;
-        // based on count, assign products
-        // also subtract their sum value
-        console.log(numberOfProducts, 'numberOfProducts');
-        console.log(dataGroup, 'dataGroup');
-        for (var j = 0; j < numberOfProducts; j++) {
-          var currentElementData = dataGroup[currentElement];
-          const singleProductColor = colorsPalette[currentElement];
-          const currentShiftSum =
-            Math.ceil(runningTakTimeSum + pitchTakTime) -
-            Math.ceil(runningTakTimeSum);
-          var productCountDynamic = currentShiftSum;
-          // console.log(productCountDynamic, 'productCountDynamic', currentShiftSum, 'currentShiftSum', 'pitchTalktime', pitchTakTime, runningTakTimeSum)
+          // const currentShiftProducts = 0;
+          // based on count, assign products
+          // also subtract their sum value
+          console.log(numberOfProducts, "numberOfProducts");
+          console.log(dataGroup, "dataGroup");
+          for (var j = 0; j < numberOfProducts; j++) {
+            var currentElementData = dataGroup[currentElement];
+            const singleProductColor = colorsPalette[currentElement];
+            const currentShiftSum =
+              Math.ceil(runningTakTimeSum + pitchTakTime) -
+              Math.ceil(runningTakTimeSum);
+            var productCountDynamic = currentShiftSum;
+            // console.log(productCountDynamic, 'productCountDynamic', currentShiftSum, 'currentShiftSum', 'pitchTalktime', pitchTakTime, runningTakTimeSum)
 
-          var nextProduct = 0;
-          runningTakTimeSum += pitchTakTime;
-          console.log(pitchTakTime, 'pitchTakTime', runningTakTimeSum, 'runningTakTime')
-          if (
-            loadNextProductTotal + productCountDynamic >=
-            currentElementData.sum
-          ) {
-            //nextProduct
-            // console.log(loadNextProductTotal, productCountDynamic, loadNextProductTotal + productCountDynamic, 'loadNextProductTotal + productCountDynamic', productCountDynamic)
-
-            productCountDynamic =
-              productCountDynamic -
-              (loadNextProductTotal +
-                productCountDynamic -
-                currentElementData.sum);
-            nextProduct = currentShiftSum - productCountDynamic;
-            console.log(productCountDynamic, 'productCountDynamic', nextProduct, 'nextProduct');
-            totalSum += productCountDynamic;
-            loadNextProductTotal = 0;
-            currentElement = currentElement + 1; //setting next product index
-            console.log('currentElementData', currentElement)
+            var nextProduct = 0;
+            runningTakTimeSum += pitchTakTime;
             console.log(
-              currentShiftSum,
-              productCountDynamic,
-              dataGroup[currentElement],
-              "our next product"
+              pitchTakTime,
+              "pitchTakTime",
+              runningTakTimeSum,
+              "runningTakTime"
             );
-            // console.log(productCountDynamic, nextProduct, 'productCountDynamic')
-          } else {
-            loadNextProductTotal += productCountDynamic;
-          }
-
-          totalQuantityDynamic = totalQuantityDynamic - productCountDynamic;
-          // console.log(i, currentElement, currentElementData.sum, productCountDynamic, totalQuantityDynamic, loadNextProductTotal, loadNextProductTotal + productCountDynamic, 'dataGroupCurrent')
-
-          if (productCountDynamic !== 0)
-            recordSet.push({
-              ...currentElementData,
-              color: singleProductColor,
-              record: currentElementData.data[j], //check sum, currentElementData.data[j]
-              productCount: productCountDynamic, //for changing dynamic, on button push
-              originalCount: productCountDynamic, //comparing with originalCount
-            });
-            // recordSet.reverse();
-
-          console.log(nextProduct, currentShiftSum, "jani");
-          console.log(totalSum, "totalSum");
-          if (nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0)) {
-            // console.log(nextProduct, currentShiftSum, currentShiftSum - nextProduct, nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0), lodash.get(dataGroup[currentElement], 'sum', 0), 'nextProduct');
-            // currentElement = currentElement + 1;
-            currentElementData = dataGroup[currentElement] 
             if (
-              nextProduct !== 0 &&
-              nextProduct !== currentShiftSum &&
-              dataGroup[currentElement]
+              loadNextProductTotal + productCountDynamic >=
+              currentElementData.sum
             ) {
-              // console.log(currentElementData, 'currentElementData')
-              currentElementData = dataGroup[currentElement];
-              // console.log(dataGroup[currentElement].sum, 'dataGroup[currentElement].sum')
-              currentElementData.sum = currentElementData.sum - nextProduct;
-              const singleProductColor1 = colorsPalette[currentElement];
-              console.log(currentElementData.sum, "here we need");
-              console.log('love', nextProduct, 'p', productCountDynamic);
-              // nextProduct =  productCountDynamic -
-              // (loadNextProductTotal +
-              //   productCountDynamic -
-              //   dataGroup[currentElement].sum);
-                
-                
-              console.log('np',nextProduct, productCountDynamic, 'pc');
+              //nextProduct
+              // console.log(loadNextProductTotal, productCountDynamic, loadNextProductTotal + productCountDynamic, 'loadNextProductTotal + productCountDynamic', productCountDynamic)
+
+              productCountDynamic =
+                productCountDynamic -
+                (loadNextProductTotal +
+                  productCountDynamic -
+                  currentElementData.sum);
+              nextProduct = currentShiftSum - productCountDynamic;
+              console.log(
+                productCountDynamic,
+                "productCountDynamic",
+                nextProduct,
+                "nextProduct"
+              );
+              totalSum += productCountDynamic;
+              loadNextProductTotal = 0;
+              currentElement = currentElement + 1; //setting next product index
+              console.log("currentElementData", currentElement);
+              console.log(
+                currentShiftSum,
+                productCountDynamic,
+                dataGroup[currentElement],
+                "our next product"
+              );
+              // console.log(productCountDynamic, nextProduct, 'productCountDynamic')
+            } else {
+              loadNextProductTotal += productCountDynamic;
+            }
+
+            totalQuantityDynamic = totalQuantityDynamic - productCountDynamic;
+            // console.log(i, currentElement, currentElementData.sum, productCountDynamic, totalQuantityDynamic, loadNextProductTotal, loadNextProductTotal + productCountDynamic, 'dataGroupCurrent')
+
+            if (productCountDynamic !== 0)
               recordSet.push({
                 ...currentElementData,
-                color: singleProductColor1,
-                record: dataGroup[currentElement].data[j], //check sum, currentElementData.data[j]
-                productCount: nextProduct, //for changing dynamic, on button push
-                originalCount: nextProduct, //comparing with originalCount
+                color: singleProductColor,
+                record: currentElementData.data[j], //check sum, currentElementData.data[j]
+                productCount: productCountDynamic, //for changing dynamic, on button push
+                originalCount: productCountDynamic, //comparing with originalCount
               });
+            // recordSet.reverse();
+
+            console.log(nextProduct, currentShiftSum, "jani");
+            console.log(totalSum, "totalSum");
+            if (nextProduct - lodash.get(dataGroup[currentElement], "sum", 0)) {
+              // console.log(nextProduct, currentShiftSum, currentShiftSum - nextProduct, nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0), lodash.get(dataGroup[currentElement], 'sum', 0), 'nextProduct');
               // currentElement = currentElement + 1;
-              
-             
-              recordSet.reverse();
-              // console.log(recordSet, 'recordSet')
+              currentElementData = dataGroup[currentElement];
+              if (
+                nextProduct !== 0 &&
+                nextProduct !== currentShiftSum &&
+                dataGroup[currentElement]
+              ) {
+                // console.log(currentElementData, 'currentElementData')
+                currentElementData = dataGroup[currentElement];
+                // console.log(dataGroup[currentElement].sum, 'dataGroup[currentElement].sum')
+                currentElementData.sum = currentElementData.sum - nextProduct;
+                const singleProductColor1 = colorsPalette[currentElement];
+                console.log(currentElementData.sum, "here we need");
+                console.log("love", nextProduct, "p", productCountDynamic);
+                // nextProduct =  productCountDynamic -
+                // (loadNextProductTotal +
+                //   productCountDynamic -
+                //   dataGroup[currentElement].sum);
+
+                console.log("np", nextProduct, productCountDynamic, "pc");
+                recordSet.push({
+                  ...currentElementData,
+                  color: singleProductColor1,
+                  record: dataGroup[currentElement].data[j], //check sum, currentElementData.data[j]
+                  productCount: nextProduct, //for changing dynamic, on button push
+                  originalCount: nextProduct, //comparing with originalCount
+                });
+                // currentElement = currentElement + 1;
+
+                recordSet.reverse();
+                // console.log(recordSet, 'recordSet')
+              }
             }
+            console.log(recordSet, "recordSet1213");
           }
-          console.log(recordSet, 'recordSet1213')
+          if (recordSet.length !== 0) allShiftsData.push(recordSet);
         }
-        if (recordSet.length !== 0) allShiftsData.push(recordSet);
       }
-    }
       // console.log(allShiftsData, 'allShiftsData', totalPitchesLength)
       setDataGroupByProduct(allShiftsData);
     }
@@ -804,15 +835,18 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
         firstDonePieces ===
       0
     ) {
-      if(localStorage.getItem('pendingPiecesPerProduct'))
-      setPendingPiecesPerProduct(
-        parseInt(localStorage.getItem('pendingPiecesPerProduct')) + lodash.get(currentCardBox, "total")
-      ); else {
-        setPendingPiecesPerProduct(pendingPiecesPerProduct+lodash.get(currentCardBox, "total"))
+      if (localStorage.getItem("pendingPiecesPerProduct"))
+        setPendingPiecesPerProduct(
+          parseInt(localStorage.getItem("pendingPiecesPerProduct")) +
+            lodash.get(currentCardBox, "total")
+        );
+      else {
+        setPendingPiecesPerProduct(
+          pendingPiecesPerProduct + lodash.get(currentCardBox, "total")
+        );
       }
-      
     }
-    
+
     if (allShiftsData[0] && remainderDonePieces > 0) {
       //subtract on every button press
 
@@ -862,12 +896,14 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
     // console.log('updatedShiftData', allShiftsData)
     setDataGroupByProduct(allShiftsData);
   }
-  useEffect( () => {
-    localStorage.setItem('pendingPiecesPerProduct', pendingPiecesPerProduct);
-  }, [pendingPiecesPerProduct]) 
-  useEffect( () => {
-    setPendingPiecesPerProduct(parseInt(localStorage.getItem('pendingPiecesPerProduct')));
-  }, [])
+  useEffect(() => {
+    localStorage.setItem("pendingPiecesPerProduct", pendingPiecesPerProduct);
+  }, [pendingPiecesPerProduct]);
+  useEffect(() => {
+    setPendingPiecesPerProduct(
+      parseInt(localStorage.getItem("pendingPiecesPerProduct"))
+    );
+  }, []);
   useEffect(() => {
     if (donePieces === 0 && dataGroupByProduct.length !== 0) {
       pouchDBConnection
@@ -1025,8 +1061,10 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
       var endPitchTime = moment(
         shiftMovingTime.add(pitchTime, "minutes").format("HH:mm"),
         format
-      ); //@TODO: check it's changing original shiftStartTime, like adding
-      // console.log(totalPitchesLength, currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'), 'hello-1', currentTime.isBetween(startPitchTime, endPitchTime))
+      );
+
+      //@TODO: check it's changing original shiftStartTime, like adding
+      // console.log(totalPitchesLength, currentTime.format('HH:mm:ss'), startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss'), 'hello-1', currentTime.isAfter(startPitchTime), currentTime.isBetween(startPitchTime, endPitchTime))
 
       // if (currentTime.isBetween(moment(shiftStartTime.format('HH:mm'), format), moment(shiftEndTime.format('HH:mm'), format))) {
 
@@ -1038,10 +1076,28 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
       for (var singleBreak = 0; singleBreak < allBreaks.length; singleBreak++) {
         let breakStart = allBreaks[singleBreak][0];
         let breakEnd = allBreaks[singleBreak][1];
+        // currentTime.isBetween(breakStart, breakEnd) ||
+        // currentTime.isAfter(breakStart),
+        console.log(
+          totalPitchesLength,
+          currentTime.format("HH:mm:ss"),
+          startPitchTime.format("HH:mm:ss"),
+          endPitchTime.format("HH:mm:ss"),
+          "hello-1",
+
+          currentTime.isBetween(startPitchTime, endPitchTime),
+            currentTime.isAfter(endPitchTime) && currentTime.isAfter(breakEnd), moment.duration(breakEnd.diff(breakStart)) 
+        );
 
         if (currentTime.isBetween(breakStart, breakEnd)) {
+          // startPitchTime -> add difference of breakStart, breakEnd) -> 13:30 + 5 = 13:35
+          // endPitchTime -> add difference of breakStart, breakEnd) -> 13:35 + 5 = 13:40
+          // startPitchTime.add() -> add difference of breakStart, breakEnd)
           breakStatus = true;
         }
+
+        //  if (currentTime.isBetweenOrAfter(breakStart, breakEnd)) {
+        // setMovingBreakSum(difference(breakStart, BreakEnd)); // 0, 1st break -> 5,  2nd break -> 10
       }
 
       // console.log('breakStatus', breakStatus);
@@ -1056,7 +1112,11 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
       // console.log('shift start time', shiftStartTime);
       // console.log('shift end time', shiftEndTime);
       // console.log('all breaks', allBreaks);
-      if (currentTime.isBetween(startPitchTime, endPitchTime) && breakStatus === false) {
+      // if (currentTime.isBetween(startPitchTime, endPitchTime) && breakStatus === false) {
+      if (
+        currentTime.isBetween(startPitchTime, endPitchTime) &&
+        breakStatus === false
+      ) {
         // also check for length of allShiftsData
         activeShiftPeriod = counterTimeShift - trackShiftsDone;
         headerWidgetColor = filterColor(activeShiftPeriod);
@@ -1072,6 +1132,9 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
       //   if (l.productCount === 0)
       //     continue;
       // });
+
+      // if breaktime passed or in between(startPitchTime.format('HH:mm:ss'), endPitchTime.format('HH:mm:ss') don't push card
+      // TODO:: skip card inBetween or After break time
       cardsData.push(
         <CWidgetBrand
           style={{ marginLeft: "5px", width: "150px" }}
@@ -1112,7 +1175,7 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
                           // display: 'flex',
                           // flexDirection: 'column',
                           display: "inline-block",
-                          width: "50px",
+                          width: "55px",
                           // fontSize: '30px',
                           margin: "5px",
                           border:
@@ -1139,8 +1202,9 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
       moment(shiftStartTime.format("HH:mm"), format),
       moment(shiftEndTime.format("HH:mm"), format)
     )
-  )
+  ) {
     renderCards();
+  }
   // cardsData.splice(0, totalPitchesLength - (12) + (12 - maxColorPitch));
   cardsData.splice(0, totalPitchesLength - 12);
   // console.log(totalPitchesLength, cardsData.length, blackColorChartParams.min, 'cardsData')
@@ -1186,52 +1250,78 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
     );
   return (
     <CFormGroup>
-      {<CButton 
-        id="newPieceDoneButton"
-        style={{ float: 'right', height: '80px' }}
-        size="lg"
-        onClick={() => {
-          if (activeShiftPeriod > 0) {
-            updateDonePieces(donePieces + 1);
-          }
-        }} color="danger">Press<br /> Button</CButton>}
-      <CRow >
-        <CCol xs="2">
+      {
+        <CButton
+          id="newPieceDoneButton"
+          style={{ float: "right", height: "80px" }}
+          size="lg"
+          onClick={() => {
+            if (activeShiftPeriod > 0) {
+              updateDonePieces(donePieces + 1);
+            }
+          }}
+          color="danger"
+        >
+          Press
+          <br /> Button
+        </CButton>
+      }
+      <CRow className={"d-flex justify-content-between"}>
+        <CCol>
+          <CWidgetSimple
+            style={{ backgroundColor: "rgb(214,51,132)", color: "white" }}
+            header="Day"
+            text={
+              <>
+                <strong>
+                  {moment().format("dddd")}
+                  {"\n"}
+                  {moment().format("MMMM")}
+                </strong>
+                <strong>
+                  {", "}
+                  {moment().date()}
+                </strong>
+              </>
+            }
+          />
+        </CCol>
+        <CCol>
           <CWidgetSimple
             style={{ backgroundColor: headerWidgetColor, color: "white" }}
             header="Total Pieces"
             text={totalQuantity}
           />
         </CCol>
-        <CCol xs="2">
+        <CCol>
           <CWidgetSimple
             style={{ backgroundColor: headerWidgetColor, color: "white" }}
             header="Done Pieces"
             text={donePieces}
           />
         </CCol>
-        <CCol xs="2">
+        <CCol>
           <CWidgetSimple
             style={{ backgroundColor: headerWidgetColor, color: "white" }}
             header="Pending Pieces"
             text={totalQuantity - donePieces}
           />
         </CCol>
-        <CCol xs="2">
+        <CCol>
           <CWidgetSimple
             style={{ backgroundColor: headerWidgetColor, color: "white" }}
             header="Pieces/Hour (On Time)"
             text={parseFloat(piecesPerHourOnTime).toFixed(1)}
           />
         </CCol>
-        <CCol xs="2">
+        <CCol>
           <CWidgetSimple
             style={{ backgroundColor: headerWidgetColor, color: "white" }}
             header="Pieces/Hour (Day)"
             text={parseFloat(piecesPerHourOnDay).toFixed(1)}
           />
         </CCol>
-        <CCol xs="2">
+        <CCol>
           <CWidgetSimple
             style={{ backgroundColor: headerWidgetColor, color: "white" }}
             header="Pieces/Hour (Target)"
@@ -1240,24 +1330,40 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
         </CCol>
       </CRow>
 
-      <h1>PERS012</h1> 
+      <h1>PERS044</h1>
       <hr style={{ borderTop: "3px solid rgba(0, 0, 21, 0.2)" }}></hr>
       <CRow style={{ float: "right" }}>
         {/* <CCol xl={12}> */}
         {cardsData}
         {/* </CCol> */}
       </CRow>
-      <CRow style={{ display: "block" }}>
-        <CCol xs={{ offset: 9, size: 3 }}>
+      <CRow className={" mt-2 justify-content-end"}>
+        {/* ......................... */}
+        <CCol lg="3">
           <CWidgetSimple
+            header="PIEZAS DE PRODUCTO"
+            text={
+              <div style={{ textAlign: "left" }} className="widgetBackground">
+                <p style={kanbanBoxWidgetStyle}>
+                  número teórico de piezas: <span style={metricStyle}>{0}</span>{" "}
+                </p>
+                <p style={kanbanBoxWidgetStyle}>
+                  número real de piezas: <span style={metricStyle}>{0}</span>{" "}
+                </p>
+              </div>
+            }
             style={{
-              backgroundColor: lodash.get(currentCardBox, "color"),
+              backgroundColor: "green",
               color: "white",
             }}
-            className="widgetBackground"
+          ></CWidgetSimple>
+        </CCol>
+        {/* ........................ */}
+        <CCol lg="3">
+          <CWidgetSimple
             header="Kanban en curs"
             text={
-              <div style={{ textAlign: "left" }}>
+              <div style={{ textAlign: "left" }} className="widgetBackground">
                 <p style={kanbanBoxWidgetStyle}>
                   Ordre de fabricació:{" "}
                   <span style={metricStyle}>
@@ -1285,7 +1391,9 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
                 <p style={kanbanBoxWidgetStyle}>
                   Quantitat que falta per produir:{" "}
                   <span style={metricStyle}>
-                  {pendingPiecesPerProduct + lodash.get(currentCardBox, 'total') - donePieces} 
+                    {pendingPiecesPerProduct +
+                      lodash.get(currentCardBox, "total") -
+                      donePieces}
                   </span>{" "}
                 </p>
                 <p style={kanbanBoxWidgetStyle}>
@@ -1298,8 +1406,13 @@ if(!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks){
                 </p>
               </div>
             }
-          />
+            style={{
+              backgroundColor: lodash.get(currentCardBox, "color"),
+              color: "white",
+            }}
+          ></CWidgetSimple>
         </CCol>
+        {/* ..................... */}
       </CRow>
     </CFormGroup>
   );
