@@ -11,6 +11,7 @@ const port = process.env.PORT || 5000;
 
 const schedule = require("node-schedule");
 const lodash = require("lodash");
+require("dotenv").config();
 
 app.use(cors());
 app.use(
@@ -173,21 +174,18 @@ schedule.scheduleJob(" * * * * * ", function () {
             Bucket: "bestplantbucket",
             Key: "META_SQL.xlsm",
           };
-          s3.getObject(options, function (err, data) {
-            if (err) {
-              throw err;
-            }
+          fetchRetryToDownloadData(options, (data) => {
+            // console.log("this is data", data);
+
             fs.writeFileSync(
-              '/home/saqib/Iyrix-Projects/kanban/aws-files/' + options.Key,
+              process.env.AWS_FILE_PATH + options.Key,
               data.Body
             );
-            
-            console.log("file downloaded successfully", process.env.AWS_FILE_PATH);
 
             var workbook = new Excel.Workbook();
 
             workbook.xlsx
-              .readFile("/home/saqib/Iyrix-Projects/kanban/aws-files/META_SQL.xlsm")
+              .readFile(process.env.AWS_FILE_PATH + "META_SQL.xlsm")
               .then(function () {
                 var worksheet = workbook.getWorksheet("Hoja1");
 
@@ -195,7 +193,9 @@ schedule.scheduleJob(" * * * * * ", function () {
                 worksheet.eachRow(function (row, rowNumber) {
                   var rowsData = [];
 
-                  if (row.getCell("EF").value === "PERS044") {
+                  if (
+                    row.getCell("EF").value === process.env.EXCEL_SHIFT_LINE
+                  ) {
                     rowsData.push({
                       row_num: rowNumber,
                       shift_PPSHFT_IS: row.getCell("IS").value,
@@ -260,7 +260,7 @@ app.post("/api/excel-upload", (req, res) => {
     worksheet.eachRow(function (row, rowNumber) {
       var rowsData = [];
 
-      if (row.getCell("EF").value === "PERS044") {
+      if (row.getCell("EF").value === process.env.EXCEL_SHIFT_LINE) {
         rowsData.push({
           row_num: rowNumber,
           shift_PPSHFT_IS: row.getCell("IS").value,
@@ -621,3 +621,22 @@ process.on("SIGINT", function () {
 // });
 
 server.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
+let n = 0;
+function fetchRetryToDownloadData(options, callback) {
+  var AWS = require("aws-sdk");
+  var s3 = new AWS.S3();
+  s3.getObject(options, function (err, data) {
+    if (err) {
+      // callback(err);
+      n = n + 1;
+      if (n <= 5) {
+        fetchRetryToDownloadData(options, callback);
+      } else {
+        callback(err);
+      }
+      // throw err;
+    }
+    console.log("file downloaded successfully", process.env.AWS_FILE_PATH);
+    callback(data);
+  });
+}
