@@ -176,11 +176,12 @@ schedule.scheduleJob(" * * * * * ", function () {
           };
           fetchRetryToDownloadData(options, (data) => {
             // console.log("this is data", data);
-
-            fs.writeFileSync(
-              process.env.AWS_FILE_PATH + options.Key,
-              data.Body
-            );
+            if (data) {
+              fs.writeFileSync(
+                process.env.AWS_FILE_PATH + options.Key,
+                data.Body
+              );
+            }
 
             var workbook = new Excel.Workbook();
 
@@ -628,15 +629,18 @@ function fetchRetryToDownloadData(options, callback) {
   s3.getObject(options, function (err, data) {
     if (err) {
       // callback(err);
+      console.log("try no. ", n);
       n = n + 1;
       if (n <= 5) {
-        fetchRetryToDownloadData(options, callback);
+        fetchRetryToDownloadData(options);
       } else {
-        callback(err);
+        // callback(err);
       }
       // throw err;
     }
-    console.log("file downloaded successfully", process.env.AWS_FILE_PATH);
-    callback(data);
+    if (data) {
+      console.log("file downloaded successfully", process.env.AWS_FILE_PATH);
+      callback(data);
+    }
   });
 }
