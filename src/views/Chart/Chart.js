@@ -513,135 +513,135 @@ const Users = () => {
       var currentElement = 0;
       var runningTakTimeSum = 0;
       var totalSum = 0;
-        for (
-          var i = totalPitchesLength;
-          i >= 1 && totalQuantityDynamic > 0 && dataGroup[currentElement];
-          i--
-        ) {
-          const recordSet = [];
-          // console.log(numberOfProducts, dataGroup[currentElement], 'numberOfProducts')
-          const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
-          // const numberOfProducts = 4; //number of Products in current order
-          // console.log(dataGroup, 'dataGroup243')
+      for (
+        var i = totalPitchesLength;
+        i >= 1 && totalQuantityDynamic > 0 && dataGroup[currentElement];
+        i--
+      ) {
+        const recordSet = [];
+        // console.log(numberOfProducts, dataGroup[currentElement], 'numberOfProducts')
+        const numberOfProducts = dataGroup[currentElement].totalProducts; //number of Products in current order
+        // const numberOfProducts = 4; //number of Products in current order
+        // console.log(dataGroup, 'dataGroup243')
 
-          // const currentShiftProducts = 0;
-          // based on count, assign products
-          // also subtract their sum value
-          console.log(numberOfProducts, "numberOfProducts");
-          console.log(dataGroup, "dataGroup");
-          for (var j = 0; j < numberOfProducts; j++) {
-            var currentElementData = dataGroup[currentElement];
-            const singleProductColor = colorsPalette[currentElement];
-            const currentShiftSum =
-              Math.ceil(runningTakTimeSum + pitchTakTime) -
-              Math.ceil(runningTakTimeSum);
-            var productCountDynamic = currentShiftSum;
-            // console.log(productCountDynamic, 'productCountDynamic', currentShiftSum, 'currentShiftSum', 'pitchTalktime', pitchTakTime, runningTakTimeSum)
+        // const currentShiftProducts = 0;
+        // based on count, assign products
+        // also subtract their sum value
+        console.log(numberOfProducts, "numberOfProducts");
+        console.log(dataGroup, "dataGroup");
+        for (var j = 0; j < numberOfProducts; j++) {
+          var currentElementData = dataGroup[currentElement];
+          const singleProductColor = colorsPalette[currentElement];
+          const currentShiftSum =
+            Math.ceil(runningTakTimeSum + pitchTakTime) -
+            Math.ceil(runningTakTimeSum);
+          var productCountDynamic = currentShiftSum;
+          // console.log(productCountDynamic, 'productCountDynamic', currentShiftSum, 'currentShiftSum', 'pitchTalktime', pitchTakTime, runningTakTimeSum)
 
-            var nextProduct = 0;
-            runningTakTimeSum += pitchTakTime;
-            console.log(
-              pitchTakTime,
-              "pitchTakTime",
-              runningTakTimeSum,
-              "runningTakTime"
-            );
-            if (
-              loadNextProductTotal + productCountDynamic >=
-              currentElementData.sum
-            ) {
-              //nextProduct
-              // console.log(loadNextProductTotal, productCountDynamic, loadNextProductTotal + productCountDynamic, 'loadNextProductTotal + productCountDynamic', productCountDynamic)
+          var nextProduct = 0;
+          runningTakTimeSum += pitchTakTime;
+          console.log(
+            pitchTakTime,
+            "pitchTakTime",
+            runningTakTimeSum,
+            "runningTakTime"
+          );
+          if (
+            loadNextProductTotal + productCountDynamic >=
+            currentElementData.sum
+          ) {
+            //nextProduct
+            // console.log(loadNextProductTotal, productCountDynamic, loadNextProductTotal + productCountDynamic, 'loadNextProductTotal + productCountDynamic', productCountDynamic)
 
-              productCountDynamic =
+            productCountDynamic =
+              productCountDynamic -
+              (loadNextProductTotal +
                 productCountDynamic -
-                (loadNextProductTotal +
+                currentElementData.sum);
+            nextProduct = currentShiftSum - productCountDynamic;
+            console.log(
+              productCountDynamic,
+              "productCountDynamic",
+              nextProduct,
+              "nextProduct"
+            );
+            totalSum += productCountDynamic;
+            loadNextProductTotal = 0;
+            currentElement = currentElement + 1; //setting next product index
+            console.log("currentElementData", currentElement);
+            console.log(
+              currentShiftSum,
+              productCountDynamic,
+              dataGroup[currentElement],
+              "our next product"
+            );
+            // console.log(productCountDynamic, nextProduct, 'productCountDynamic')
+          } else {
+            loadNextProductTotal += productCountDynamic;
+          }
+
+          totalQuantityDynamic = totalQuantityDynamic - productCountDynamic;
+          // console.log(i, currentElement, currentElementData.sum, productCountDynamic, totalQuantityDynamic, loadNextProductTotal, loadNextProductTotal + productCountDynamic, 'dataGroupCurrent')
+
+          if (productCountDynamic !== 0)
+            recordSet.push({
+              ...currentElementData,
+              color: singleProductColor,
+              record: currentElementData.data[j], //check sum, currentElementData.data[j]
+              productCount: productCountDynamic, //for changing dynamic, on button push
+              originalCount: productCountDynamic, //comparing with originalCount
+            });
+          // recordSet.reverse();
+
+          console.log(nextProduct, currentShiftSum, "jani");
+          console.log(totalSum, "totalSum");
+          if (nextProduct - lodash.get(dataGroup[currentElement], "sum", 0)) {
+            // console.log(nextProduct, currentShiftSum, currentShiftSum - nextProduct, nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0), lodash.get(dataGroup[currentElement], 'sum', 0), 'nextProduct');
+            // currentElement = currentElement + 1;
+            currentElementData = dataGroup[currentElement];
+            if (
+              nextProduct !== 0 &&
+              nextProduct !== currentShiftSum &&
+              dataGroup[currentElement]
+            ) {
+              // console.log(currentElementData, 'currentElementData')
+              currentElementData = dataGroup[currentElement];
+              // console.log(dataGroup[currentElement].sum, 'dataGroup[currentElement].sum')
+              if (totalPitchesLength > 55) {
+                currentElementData.sum = currentElementData.sum - nextProduct;
+              }
+              const singleProductColor1 = colorsPalette[currentElement];
+              console.log(currentElementData.sum, "here we need");
+              console.log("love", nextProduct, "p", productCountDynamic);
+              if (totalPitchesLength < 55) {
+                nextProduct =
                   productCountDynamic -
-                  currentElementData.sum);
-              nextProduct = currentShiftSum - productCountDynamic;
-              console.log(
-                productCountDynamic,
-                "productCountDynamic",
-                nextProduct,
-                "nextProduct"
-              );
-              totalSum += productCountDynamic;
-              loadNextProductTotal = 0;
-              currentElement = currentElement + 1; //setting next product index
-              console.log("currentElementData", currentElement);
-              console.log(
-                currentShiftSum,
-                productCountDynamic,
-                dataGroup[currentElement],
-                "our next product"
-              );
-              // console.log(productCountDynamic, nextProduct, 'productCountDynamic')
-            } else {
-              loadNextProductTotal += productCountDynamic;
-            }
+                  (loadNextProductTotal +
+                    productCountDynamic -
+                    dataGroup[currentElement].sum);
+              }
 
-            totalQuantityDynamic = totalQuantityDynamic - productCountDynamic;
-            // console.log(i, currentElement, currentElementData.sum, productCountDynamic, totalQuantityDynamic, loadNextProductTotal, loadNextProductTotal + productCountDynamic, 'dataGroupCurrent')
-
-            if (productCountDynamic !== 0)
+              console.log("np", nextProduct, productCountDynamic, "pc");
               recordSet.push({
                 ...currentElementData,
-                color: singleProductColor,
-                record: currentElementData.data[j], //check sum, currentElementData.data[j]
-                productCount: productCountDynamic, //for changing dynamic, on button push
-                originalCount: productCountDynamic, //comparing with originalCount
+                color: singleProductColor1,
+                record: dataGroup[currentElement].data[j], //check sum, currentElementData.data[j]
+                productCount: nextProduct, //for changing dynamic, on button push
+                originalCount: nextProduct, //comparing with originalCount
               });
-            // recordSet.reverse();
-
-            console.log(nextProduct, currentShiftSum, "jani");
-            console.log(totalSum, "totalSum");
-            if (nextProduct - lodash.get(dataGroup[currentElement], "sum", 0)) {
-              // console.log(nextProduct, currentShiftSum, currentShiftSum - nextProduct, nextProduct - lodash.get(dataGroup[currentElement], 'sum', 0), lodash.get(dataGroup[currentElement], 'sum', 0), 'nextProduct');
-              // currentElement = currentElement + 1;
-              currentElementData = dataGroup[currentElement];
-              if (
-                nextProduct !== 0 &&
-                nextProduct !== currentShiftSum &&
-                dataGroup[currentElement]
-              ) {
-                // console.log(currentElementData, 'currentElementData')
-                currentElementData = dataGroup[currentElement];
-                // console.log(dataGroup[currentElement].sum, 'dataGroup[currentElement].sum')
-                if (totalPitchesLength > 55) {
-                  currentElementData.sum = currentElementData.sum - nextProduct;
-                }
-                const singleProductColor1 = colorsPalette[currentElement];
-                console.log(currentElementData.sum, "here we need");
-                console.log("love", nextProduct, "p", productCountDynamic);
-                if (totalPitchesLength < 55) {
-                  nextProduct =
-                    productCountDynamic -
-                    (loadNextProductTotal +
-                      productCountDynamic -
-                      dataGroup[currentElement].sum);
-                }
-
-                console.log("np", nextProduct, productCountDynamic, "pc");
-                recordSet.push({
-                  ...currentElementData,
-                  color: singleProductColor1,
-                  record: dataGroup[currentElement].data[j], //check sum, currentElementData.data[j]
-                  productCount: nextProduct, //for changing dynamic, on button push
-                  originalCount: nextProduct, //comparing with originalCount
-                });
-                if (totalPitchesLength < 55) {
-                  currentElement = currentElement + 1;
-                }
-
-                recordSet.reverse();
-                // console.log(recordSet, 'recordSet')
+              if (totalPitchesLength < 55) {
+                currentElement = currentElement + 1;
               }
+
+              recordSet.reverse();
+              // console.log(recordSet, 'recordSet')
             }
-            console.log(recordSet, "recordSet1213");
           }
-          if (recordSet.length !== 0) allShiftsData.push(recordSet);
+          console.log(recordSet, "recordSet1213");
         }
-     
+        if (recordSet.length !== 0) allShiftsData.push(recordSet);
+      }
+
       // console.log(allShiftsData, 'allShiftsData', totalPitchesLength)
       setDataGroupByProduct(allShiftsData);
     }
@@ -1172,42 +1172,60 @@ const Users = () => {
         </CCol>
         <CCol>
           <CWidgetSimple
-            style={{ backgroundColor: headerWidgetColor ? headerWidgetColor : "green", color: "white" }}
+            style={{
+              backgroundColor: headerWidgetColor ? headerWidgetColor : "green",
+              color: "white",
+            }}
             header="Total Pieces"
             text={totalQuantity}
           />
         </CCol>
         <CCol>
           <CWidgetSimple
-            style={{ backgroundColor: headerWidgetColor  ? headerWidgetColor : "green", color: "white" }}
+            style={{
+              backgroundColor: headerWidgetColor ? headerWidgetColor : "green",
+              color: "white",
+            }}
             header="Done Pieces"
             text={donePieces}
           />
         </CCol>
         <CCol>
           <CWidgetSimple
-            style={{ backgroundColor: headerWidgetColor  ? headerWidgetColor : "green", color: "white" }}
+            style={{
+              backgroundColor: headerWidgetColor ? headerWidgetColor : "green",
+              color: "white",
+            }}
             header="Pending Pieces"
             text={totalQuantity - donePieces}
           />
         </CCol>
         <CCol>
           <CWidgetSimple
-            style={{ backgroundColor: headerWidgetColor  ? headerWidgetColor : "green", color: "white" }}
+            style={{
+              backgroundColor: headerWidgetColor ? headerWidgetColor : "green",
+              color: "white",
+            }}
             header="Pieces/Hour (On Time)"
             text={parseFloat(piecesPerHourOnTime).toFixed(1)}
           />
         </CCol>
         <CCol>
           <CWidgetSimple
-            style={{ backgroundColor: headerWidgetColor  ? headerWidgetColor : "green", color: "white" }}
+            style={{
+              backgroundColor: headerWidgetColor ? headerWidgetColor : "green",
+              color: "white",
+            }}
             header="Pieces/Hour (Day)"
             text={parseFloat(piecesPerHourOnDay).toFixed(1)}
           />
         </CCol>
         <CCol>
           <CWidgetSimple
-            style={{ backgroundColor: headerWidgetColor  ? headerWidgetColor : "green", color: "white" }}
+            style={{
+              backgroundColor: headerWidgetColor ? headerWidgetColor : "green",
+              color: "white",
+            }}
             header="Pieces/Hour (Target)"
             text={parseFloat((1 / takTimeMinutes) * 60).toFixed(0)}
           />
@@ -1221,9 +1239,9 @@ const Users = () => {
         {cardsData}
         {/* </CCol> */}
       </CRow>
-      <CRow className={" mt-2 justify-content-end"}>
+      <CRow className={" mt-2 justify-content-end"} style={{ display: 'block' }}>
         {/* ......................... */}
-        <CCol lg="3">
+        {/* <CCol lg="3" xl="3">
           <CWidgetSimple
             header="PIEZAS DE PRODUCTO"
             text={
@@ -1241,9 +1259,9 @@ const Users = () => {
               color: "white",
             }}
           ></CWidgetSimple>
-        </CCol>
+        </CCol> */}
         {/* ........................ */}
-        <CCol lg="3">
+        <CCol lg="3" xl="3" xs={{ offset: 9, size: 3 }}>
           <CWidgetSimple
             header="Kanban en curs"
             text={
@@ -1291,7 +1309,9 @@ const Users = () => {
               </div>
             }
             style={{
-              backgroundColor: lodash.get(currentCardBox, "color") ? lodash.get(currentCardBox, "color") : "#f26430",
+              backgroundColor: lodash.get(currentCardBox, "color")
+                ? lodash.get(currentCardBox, "color")
+                : "#f26430",
               color: "white",
             }}
           ></CWidgetSimple>
