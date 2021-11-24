@@ -1104,7 +1104,7 @@ const Users = () => {
     return (
       <div style={{ textAlign: "center", marginTop: "10%" }}>
         <h1>Out of Shift</h1>
-        <h1>{currentTime.format("hh:mm:ss")}</h1>
+        {/* <h1>{currentTime.format("hh:mm:ss")}</h1> */}
       </div>
     );
   if (Object.values(dbChartParams).length === 0)
@@ -1129,7 +1129,7 @@ const Users = () => {
     return (
       <div style={{ textAlign: "center", marginTop: "10%" }}>
         <h1>System in Break, Don't push the button.</h1>
-        <h1>{currentTime.format("hh:mm:ss")}</h1>
+        {/* <h1>{currentTime.format("hh:mm:ss")}</h1> */}
       </div>
     );
   return (
