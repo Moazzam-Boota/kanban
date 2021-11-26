@@ -178,7 +178,7 @@ schedule.scheduleJob(" * * * * * ", function () {
             // console.log("this is data", data);
             if (data) {
               fs.writeFileSync(
-                process.env.AWS_FILE_PATH + options.Key,
+                "/home/gestlean/kanban/aws-files/" + options.Key,
                 data.Body
               );
             }
@@ -186,7 +186,7 @@ schedule.scheduleJob(" * * * * * ", function () {
             var workbook = new Excel.Workbook();
 
             workbook.xlsx
-              .readFile(process.env.AWS_FILE_PATH + "META_SQL.xlsm")
+              .readFile("/home/gestlean/kanban/aws-files/" + "META_SQL.xlsm")
               .then(function () {
                 var worksheet = workbook.getWorksheet("Hoja1");
 
@@ -195,7 +195,7 @@ schedule.scheduleJob(" * * * * * ", function () {
                   var rowsData = [];
 
                   if (
-                    row.getCell("EF").value === process.env.EXCEL_SHIFT_LINE
+                    row.getCell("EF").value === "PERS012"
                   ) {
                     rowsData.push({
                       row_num: rowNumber,
@@ -261,7 +261,7 @@ app.post("/api/excel-upload", (req, res) => {
     worksheet.eachRow(function (row, rowNumber) {
       var rowsData = [];
 
-      if (row.getCell("EF").value === process.env.EXCEL_SHIFT_LINE) {
+      if (row.getCell("EF").value === "PERS012") {
         rowsData.push({
           row_num: rowNumber,
           shift_PPSHFT_IS: row.getCell("IS").value,
@@ -639,7 +639,7 @@ function fetchRetryToDownloadData(options, callback) {
       // throw err;
     }
     if (data) {
-      console.log("file downloaded successfully", process.env.AWS_FILE_PATH);
+      console.log("file downloaded successfully", "/home/gestlean/kanban/aws-files/");
       callback(data);
     }
   });
