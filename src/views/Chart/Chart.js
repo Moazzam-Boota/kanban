@@ -16,7 +16,7 @@ const pouchDBConnection = new PouchDB("kanban_db", {
   auto_compaction: true,
 });
 
-const ENDPOINT = "http://127.0.0.1:3000";
+const ENDPOINT = "http://127.0.0.1:4001";
 const lodash = require("lodash");
 const moment = require("moment");
 
