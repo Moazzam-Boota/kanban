@@ -1135,7 +1135,7 @@ const Users = () => {
   return (
     <CFormGroup>
       {
-        <CButton
+        <CButton hidden
           id="newPieceDoneButton"
           style={{ float: "right", height: "80px" }}
           size="lg"
