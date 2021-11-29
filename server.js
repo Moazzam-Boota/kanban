@@ -406,7 +406,7 @@ const io = socketIo(server, {
     allowEIO3: true
 });
 
-// let interval;
+let interval;
 // var Gpio = require('onoff').Gpio; //include onoff to interact with the Gpio
 // var LED_RED = new Gpio('21', 'out'); //use Gpio pin 21 as output for LED RED
 // var LED_GREEN = new Gpio('20', 'out'); //use Gpio pin 20 as output for LED GREEN
@@ -508,7 +508,7 @@ io.on("connection", (socket) => {
 // Open UART port for the button:
 buttonPort.on("open", function () {
   // Send dummy data, used to detect when the button is pressed:
-  setInterval(function () {
+  interval = setInterval(function () {
     buttonPort.write("\n", function (err, results) {
       // It happens when the button is not pressed.
     });
