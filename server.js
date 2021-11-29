@@ -374,7 +374,7 @@ app.listen(port, () => console.log(`Listening on port ${port}`));
 // *****************************************************************************
 
 const http = require("http");
-// const socketIo = require("socket.io");
+const socketIo = require("socket.io");
 const socketPort = process.env.PORT || 4001;
 const router = express.Router();
 
@@ -395,16 +395,16 @@ var previousTime = new Date().getTime();
 const buttonPort = new serialPort("/dev/ttyUSB0", { baudRate: 110 });
 var EventEmitter = require("events");
 
-// const io = socketIo(server, {
-//     cors: {
-//         origin: "*",
-//         // origin: "http://localhost:8080",
-//         methods: ["GET", "POST"],
-//         transports: ['websocket', 'polling'],
-//         credentials: true
-//     },
-//     allowEIO3: true
-// });
+const io = socketIo(server, {
+    cors: {
+        origin: "*",
+        // origin: "http://localhost:8080",
+        methods: ["GET", "POST"],
+        transports: ['websocket', 'polling'],
+        credentials: true
+    },
+    allowEIO3: true
+});
 
 // let interval;
 // var Gpio = require('onoff').Gpio; //include onoff to interact with the Gpio
@@ -492,18 +492,18 @@ var triggerButton = new EventEmitter(); // Event used to send a packet to the Fr
 // });
 
 // Open socket with the Frontend:
-// io.on("connection", (socket) => {
-//     console.log("New client connected");
+io.on("connection", (socket) => {
+    console.log("New client connected");
 
-//     triggerButton.on("triggerButton", function () {
-//         socket.emit('lightgreen', lightvalue); // Send button status to client
-//     });
+    triggerButton.on("triggerButton", function () {
+        socket.emit('lightgreen', lightvalue); // Send button status to client
+    });
 
-//     socket.on("disconnect", () => {
-//         console.log("Client disconnected");
-//         clearInterval(interval);
-//     });
-// });
+    socket.on("disconnect", () => {
+        console.log("Client disconnected");
+        clearInterval(interval);
+    });
+});
 
 // Open UART port for the button:
 buttonPort.on("open", function () {
