@@ -169,82 +169,83 @@ schedule.scheduleJob(" * * * * * ", function () {
             secretAccessKey: "0Y8qPQCH5fGb9vDzbhRSKwzGfG3VDigT3f90Jh60",
             region: "eu-west-1",
           });
-          var s3 = new AWS.S3();
+          // var s3 = new AWS.S3();
           var options = {
             Bucket: "bestplantbucket",
             Key: "META_SQL.xlsm",
           };
           fetchRetryToDownloadData(options, (data) => {
+            console.log("data", data);
             // console.log("this is data", data);
             if (data) {
               fs.writeFileSync(
-                "/home/gestlean/kanban/aws-files/" + options.Key,
+                process.env.AWS_FILE_PATH + options.Key,
                 data.Body
               );
-            }
 
-            var workbook = new Excel.Workbook();
+              var workbook = new Excel.Workbook();
 
-            workbook.xlsx
-              .readFile("/home/gestlean/kanban/aws-files/" + "META_SQL.xlsm")
-              .then(function () {
-                var worksheet = workbook.getWorksheet("Hoja1");
+              workbook.xlsx
+                .readFile(process.env.AWS_FILE_PATH + "META_SQL.xlsm")
+                .then(function () {
+                  var worksheet = workbook.getWorksheet("Hoja1");
 
-                const promises = [];
-                worksheet.eachRow(function (row, rowNumber) {
-                  var rowsData = [];
+                  const promises = [];
+                  worksheet.eachRow(function (row, rowNumber) {
+                    var rowsData = [];
 
-                  if (
-                    row.getCell("EF").value === "PERS012"
-                  ) {
-                    rowsData.push({
-                      row_num: rowNumber,
-                      shift_PPSHFT_IS: row.getCell("IS").value,
-                      order_num_VHMFNO_D: row.getCell("D").value,
-                      part_num_VHPRNO_C: row.getCell("C").value,
-                      description_VHTXT1_W: row.getCell("W").value,
-                      quantity_VHOROQ_AH: row.getCell("AH").value,
-                      line_VOPLGR_EF: row.getCell("EF").value,
-                      start_time_VHMSTI_CG: row.getCell("CG").value,
-                      end_time_VHMFTI_CH: row.getCell("CH").value,
-                      start_date_VHFSTD_Y: row.getCell("Y").value,
-                      end_date_VHFFID_Z: row.getCell("Z").value,
-                      per_box_qty_UNITCAIXA_IT: row.getCell("IT").value,
-                      per_pallet_qty_UNITAPALET_IU: row.getCell("IU").value,
-                      per_pack_sec_VOIPITI_FM: row.getCell("FM").value,
-                    });
+                    if (
+                      row.getCell("EF").value === process.env.EXCEL_SHIFT_LINE
+                    ) {
+                      rowsData.push({
+                        row_num: rowNumber,
+                        shift_PPSHFT_IS: row.getCell("IS").value,
+                        order_num_VHMFNO_D: row.getCell("D").value,
+                        part_num_VHPRNO_C: row.getCell("C").value,
+                        description_VHTXT1_W: row.getCell("W").value,
+                        quantity_VHOROQ_AH: row.getCell("AH").value,
+                        line_VOPLGR_EF: row.getCell("EF").value,
+                        start_time_VHMSTI_CG: row.getCell("CG").value,
+                        end_time_VHMFTI_CH: row.getCell("CH").value,
+                        start_date_VHFSTD_Y: row.getCell("Y").value,
+                        end_date_VHFFID_Z: row.getCell("Z").value,
+                        per_box_qty_UNITCAIXA_IT: row.getCell("IT").value,
+                        per_pallet_qty_UNITAPALET_IU: row.getCell("IU").value,
+                        per_pack_sec_VOIPITI_FM: row.getCell("FM").value,
+                      });
 
-                    var data = {
-                      _id:
-                        new Date().toISOString().slice(0, 10) +
-                        Math.random().toString(36),
-                      type: "excel",
-                      createdAt: moment()
-                        .seconds(0)
-                        .milliseconds(0)
-                        .toISOString(),
-                      values: rowsData,
-                    };
+                      var data = {
+                        _id:
+                          new Date().toISOString().slice(0, 10) +
+                          Math.random().toString(36),
+                        type: "excel",
+                        createdAt: moment()
+                          .seconds(0)
+                          .milliseconds(0)
+                          .toISOString(),
+                        values: rowsData,
+                      };
 
-                    const promise = pouchDBConnection
-                      .put(data, {
-                        force: true,
-                      })
-                      .then(function (response) {
-                        rowsData = [];
-                      })
-                      .then(function (err) {}); // <-- whatever async operation you have here
-                    promises.push(promise);
-                  }
+                      const promise = pouchDBConnection
+                        .put(data, {
+                          force: true,
+                        })
+                        .then(function (response) {
+                          rowsData = [];
+                        })
+                        .then(function (err) {}); // <-- whatever async operation you have here
+                      promises.push(promise);
+                    }
+                  });
+
+                  Promise.all(promises)
+                    .then(() => {
+                      // pouchDBConnection.sync(remoteDB);
+                      getDocs(res, "excel", true);
+                    })
+                    .catch((err) => {});
                 });
-
-                Promise.all(promises)
-                  .then(() => {
-                    // pouchDBConnection.sync(remoteDB);
-                    getDocs(res, "excel", true);
-                  })
-                  .catch((err) => {});
-              });
+            }
           });
         });
       }
@@ -261,7 +262,7 @@ app.post("/api/excel-upload", (req, res) => {
     worksheet.eachRow(function (row, rowNumber) {
       var rowsData = [];
 
-      if (row.getCell("EF").value === "PERS012") {
+      if (row.getCell("EF").value === process.env.EXCEL_SHIFT_LINE) {
         rowsData.push({
           row_num: rowNumber,
           shift_PPSHFT_IS: row.getCell("IS").value,
@@ -374,7 +375,7 @@ app.listen(port, () => console.log(`Listening on port ${port}`));
 // *****************************************************************************
 
 const http = require("http");
-const socketIo = require("socket.io");
+// const socketIo = require("socket.io");
 const socketPort = process.env.PORT || 4001;
 const router = express.Router();
 
@@ -395,18 +396,18 @@ var previousTime = new Date().getTime();
 const buttonPort = new serialPort("/dev/ttyUSB0", { baudRate: 110 });
 var EventEmitter = require("events");
 
-const io = socketIo(server, {
-    cors: {
-        origin: "*",
-        // origin: "http://localhost:8080",
-        methods: ["GET", "POST"],
-        transports: ['websocket', 'polling'],
-        credentials: true
-    },
-    allowEIO3: true
-});
+// const io = socketIo(server, {
+//     cors: {
+//         origin: "*",
+//         // origin: "http://localhost:8080",
+//         methods: ["GET", "POST"],
+//         transports: ['websocket', 'polling'],
+//         credentials: true
+//     },
+//     allowEIO3: true
+// });
 
-let interval;
+// let interval;
 // var Gpio = require('onoff').Gpio; //include onoff to interact with the Gpio
 // var LED_RED = new Gpio('21', 'out'); //use Gpio pin 21 as output for LED RED
 // var LED_GREEN = new Gpio('20', 'out'); //use Gpio pin 20 as output for LED GREEN
@@ -492,23 +493,23 @@ var triggerButton = new EventEmitter(); // Event used to send a packet to the Fr
 // });
 
 // Open socket with the Frontend:
-io.on("connection", (socket) => {
-    console.log("New client connected");
+// io.on("connection", (socket) => {
+//     console.log("New client connected");
 
-    triggerButton.on("triggerButton", function () {
-        socket.emit('lightgreen', lightvalue); // Send button status to client
-    });
+//     triggerButton.on("triggerButton", function () {
+//         socket.emit('lightgreen', lightvalue); // Send button status to client
+//     });
 
-    socket.on("disconnect", () => {
-        console.log("Client disconnected");
-        clearInterval(interval);
-    });
-});
+//     socket.on("disconnect", () => {
+//         console.log("Client disconnected");
+//         clearInterval(interval);
+//     });
+// });
 
 // Open UART port for the button:
 buttonPort.on("open", function () {
   // Send dummy data, used to detect when the button is pressed:
-  interval = setInterval(function () {
+  setInterval(function () {
     buttonPort.write("\n", function (err, results) {
       // It happens when the button is not pressed.
     });
@@ -632,14 +633,21 @@ function fetchRetryToDownloadData(options, callback) {
       console.log("try no. ", n);
       n = n + 1;
       if (n <= 5) {
-        fetchRetryToDownloadData(options);
-      } else {
-        // callback(err);
+        setTimeout(function () {
+          console.log("Ready");
+          fetchRetryToDownloadData(options, callback);
+        }, 5000);
+      }
+      if (n > 5) {
+        console.log("error", err.message);
+        // callback(0);
+        n = 0;
+        // throw err;
       }
       // throw err;
     }
     if (data) {
-      console.log("file downloaded successfully", "/home/gestlean/kanban/aws-files/");
+      console.log("file downloaded successfully", process.env.AWS_FILE_PATH);
       callback(data);
     }
   });
