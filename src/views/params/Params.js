@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { excelSheet, startApp, pushShiftsData } from "../../redux/actions/actions";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Swal from 'sweetalert2/dist/sweetalert2.js';
-import 'sweetalert2/src/sweetalert2.scss';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  excelSheet,
+  startApp,
+  pushShiftsData,
+} from "../../redux/actions/actions";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import "sweetalert2/src/sweetalert2.scss";
 import {
   CInput,
   CLabel,
@@ -17,18 +21,21 @@ import {
   CCardHeader,
   CCardFooter,
   CCardBody,
-  CRow
+  CRow,
+} from "@coreui/react";
+import CIcon from "@coreui/icons-react";
+import helpers from "../../helpers/helpers";
 
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import helpers from '../../helpers/helpers';
+import ShiftTime from "./Shift";
 
-import ShiftTime from './Shift';
+import PouchDB from "pouchdb-browser";
+import moment from "moment";
 
-import PouchDB from 'pouchdb-browser';
-
-const lodash = require('lodash');
-const pouchDBConnection = new PouchDB('kanban_db', { revs_limit: 1, auto_compaction: true });
+const lodash = require("lodash");
+const pouchDBConnection = new PouchDB("kanban_db", {
+  revs_limit: 1,
+  auto_compaction: true,
+});
 
 const Params = () => {
   var [shiftCount, setShiftCount] = useState([1]);
@@ -44,8 +51,10 @@ const Params = () => {
   // var [blackMaxColor, setBlackMaxColor] = useState(13);
   var [shiftInitialTime, setShiftInitialTime] = useState([["09:00", "12:00"]]);
   var [shiftDaysValues, setShiftDaysValues] = useState([[]]);
-  var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState([[["11:00", "11:15"]]]);
-  var [fileDownloadType, setFileDownloadType] = useState('');
+  var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState([
+    [["11:00", "11:15"]],
+  ]);
+  var [fileDownloadType, setFileDownloadType] = useState("");
   var [downloadTime, setDownloadTime] = useState([]);
   const [dbChartParams, setDbChartParams] = useState({});
 
@@ -58,8 +67,6 @@ const Params = () => {
     });
   }, dbChartParams);
   // const response = useSelector((state) => state.excelReducer.apiCalled);
-
-
 
   // console.log(dbChartParams, 'dbChartParamsdd');
   const allState = useSelector((state) => state.excelReducer);
@@ -80,47 +87,45 @@ const Params = () => {
       downloadTime: downloadTime, // in case of manual, undefined
       colors: {
         blue: {
-          min: blueColor
+          min: blueColor,
         },
         green: {
           min: greenMinColor,
-          max: greenMaxColor
+          max: greenMaxColor,
         },
         orange: {
           min: orangeMinColor,
-          max: orangeMaxColor
+          max: orangeMaxColor,
         },
         red: {
           min: redMinColor,
-          max: redMaxColor
+          max: redMaxColor,
         },
         black: {
-          min: blackMinColor
-        }
+          min: blackMinColor,
+        },
       },
-      PERS044: {  // assembly Line
-        ...lineData
+      PERS044: {
+        // assembly Line
+        ...lineData,
       },
-      createdAt: new Date().toISOString()
-    }
-  }
-
+      createdAt: new Date().toISOString(),
+    };
+  };
 
   const saveParametersData = () => {
-    localStorage.removeItem('pendingPiecesPerProduct');
+    localStorage.removeItem("pendingPiecesPerProduct");
     let autoDownloadTime = document.getElementById("autoDownloadTime");
     if (autoDownloadTime == null || autoDownloadTime.value === "") {
-      Swal.fire(
-        {
-          icon: "error",
-          title: "Error",
-          text: "Please enter automatic time"
-        }
-      )
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Please enter automatic time",
+      });
     } else {
-      // pass data to database 
-      // pass data to database 
-      // pass data to database 
+      // pass data to database
+      // pass data to database
+      // pass data to database
       const dataState = { ...allState };
       delete dataState.apiCalled;
       delete dataState.chartParams;
@@ -128,26 +133,26 @@ const Params = () => {
 
       // console.log(getParameters(dataState), 'dataState')
       dispatch(pushShiftsData(getParameters(dataState)));
-      helpers.updatePouchDB({ "_id": "params", "data": getParameters(dataState), "_rev": "1-params" + new Date().toISOString() });
-      Swal.fire(
-        'Saved',
-        'Shift data is saved!',
-        'success'
-      )
+      helpers.updatePouchDB({
+        _id: "params",
+        data: getParameters(dataState),
+        _rev: "1-params" + new Date().toISOString(),
+      });
+      Swal.fire("Saved", "Shift data is saved!", "success");
     }
-  }
+  };
   const getTime = (value) => {
     // console.log(value, 'value')
     //set file download time
     setDownloadTime(value);
-  }
+  };
 
   const fileFormSubmit = () => {
     const formData = new FormData();
     formData.append("file", selectedFile);
 
-    pouchDBConnection.get('count').then(function (doc) {
-      pouchDBConnection.get('shiftsTrack').then(function (doc2) {
+    pouchDBConnection.get("count").then(function (doc) {
+      pouchDBConnection.get("shiftsTrack").then(function (doc2) {
         return pouchDBConnection.remove(doc2);
       });
       return pouchDBConnection.remove(doc);
@@ -159,13 +164,8 @@ const Params = () => {
     // dataState.manual = true;
     // helpers.updatePouchDB({ "_id": "params", "data": getParameters(dataState), "_rev": "1-params" + new Date().toISOString() });
 
-
-    dispatch(excelSheet(formData))
-    Swal.fire(
-      'Uploaded',
-      'File Uploaded Successfully!',
-      'success'
-    )
+    dispatch(excelSheet(formData));
+    Swal.fire("Uploaded", "File Uploaded Successfully!", "success");
   };
 
   // var uniqueAssemblyLines = [];
@@ -179,22 +179,19 @@ const Params = () => {
   //   uniqueAssemblyLines = parentsData.filter(onlyUnique);
   // }
 
-
-
   useEffect(() => {
-
     if (dbChartParams && Object.values(dbChartParams).length !== 0) {
-      setPitchTime(dbChartParams.pitchTime)
-      setFileDownloadType(dbChartParams.fileDownloadType)
-      setDownloadTime(dbChartParams.downloadTime)
-      setBlueColor(dbChartParams.colors.blue.min)
-      setGreenMinColor(dbChartParams.colors.green.min)
-      setGreenMaxColor(dbChartParams.colors.green.max)
-      setOrangeMinColor(dbChartParams.colors.orange.min)
-      setOrangeMaxColor(dbChartParams.colors.orange.max)
-      setRedMinColor(dbChartParams.colors.red.min)
-      setRedMaxColor(dbChartParams.colors.red.max)
-      setBlackMinColor(dbChartParams.colors.black.min)
+      setPitchTime(dbChartParams.pitchTime);
+      setFileDownloadType(dbChartParams.fileDownloadType);
+      setDownloadTime(dbChartParams.downloadTime);
+      setBlueColor(dbChartParams.colors.blue.min);
+      setGreenMinColor(dbChartParams.colors.green.min);
+      setGreenMaxColor(dbChartParams.colors.green.max);
+      setOrangeMinColor(dbChartParams.colors.orange.min);
+      setOrangeMaxColor(dbChartParams.colors.orange.max);
+      setRedMinColor(dbChartParams.colors.red.min);
+      setRedMaxColor(dbChartParams.colors.red.max);
+      setBlackMinColor(dbChartParams.colors.black.min);
       // setBlackMinColor(chartParamsData.colors.black.max)
       let shiftsData = dbChartParams.PERS044;
       // console.log(shiftsData)
@@ -221,16 +218,13 @@ const Params = () => {
       setShiftDaysValues(shiftDays);
       // console.log('shift', shiftDays);
 
-
       dispatch(startApp(shiftsData));
     }
   }, [dbChartParams]);
 
   return (
     <CCard>
-      <CCardHeader>
-        Parameters
-      </CCardHeader>
+      <CCardHeader>Parameters</CCardHeader>
       <CCardBody>
         <CRow>
           <CCol xs="4" sm="4" md="4" lg="4">
@@ -241,15 +235,28 @@ const Params = () => {
               <CCol xs="2">
                 <CForm action="" method="post" inline>
                   <CFormGroup className="pr-1">
-                    <CInput type="number" id="pitchTime" name="pitchTime" min={1} max={999} value={pitchTime}
+                    <CInput
+                      type="number"
+                      id="pitchTime"
+                      name="pitchTime"
+                      min={1}
+                      max={999}
+                      value={pitchTime}
                       onChange={(e) => {
-                        setPitchTime(Math.max(0, parseInt(e.target.value)).toString().slice(0, 3));
+                        setPitchTime(
+                          Math.max(0, parseInt(e.target.value))
+                            .toString()
+                            .slice(0, 3)
+                        );
                       }}
                     />
-                    <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '5px' }}>{`   mins`}</CLabel>
+                    <CLabel
+                      htmlFor="exampleInputName2"
+                      className="pr-1"
+                      style={{ marginLeft: "5px" }}
+                    >{`   mins`}</CLabel>
                   </CFormGroup>
                 </CForm>
-
               </CCol>
             </CFormGroup>
             <CFormGroup row>
@@ -258,12 +265,34 @@ const Params = () => {
               </CCol>
               <CCol md="9">
                 <CFormGroup variant="custom-radio" inline>
-                  <CInputRadio checked={fileDownloadType === 'automatic' ? true : false} onClick={(e) => { setFileDownloadType('automatic'); }} custom id="inline-radio1" name="fileDownloadCheck" value="automatic" />
-                  <CLabel variant="custom-checkbox" htmlFor="inline-radio1">Automatic</CLabel>
+                  <CInputRadio
+                    checked={fileDownloadType === "automatic" ? true : false}
+                    onClick={(e) => {
+                      setFileDownloadType("automatic");
+                    }}
+                    custom
+                    id="inline-radio1"
+                    name="fileDownloadCheck"
+                    value="automatic"
+                  />
+                  <CLabel variant="custom-checkbox" htmlFor="inline-radio1">
+                    Automatic
+                  </CLabel>
                 </CFormGroup>
                 <CFormGroup variant="custom-radio" inline>
-                  <CInputRadio checked={fileDownloadType === 'manual' ? true : false} onClick={(e) => { setFileDownloadType('manual'); }} custom id="inline-radio2" name="fileDownloadCheck" value="manual" />
-                  <CLabel variant="custom-checkbox" htmlFor="inline-radio2">Manual</CLabel>
+                  <CInputRadio
+                    checked={fileDownloadType === "manual" ? true : false}
+                    onClick={(e) => {
+                      setFileDownloadType("manual");
+                    }}
+                    custom
+                    id="inline-radio2"
+                    name="fileDownloadCheck"
+                    value="manual"
+                  />
+                  <CLabel variant="custom-checkbox" htmlFor="inline-radio2">
+                    Manual
+                  </CLabel>
                 </CFormGroup>
               </CCol>
             </CFormGroup>
@@ -272,20 +301,49 @@ const Params = () => {
                 <CLabel htmlFor="autoFile"></CLabel>
               </CCol>
 
-              {fileDownloadType === 'automatic' ? <CCol md="3"><CInput value={downloadTime} onChange={(e) => { getTime(e.target.value) }} type="time" id="autoDownloadTime" name="autoDownloadTime" min="09:00" max="18:00"></CInput></CCol>
-                : fileDownloadType === 'manual' ? <CCol md="9">
+              {fileDownloadType === "automatic" ? (
+                <CCol md="3">
+                  <CInput
+                    value={downloadTime}
+                    onChange={(e) => {
+                      getTime(e.target.value);
+                    }}
+                    type="time"
+                    id="autoDownloadTime"
+                    name="autoDownloadTime"
+                    min="09:00"
+                    max="18:00"
+                  ></CInput>
+                </CCol>
+              ) : fileDownloadType === "manual" ? (
+                <CCol md="9">
                   <CFormGroup row>
                     <CCol md="7">
-
-                      <CInput type="file" required name="hf-file" onChange={changeHandler} placeholder="Upload file..." autoComplete="file" />
+                      <CInput
+                        type="file"
+                        required
+                        name="hf-file"
+                        onChange={changeHandler}
+                        placeholder="Upload file..."
+                        autoComplete="file"
+                      />
                     </CCol>
                     <CCol md="5">
-                      <CButton onClick={fileFormSubmit} type="submit" size="sm" color="primary"><CIcon name="cil-scrubber" /> Upload</CButton>
+                      <CButton
+                        onClick={fileFormSubmit}
+                        type="submit"
+                        size="sm"
+                        color="primary"
+                      >
+                        <CIcon name="cil-scrubber" /> Upload
+                      </CButton>
                       <ToastContainer />
                     </CCol>
                   </CFormGroup>
-                </CCol> : ''}
-
+                </CCol>
+              ) : (
+                ""
+              )}
             </CFormGroup>
             <CFormGroup row>
               <CCol xs="3">
@@ -296,13 +354,33 @@ const Params = () => {
                   <CCol lg="12">
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
-                        <CLabel htmlFor="exampleInputName2" className="pr-1"><span><b>blau</b> </span> <span style={{ marginLeft: '33px' }}>{'<'}</span></CLabel>
-                        <CInput type="number" id="blueColor" name="blueColor" min={0} max={13} step={1} value={blueColor}
+                        <CLabel htmlFor="exampleInputName2" className="pr-1">
+                          <span>
+                            <b>blau</b>{" "}
+                          </span>{" "}
+                          <span style={{ marginLeft: "33px" }}>{"<"}</span>
+                        </CLabel>
+                        <CInput
+                          type="number"
+                          id="blueColor"
+                          name="blueColor"
+                          min={0}
+                          max={13}
+                          step={1}
+                          value={blueColor}
                           onChange={(e) => {
-                            setBlueColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                            setBlueColor(
+                              Math.max(0, parseInt(e.target.value))
+                                .toString()
+                                .slice(0, 2)
+                            );
                           }}
                         />
-                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '5px' }}>{`   pitchs`}</CLabel>
+                        <CLabel
+                          htmlFor="exampleInputName2"
+                          className="pr-1"
+                          style={{ marginLeft: "5px" }}
+                        >{`   pitchs`}</CLabel>
                       </CFormGroup>
                     </CForm>
                   </CCol>
@@ -312,20 +390,53 @@ const Params = () => {
                   <CCol lg="12">
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
-                        <CLabel htmlFor="exampleInputName2" className="pr-1"><b>verd</b></CLabel>
-                        <CInput type="number" name="greenMinColor" min={0} max={13} step={1} value={greenMinColor} style={{ marginLeft: '42px' }}
+                        <CLabel htmlFor="exampleInputName2" className="pr-1">
+                          <b>verd</b>
+                        </CLabel>
+                        <CInput
+                          type="number"
+                          name="greenMinColor"
+                          min={0}
+                          max={13}
+                          step={1}
+                          value={greenMinColor}
+                          style={{ marginLeft: "42px" }}
                           onChange={(e) => {
-                            setGreenMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                            setGreenMinColor(
+                              Math.max(0, parseInt(e.target.value))
+                                .toString()
+                                .slice(0, 2)
+                            );
                           }}
                         />
-                        {'   '}
-                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel>
-                        <CInput type="number" name="greenMaxColor" min={0} max={13} step={1} value={greenMaxColor}
+                        {"   "}
+                        <CLabel
+                          htmlFor="exampleInputName2"
+                          className="pr-1"
+                          style={{ marginLeft: "20px", marginRight: "20px" }}
+                        >
+                          a
+                        </CLabel>
+                        <CInput
+                          type="number"
+                          name="greenMaxColor"
+                          min={0}
+                          max={13}
+                          step={1}
+                          value={greenMaxColor}
                           onChange={(e) => {
-                            setGreenMaxColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                            setGreenMaxColor(
+                              Math.max(0, parseInt(e.target.value))
+                                .toString()
+                                .slice(0, 2)
+                            );
                           }}
                         />
-                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '5px' }}>{`   pitch`}</CLabel>
+                        <CLabel
+                          htmlFor="exampleInputName2"
+                          className="pr-1"
+                          style={{ marginLeft: "5px" }}
+                        >{`   pitch`}</CLabel>
                       </CFormGroup>
                     </CForm>
                   </CCol>
@@ -335,20 +446,53 @@ const Params = () => {
                   <CCol lg="12">
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
-                        <CLabel htmlFor="exampleInputName2" className="pr-1"><b>taronja</b></CLabel>
-                        <CInput type="number" name="orangeMinColor" min={0} max={13} step={1} value={orangeMinColor} style={{ marginLeft: '25px' }}
+                        <CLabel htmlFor="exampleInputName2" className="pr-1">
+                          <b>taronja</b>
+                        </CLabel>
+                        <CInput
+                          type="number"
+                          name="orangeMinColor"
+                          min={0}
+                          max={13}
+                          step={1}
+                          value={orangeMinColor}
+                          style={{ marginLeft: "25px" }}
                           onChange={(e) => {
-                            setOrangeMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                            setOrangeMinColor(
+                              Math.max(0, parseInt(e.target.value))
+                                .toString()
+                                .slice(0, 2)
+                            );
                           }}
                         />
-                        {'   '}
-                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel>
-                        <CInput type="number" name="blueColor" min={0} max={13} step={1} value={orangeMaxColor}
+                        {"   "}
+                        <CLabel
+                          htmlFor="exampleInputName2"
+                          className="pr-1"
+                          style={{ marginLeft: "20px", marginRight: "20px" }}
+                        >
+                          a
+                        </CLabel>
+                        <CInput
+                          type="number"
+                          name="blueColor"
+                          min={0}
+                          max={13}
+                          step={1}
+                          value={orangeMaxColor}
                           onChange={(e) => {
-                            setOrangeMaxColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                            setOrangeMaxColor(
+                              Math.max(0, parseInt(e.target.value))
+                                .toString()
+                                .slice(0, 2)
+                            );
                           }}
                         />
-                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '5px' }}>{`   pitch`}</CLabel>
+                        <CLabel
+                          htmlFor="exampleInputName2"
+                          className="pr-1"
+                          style={{ marginLeft: "5px" }}
+                        >{`   pitch`}</CLabel>
                       </CFormGroup>
                     </CForm>
                   </CCol>
@@ -358,20 +502,53 @@ const Params = () => {
                   <CCol lg="12">
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
-                        <CLabel htmlFor="exampleInputName2" className="pr-1"><b>vermell</b></CLabel>
-                        <CInput type="number" name="blueColor" min={0} max={13} step={1} value={redMinColor} style={{ marginLeft: '25px' }}
+                        <CLabel htmlFor="exampleInputName2" className="pr-1">
+                          <b>vermell</b>
+                        </CLabel>
+                        <CInput
+                          type="number"
+                          name="blueColor"
+                          min={0}
+                          max={13}
+                          step={1}
+                          value={redMinColor}
+                          style={{ marginLeft: "25px" }}
                           onChange={(e) => {
-                            setRedMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                            setRedMinColor(
+                              Math.max(0, parseInt(e.target.value))
+                                .toString()
+                                .slice(0, 2)
+                            );
                           }}
                         />
-                        {'   '}
-                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel>
-                        <CInput type="number" name="blueColor" min={0} max={13} step={1} value={redMaxColor}
+                        {"   "}
+                        <CLabel
+                          htmlFor="exampleInputName2"
+                          className="pr-1"
+                          style={{ marginLeft: "20px", marginRight: "20px" }}
+                        >
+                          a
+                        </CLabel>
+                        <CInput
+                          type="number"
+                          name="blueColor"
+                          min={0}
+                          max={13}
+                          step={1}
+                          value={redMaxColor}
                           onChange={(e) => {
-                            setRedMaxColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                            setRedMaxColor(
+                              Math.max(0, parseInt(e.target.value))
+                                .toString()
+                                .slice(0, 2)
+                            );
                           }}
                         />
-                        <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '5px' }}>{`   pitch`}</CLabel>
+                        <CLabel
+                          htmlFor="exampleInputName2"
+                          className="pr-1"
+                          style={{ marginLeft: "5px" }}
+                        >{`   pitch`}</CLabel>
                       </CFormGroup>
                     </CForm>
                   </CCol>
@@ -381,10 +558,26 @@ const Params = () => {
                   <CCol lg="12">
                     <CForm action="" method="post" inline>
                       <CFormGroup className="pr-1">
-                        <CLabel htmlFor="exampleInputName2" className="pr-1"><span><b>negre</b> </span> <span style={{ marginLeft: '28px' }}>{'>'}</span></CLabel>
-                        <CInput type="number" id="blackMinColor" name="blackMinColor" min={0} max={13} step={1} value={parseInt(blackMinColor)}
+                        <CLabel htmlFor="exampleInputName2" className="pr-1">
+                          <span>
+                            <b>negre</b>{" "}
+                          </span>{" "}
+                          <span style={{ marginLeft: "28px" }}>{">"}</span>
+                        </CLabel>
+                        <CInput
+                          type="number"
+                          id="blackMinColor"
+                          name="blackMinColor"
+                          min={0}
+                          max={13}
+                          step={1}
+                          value={parseInt(blackMinColor)}
                           onChange={(e) => {
-                            setBlackMinColor(Math.max(0, parseInt(e.target.value)).toString().slice(0, 2));
+                            setBlackMinColor(
+                              Math.max(0, parseInt(e.target.value))
+                                .toString()
+                                .slice(0, 2)
+                            );
                           }}
                         />
                         {/* <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ marginLeft: '20px', marginRight: '20px' }}>a</CLabel> */}
@@ -394,7 +587,6 @@ const Params = () => {
                           }}
                         />
                         <CLabel htmlFor="exampleInputName2" className="pr-1" style={{ paddingLeft: '5px' }}>{`   pitch`}</CLabel> */}
-
                       </CFormGroup>
                     </CForm>
                   </CCol>
@@ -406,9 +598,10 @@ const Params = () => {
             {/* {uniqueAssemblyLines.map(assemblyLine => { */}
             {/* return ( */}
             <CCol xs="12">
-              <h3 style={{ textDecoration: 'underline' }}>PERS012</h3>
+              <h3 style={{ textDecoration: "underline" }}>PERS012</h3>
+              <h4>Current Time: {moment().format("hh:mm")}</h4>
               <br></br>
-              {shiftCount.map(k =>
+              {shiftCount.map((k) => (
                 <ShiftTime
                   // assemblyLine={assemblyLine}
                   totalShifts={shiftCount}
@@ -417,22 +610,28 @@ const Params = () => {
                   shiftInitialTime={shiftInitialTime[k - 1]}
                   shiftDaysValues={shiftDaysValues[k - 1]}
                   shiftInitialBreakTime={shiftInitialBreakTime[k - 1]}
-                // shiftsData={chartParamsData.values.PERS044}
+                  // shiftsData={chartParamsData.values.PERS044}
                 />
-              )}
+              ))}
             </CCol>
             {/* )
             })} */}
           </CCol>
         </CRow>
-
       </CCardBody>
       <CCardFooter>
-        <CButton onClick={saveParametersData} type="submit" size="sm" color="primary">Save Params</CButton>
+        <CButton
+          onClick={saveParametersData}
+          type="submit"
+          size="sm"
+          color="primary"
+        >
+          Save Params
+        </CButton>
         <ToastContainer />
       </CCardFooter>
     </CCard>
-  )
-}
+  );
+};
 
 export default Params;

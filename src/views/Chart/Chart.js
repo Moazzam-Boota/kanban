@@ -619,6 +619,13 @@ const Users = () => {
                   (loadNextProductTotal +
                     productCountDynamic -
                     dataGroup[currentElement].sum);
+                nextProduct < 0
+                  ? (nextProduct =
+                      loadNextProductTotal +
+                      productCountDynamic -
+                      dataGroup[currentElement].sum -
+                      productCountDynamic)
+                  : (nextProduct = nextProduct);
               }
 
               console.log("np", nextProduct, productCountDynamic, "pc");
@@ -1232,6 +1239,7 @@ const Users = () => {
         </CCol>
       </CRow>
 
+      {/* <h1>PERS012 Time: {moment().format("hh:mm")}pm</h1> */}
       <h1>PERS012</h1>
       <hr style={{ borderTop: "3px solid rgba(0, 0, 21, 0.2)" }}></hr>
       <CRow style={{ float: "right" }}>
@@ -1239,7 +1247,10 @@ const Users = () => {
         {cardsData}
         {/* </CCol> */}
       </CRow>
-      <CRow className={" mt-2 justify-content-end"} style={{ display: 'block' }}>
+      <CRow
+        className={" mt-2 justify-content-end"}
+        style={{ display: "block" }}
+      >
         {/* ......................... */}
         {/* <CCol lg="3" xl="3">
           <CWidgetSimple

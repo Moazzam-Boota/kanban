@@ -179,6 +179,7 @@ schedule.scheduleJob(" * * * * * ", function () {
             if (data) {
               fs.writeFileSync(
                 "/home/gestlean/kanban/aws-files/" + options.Key,
+                // process.env.AWS_FILE_PATH + options.Key,
                 data.Body
               );
             }
@@ -187,6 +188,7 @@ schedule.scheduleJob(" * * * * * ", function () {
 
             workbook.xlsx
               .readFile("/home/gestlean/kanban/aws-files/" + "META_SQL.xlsm")
+              // .readFile(process.env.AWS_FILE_PATH + "META_SQL.xlsm")
               .then(function () {
                 var worksheet = workbook.getWorksheet("Hoja1");
 
@@ -194,9 +196,7 @@ schedule.scheduleJob(" * * * * * ", function () {
                 worksheet.eachRow(function (row, rowNumber) {
                   var rowsData = [];
 
-                  if (
-                    row.getCell("EF").value === "PERS012"
-                  ) {
+                  if (row.getCell("EF").value === "PERS012") {
                     rowsData.push({
                       row_num: rowNumber,
                       shift_PPSHFT_IS: row.getCell("IS").value,
@@ -396,14 +396,14 @@ const buttonPort = new serialPort("/dev/ttyUSB0", { baudRate: 110 });
 var EventEmitter = require("events");
 
 const io = socketIo(server, {
-    cors: {
-        origin: "*",
-        // origin: "http://localhost:8080",
-        methods: ["GET", "POST"],
-        transports: ['websocket', 'polling'],
-        credentials: true
-    },
-    allowEIO3: true
+  cors: {
+    origin: "*",
+    // origin: "http://localhost:8080",
+    methods: ["GET", "POST"],
+    transports: ['websocket', 'polling'],
+    credentials: true
+  },
+  allowEIO3: true
 });
 
 let interval;
@@ -493,16 +493,16 @@ var triggerButton = new EventEmitter(); // Event used to send a packet to the Fr
 
 // Open socket with the Frontend:
 io.on("connection", (socket) => {
-    console.log("New client connected");
+  console.log("New client connected");
 
-    triggerButton.on("triggerButton", function () {
-        socket.emit('lightgreen', lightvalue); // Send button status to client
-    });
+  triggerButton.on("triggerButton", function () {
+    socket.emit('lightgreen', lightvalue); // Send button status to client
+  });
 
-    socket.on("disconnect", () => {
-        console.log("Client disconnected");
-        clearInterval(interval);
-    });
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+    clearInterval(interval);
+  });
 });
 
 // Open UART port for the button:
@@ -622,6 +622,8 @@ process.on("SIGINT", function () {
 // });
 
 server.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
+
+// function logic for to retry download file for 5 times if file not download
 let n = 0;
 function fetchRetryToDownloadData(options, callback) {
   var AWS = require("aws-sdk");
@@ -632,14 +634,17 @@ function fetchRetryToDownloadData(options, callback) {
       console.log("try no. ", n);
       n = n + 1;
       if (n <= 5) {
-        fetchRetryToDownloadData(options);
+        fetchRetryToDownloadData(options, callback);
       } else {
         // callback(err);
       }
       // throw err;
     }
     if (data) {
-      console.log("file downloaded successfully", "/home/gestlean/kanban/aws-files/");
+      console.log(
+        "file downloaded successfully",
+        "/home/gestlean/kanban/aws-files/"
+      );
       callback(data);
     }
   });
