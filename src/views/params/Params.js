@@ -610,7 +610,7 @@ const Params = () => {
             {/* return ( */}
             <CCol xs="12">
               <h3 style={{ textDecoration: "underline" }}>PERS012</h3>
-              <h4>Current Time: {moment().format("hh:mm")}</h4>
+              {/* <h4>Current Time: {moment().format("hh:mm")}</h4> */}
               <br></br>
               {shiftCount.map((k) => (
                 <ShiftTime
