@@ -300,6 +300,9 @@ const Users = () => {
   if (!moment().isBetween(shiftStartTime, shiftEndTime) && !allBreaks) {
     localStorage.removeItem("whichBreak");
   }
+  if (!moment().isBetween(shiftStartTime, shiftEndTime)) {
+    localStorage.removeItem("pendingPiecesPerProduct");
+  }
 
   // console.log('shift start time', shiftStartTime.add(10, 'm').minutes());
 
