@@ -55,12 +55,13 @@ const Users = () => {
   const excelFileBackendResponse = useSelector(
     (state) => state.excelReducer.apiCalled
   );
-  const weekDaysRun = lodash
-    .get(dbChartParams, ["PERS044", 1, "days"], [])
-    .map((k) => k.value);
+  var params = localStorage.getItem("params");
+  params = JSON.parse(params);
+  const weekDaysRun = params.PERS044["1"].days.map((k) => k.value);
 
   const excelFileData = [];
-  const colorChartParams = lodash.get(dbChartParams, "colors", {});
+  // const colorChartParams = lodash.get(dbChartParams, "colors", {});
+  const colorChartParams = params.colors;
   const lineChartParams = lodash.get(dbChartParams, "PERS044", {});
   if (excelFileBackendResponse) {
     // console.log(excelFileBackendResponse, 'excelFileBackendResponse');
@@ -74,17 +75,23 @@ const Users = () => {
   //   setTime (moment().format("hh:mm:ss A"))
   // }, [time]);
 
-  const downloadAutoTime = lodash.get(dbChartParams, "downloadTime");
+  // const downloadAutoTime = lodash.get(dbChartParams, "downloadTime");
+  const downloadAutoTime = params.downloadTime;
   // console.log(lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT'), 'excelFileData')
   var format = "HH:mm";
-  const pitchTime = lodash.get(dbChartParams, "pitchTime", 0); //minutes
+  // const pitchTime = lodash.get(dbChartParams, "pitchTime", 0); //minutes
+  const pitchTime = params.pitchTime; //minutes
   // *************************** One Shift ***************************
   // 08:00 to 14:00
-  const shiftTimeRange = lodash.get(lineChartParams, "[1].time", []);
+  // const shiftTimeRange = lodash.get(lineChartParams, "[1].time", []);
+  const shiftTimeRange = params.PERS044["1"].time;
   // const shiftDaysRange = lodash.get(lineChartParams, '[1].days', []);
-  const shiftTimeBreaks = lodash.get(lineChartParams, "[1].breaks", []);
+  // const shiftTimeBreaks = lodash.get(lineChartParams, "[1].breaks", []);
+  const shiftTimeBreaks = params.PERS044["1"].breaks;
   // *************************** One Shift ***************************
-
+  console.log("weekdaysrun", weekDaysRun);
+  console.log("colorChartParams", colorChartParams);
+  console.log("colorChartParams", params.colors);
   function refreshAt(hours, minutes, seconds, callFunction) {
     var now = new Date();
     var then = new Date();
@@ -1114,7 +1121,13 @@ const Users = () => {
         {/* <h1>{currentTime.format("hh:mm:ss")}</h1> */}
       </div>
     );
-  if (Object.values(dbChartParams).length === 0)
+  // if (Object.values(dbChartParams).length === 0)
+  //   return (
+  //     <div style={{ textAlign: "center", marginTop: "10%" }}>
+  //       <h1>Please set Parameters</h1>
+  //     </div>
+  //   );
+  if (!localStorage.getItem("params"))
     return (
       <div style={{ textAlign: "center", marginTop: "10%" }}>
         <h1>Please set Parameters</h1>
@@ -1142,7 +1155,7 @@ const Users = () => {
   return (
     <CFormGroup>
       {
-        <CButton hidden
+        <CButton
           id="newPieceDoneButton"
           style={{ float: "right", height: "80px" }}
           size="lg"
@@ -1313,7 +1326,7 @@ const Users = () => {
                   Quantitat per caixa:{" "}
                   <span style={metricStyle}>
                     {parseFloat(
-                      lodash.get(currentCardBox, "productsPerBox")
+                      lodash.get(currentCardBox, "productsPerBox") // this is null value not undefined please check
                     ).toFixed(2)}
                   </span>{" "}
                 </p>
