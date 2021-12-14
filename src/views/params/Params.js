@@ -79,11 +79,9 @@ const Params = () => {
     localStorage.getItem("params") ? params.PERS044["1"].days : [],
   ]);
   var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState([
-    [
-      localStorage.getItem("params")
-        ? params.PERS044["1"].breaks
-        : ["11:00", "11:15"],
-    ],
+    localStorage.getItem("params")
+      ? formatBreakTimes(params.PERS044["1"].breaks)
+      : [["11:00", "11:15"]],
   ]);
   var [fileDownloadType, setFileDownloadType] = useState(
     localStorage.getItem("params") ? params.fileDownloadType : ""
@@ -93,6 +91,14 @@ const Params = () => {
   );
 
   const [dbChartParams, setDbChartParams] = useState({});
+
+  function formatBreakTimes(breaks) {
+    const breakTimes = [];
+    for (var key in breaks) {
+      breakTimes.push(breaks[key].time);
+    }
+    return breakTimes;
+  }
 
   // get data from redux
   const dispatch = useDispatch();
