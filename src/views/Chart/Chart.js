@@ -57,11 +57,15 @@ const Users = () => {
   );
   var params = localStorage.getItem("params");
   params = JSON.parse(params);
-  const weekDaysRun = params.PERS044["1"].days.map((k) => k.value);
+  const weekDaysRun = localStorage.getItem("params")
+    ? params.PERS044["1"].days.map((k) => k.value)
+    : lodash.get(dbChartParams, ["PERS044", 1, "days"], []).map((k) => k.value);
 
   const excelFileData = [];
   // const colorChartParams = lodash.get(dbChartParams, "colors", {});
-  const colorChartParams = params.colors;
+  const colorChartParams = localStorage.getItem("params")
+    ? params.colors
+    : lodash.get(dbChartParams, "colors", {});
   const lineChartParams = lodash.get(dbChartParams, "PERS044", {});
   if (excelFileBackendResponse) {
     // console.log(excelFileBackendResponse, 'excelFileBackendResponse');
@@ -76,22 +80,28 @@ const Users = () => {
   // }, [time]);
 
   // const downloadAutoTime = lodash.get(dbChartParams, "downloadTime");
-  const downloadAutoTime = params.downloadTime;
+  const downloadAutoTime = localStorage.getItem("params")
+    ? params.downloadTime
+    : lodash.get(dbChartParams, "downloadTime");
   // console.log(lodash.get(excelFileData, '[0].per_box_qty_UNITCAIXA_IT'), 'excelFileData')
   var format = "HH:mm";
   // const pitchTime = lodash.get(dbChartParams, "pitchTime", 0); //minutes
-  const pitchTime = params.pitchTime; //minutes
+  const pitchTime = localStorage.getItem("params")
+    ? params.pitchTime
+    : lodash.get(dbChartParams, "pitchTime", 0); //minutes
   // *************************** One Shift ***************************
   // 08:00 to 14:00
   // const shiftTimeRange = lodash.get(lineChartParams, "[1].time", []);
-  const shiftTimeRange = params.PERS044["1"].time;
+  const shiftTimeRange = localStorage.getItem("params")
+    ? params.PERS044["1"].time
+    : lodash.get(lineChartParams, "[1].time", []);
   // const shiftDaysRange = lodash.get(lineChartParams, '[1].days', []);
   // const shiftTimeBreaks = lodash.get(lineChartParams, "[1].breaks", []);
-  const shiftTimeBreaks = params.PERS044["1"].breaks;
+  const shiftTimeBreaks = localStorage.getItem("params")
+    ? params.PERS044["1"].breaks
+    : lodash.get(lineChartParams, "[1].breaks", []);
+
   // *************************** One Shift ***************************
-  console.log("weekdaysrun", weekDaysRun);
-  console.log("colorChartParams", colorChartParams);
-  console.log("colorChartParams", params.colors);
   function refreshAt(hours, minutes, seconds, callFunction) {
     var now = new Date();
     var then = new Date();
@@ -1158,7 +1168,8 @@ const Users = () => {
   return (
     <CFormGroup>
       {
-        <CButton hidden
+        <CButton
+          hidden
           id="newPieceDoneButton"
           style={{ float: "right", height: "80px" }}
           size="lg"

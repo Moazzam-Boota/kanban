@@ -36,32 +36,62 @@ const pouchDBConnection = new PouchDB("kanban_db", {
   revs_limit: 1,
   auto_compaction: true,
 });
-      var params = localStorage.getItem("params");
-      params = JSON.parse(params);
+var params = localStorage.getItem("params");
+params = JSON.parse(params);
 const Params = () => {
-
   // var [shiftCount, setShiftCount] = useState(params.pitchTime ? [params.pitchTime] : [30]);
   var [shiftCount, setShiftCount] = useState([1]);
-  var [pitchTime, setPitchTime] = useState(params.pitchTime ? [params.pitchTime] : [30]);
-  console.log(params, "moazzam",params.PERS044["1"].days)
-  var [blueColor, setBlueColor] = useState(params.colors.blue.min ? params.colors.blue.min : 2);
-  var [greenMinColor, setGreenMinColor] = useState(params.colors.green.min ? params.colors.green.min : 3);
-  var [greenMaxColor, setGreenMaxColor] = useState(params.colors.green.max ? params.colors.green.max : 5);
-  var [orangeMinColor, setOrangeMinColor] = useState(params.colors.orange.min ? params.colors.orange.min : 6);
-  var [orangeMaxColor, setOrangeMaxColor] = useState(params.colors.orange.max ? params.colors.orange.max : 8);
-  var [redMinColor, setRedMinColor] = useState(params.colors.red.min ? params.colors.red.min : 9);
-  var [redMaxColor, setRedMaxColor] = useState(params.colors.red.max ? params.colors.red.max : 11);
-  var [blackMinColor, setBlackMinColor] = useState(params.colors.black.min ? params.colors.black.min : 11);
+  var [pitchTime, setPitchTime] = useState(
+    localStorage.getItem("params") ? [params.pitchTime] : [30]
+  );
+  // console.log(params, "moazzam", params.PERS044["1"].days);
+  var [blueColor, setBlueColor] = useState(
+    localStorage.getItem("params") ? params.colors.blue.min : 2
+  );
+  var [greenMinColor, setGreenMinColor] = useState(
+    localStorage.getItem("params") ? params.colors.green.min : 3
+  );
+  var [greenMaxColor, setGreenMaxColor] = useState(
+    localStorage.getItem("params") ? params.colors.green.max : 5
+  );
+  var [orangeMinColor, setOrangeMinColor] = useState(
+    localStorage.getItem("params") ? params.colors.orange.min : 6
+  );
+  var [orangeMaxColor, setOrangeMaxColor] = useState(
+    localStorage.getItem("params") ? params.colors.orange.max : 8
+  );
+  var [redMinColor, setRedMinColor] = useState(
+    localStorage.getItem("params") ? params.colors.red.min : 9
+  );
+  var [redMaxColor, setRedMaxColor] = useState(
+    localStorage.getItem("params") ? params.colors.red.max : 11
+  );
+  var [blackMinColor, setBlackMinColor] = useState(
+    localStorage.getItem("params") ? params.colors.black.min : 11
+  );
   // var [blackMaxColor, setBlackMaxColor] = useState(13);
-  var [shiftInitialTime, setShiftInitialTime] = useState([params.PERS044["1"].time]);
-  var [shiftDaysValues, setShiftDaysValues] = useState([params.PERS044["1"].days ? params.PERS044["1"].days : []]);
-  var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState([
-    [params.PERS044["1"].time],
+  var [shiftInitialTime, setShiftInitialTime] = useState([
+    localStorage.getItem("params")
+      ? params.PERS044["1"].time
+      : ["09:00", "12:00"],
   ]);
-  console.log(params.fileDownloadType)
-  var [fileDownloadType, setFileDownloadType] = useState(params.fileDownloadType);
-  var [downloadTime, setDownloadTime] = useState([params.downloadTime]);
-  
+  var [shiftDaysValues, setShiftDaysValues] = useState([
+    localStorage.getItem("params") ? params.PERS044["1"].days : [],
+  ]);
+  var [shiftInitialBreakTime, setShiftInitialBreakTime] = useState([
+    [
+      localStorage.getItem("params")
+        ? params.PERS044["1"].breaks
+        : ["11:00", "11:15"],
+    ],
+  ]);
+  var [fileDownloadType, setFileDownloadType] = useState(
+    localStorage.getItem("params") ? params.fileDownloadType : ""
+  );
+  var [downloadTime, setDownloadTime] = useState(
+    localStorage.getItem("params") ? [params.downloadTime] : []
+  );
+
   const [dbChartParams, setDbChartParams] = useState({});
 
   // get data from redux
@@ -201,11 +231,11 @@ const Params = () => {
       setRedMaxColor(dbChartParams.colors.red.max);
       setBlackMinColor(dbChartParams.colors.black.min);
       // setBlackMinColor(chartParamsData.colors.black.max)
-      var params = localStorage.getItem("params");
-      params = JSON.parse(params);
       // let shiftsData = dbChartParams.PERS044;
-      let shiftsData = params.PERS044;
-      console.log(shiftsData)
+      let shiftsData = localStorage.getItem("params")
+        ? params.PERS044
+        : dbChartParams.PERS044;
+      console.log(shiftsData);
       const shiftTimes = [];
       const shiftDays = [];
       const breakTimes = [];
