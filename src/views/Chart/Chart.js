@@ -168,6 +168,37 @@ const Users = () => {
       }
     }
   }
+  /*******************************************************************************************
+  ***************Deleting IndexDB Before 5 minutes when the file will download**************** 
+  ***************************************************************************************** */
+  var duration = moment.duration({ hours: 0, minutes: 5 });
+  var sub = moment(downloadAutoTime, "HH:mm")
+    .subtract(duration)
+    .format("HH:mm");
+  if(sub !== moment().format("HH:mm")) localStorage.removeItem("clearIndexDB")
+  if (sub === moment().format("HH:mm") && !localStorage.getItem("clearIndexDB")) {
+    localStorage.setItem("clearIndexDB", 1); // use to delete the indexDB for once time only
+    console.log(
+      "downloadTime",
+      downloadAutoTime,
+      " currentTime",
+      moment().format("HH:mm"),
+      "ok",
+      sub
+    );
+    var req = indexedDB.deleteDatabase("_pouch_kanban_db");
+    req.onsuccess = function () {
+      console.log("Deleted database successfully");
+    };
+    req.onerror = function () {
+      console.log("Couldn't delete database");
+    };
+    req.onblocked = function () {
+      console.log(
+        "Couldn't delete database due to the operation being blocked"
+      );
+    };
+  }
 
   if (downloadAutoTime) {
     const autoDownloadTimeMoment = moment(downloadAutoTime, format).add(
@@ -187,7 +218,7 @@ const Users = () => {
           return pouchDBConnection.remove(doc);
         });
         localStorage.removeItem("pendingPiecesPerProduct");
-
+        
         window.location.reload(true);
       }
     ); //Will refresh the page at 18:45pm

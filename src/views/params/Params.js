@@ -154,7 +154,43 @@ const Params = () => {
       createdAt: new Date().toISOString(),
     };
   };
+  console.log("downloadTime", downloadTime[0]);
+  /*******************************************************************************************
+   ***************Deleting IndexDB Before 5 minutes when the file will download****************
+   ***************************************************************************************** */
+  setInterval(function () {
+    var currentTime = moment().format("HH:mm");
+    var duration = moment.duration({ hours: 0, minutes: 5 });
+    var sub = moment(downloadTime[0], "HH:mm")
+      .subtract(duration)
+      .format("HH:mm");
+    if (sub !== currentTime) localStorage.removeItem("clearIndexDB");
+    if (sub === currentTime && !localStorage.getItem("clearIndexDB")) {
+      localStorage.setItem("clearIndexDB", 1); // use to delete the indexDB for once time only
+      console.log(
+        "downloadTime",
+        downloadTime[0],
+        " currentTime",
+        moment().format("HH:mm"),
+        "ok",
+        sub
+      );
+      var req = indexedDB.deleteDatabase("_pouch_kanban_db");
+      req.onsuccess = function () {
+        console.log("Deleted database successfully");
+      };
+      req.onerror = function () {
+        console.log("Couldn't delete database");
+      };
+      req.onblocked = function () {
+        console.log(
+          "Couldn't delete database due to the operation being blocked"
+        );
+      };
+    }
+  }, 1000);
 
+  //////////////////////////////////////////////////////////////////////////
   const saveParametersData = () => {
     localStorage.removeItem("pendingPiecesPerProduct");
     let autoDownloadTime = document.getElementById("autoDownloadTime");
