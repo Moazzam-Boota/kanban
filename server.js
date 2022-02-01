@@ -625,6 +625,7 @@ server.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
 
 // function logic for to retry download file for 5 times if file not download
 let n = 0;
+let oneMinute = 1000 * 60; //
 function fetchRetryToDownloadData(options, callback) {
   var AWS = require("aws-sdk");
   var s3 = new AWS.S3();
@@ -633,10 +634,13 @@ function fetchRetryToDownloadData(options, callback) {
       // callback(err);
       console.log("try no. ", n);
       n = n + 1;
-      if (n <= 5) {
-        fetchRetryToDownloadData(options, callback);
+      if (n <= 10) {
+        setTimeout(function () {
+          fetchRetryToDownloadData(options, callback);
+        }, oneMinute);
       } else {
         // callback(err);
+        n = 0;
       }
       // throw err;
     }
