@@ -36,9 +36,81 @@ const pouchDBConnection = new PouchDB("kanban_db", {
   revs_limit: 1,
   auto_compaction: true,
 });
-var params = localStorage.getItem("params");
-params = JSON.parse(params);
+// var params = localStorage.getItem("params");
+// params = JSON.parse(params);
+const initialState = {
+  pitchTime: [[[[[[[[[[[[[[[["1"]]]]]]]]]]]]]]]],
+  fileDownloadType: "automatic",
+  downloadTime: "17:59",
+  colors: {
+    blue: {
+      min: 2,
+    },
+    green: {
+      min: 3,
+      max: 5,
+    },
+    orange: {
+      min: 6,
+      max: 8,
+    },
+    red: {
+      min: 9,
+      max: 11,
+    },
+    black: {
+      min: 11,
+    },
+  },
+  PERS044: {
+    1: {
+      breaks: {
+        1: {
+          time: null,
+        },
+      },
+      days: [
+        {
+          value: "Thu",
+          label: "Thu",
+        },
+        {
+          value: "Wed",
+          label: "Wed",
+        },
+        {
+          value: "Tue",
+          label: "Tue",
+        },
+        {
+          value: "Fri",
+          label: "Fri",
+        },
+        {
+          value: "Mon",
+          label: "Mon",
+        },
+      ],
+      time: ["11:25", "13:00"],
+    },
+  },
+  createdAt: "2022-02-09T06:27:06.005Z",
+};
 const Params = () => {
+  var [params, setParams] = useState(
+    localStorage.getItem("params")
+      ? JSON.parse(localStorage.getItem("params"))
+      : initialState
+  );
+  useEffect(() => {
+    async function init() {
+      const data = await localStorage.getItem("params");
+      setParams(JSON.parse(data));
+    }
+    init();
+  }, []);
+  console.log("params", params);
+
   // var [shiftCount, setShiftCount] = useState(params.pitchTime ? [params.pitchTime] : [30]);
   var [shiftCount, setShiftCount] = useState([1]);
   var [pitchTime, setPitchTime] = useState(
